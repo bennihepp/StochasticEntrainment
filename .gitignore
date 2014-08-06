@@ -1,0 +1,16 @@
+#JavaLangevinModel/bin
+#*.class
+*.m~
+.classpath
+.project
+.settings
+.metadata
+figures
+paper
+report
+*.mat
+*.zip
+*.fig
+*.eps
+*.png
+

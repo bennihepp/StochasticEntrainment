@@ -1,0 +1,13 @@
+function [per, zmx] = powspec(sig, rng)
+    Fs = 1/6; % sampling frequency in 1/min
+    nfft = 2^(nextpow2(size(sig,1)));
+    fftx_ = fft(sig,nfft);
+    NumUniquePts = ceil((nfft+1)/2);
+    fftx = fftx_(1:NumUniquePts,:);
+    mx = (fftx/NumUniquePts).^2; % scaling
+    mx(2:end,:) = mx(2:end,:)*2;
+    f = (0:NumUniquePts-1)*Fs/nfft;
+    per = 1./f;
+    idx = find(per > rng(1) & per < rng(2));
+    per = per(idx)';
+    zmx = mx(idx,:);
