@@ -1,3 +1,5 @@
+PERIODICITY_THRESHOLD = 0.01;
+
 volume = inf;
 % volume = 1e3;
 % volume = 1e2;
@@ -25,8 +27,8 @@ tf = 10000;
 % input_amplitude = 0.0;
 % input_period = 5;
 
-input_period = 13;
-input_amplitude = 0.2;
+input_period = 19;
+input_amplitude = 0.5;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
@@ -87,3 +89,17 @@ ylabel('power |y|^2');
 
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' offset=', num2str(TNF_offset), ' amplitude=', num2str(TNF_amplitude), ' period=', num2str(TNF_period), '.mat'];
 % save(filename);
+
+corr = xcorr(output - mean(output), 'unbiased');
+figure();
+plot(corr);
+[pks, locs] = findpeaks(corr);
+peak_distances = locs(2:end) - locs(1:end-1);
+mean_peak_distance = mean(peak_distances);
+std_peak_distance = std(peak_distances);
+
+output_period = mean_peak_distance * dt;
+output_periodic = false;
+if std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD
+    output_periodic = true;
+end

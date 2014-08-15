@@ -1,11 +1,14 @@
+PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
+PERIODICITY_THRESHOLD = 0.05;
 ENTRAINMENT_THRESHOLD = 0.9;
-MAX_HARMONIC_N = 1;
+% MAX_HARMONIC_N = 1;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 
 % VanDerPol_ArnoldTongue;
 
 Q = zeros(size(Y, 1), size(Y, 2));
 W = zeros(size(Y, 1), size(Y, 2));
+C = zeros(size(PDmean, 1), size(PDmean, 2));
 
 for i=1:length(input_periods)
     display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
@@ -28,17 +31,24 @@ for i=1:length(input_periods)
             % plot(Omega / (2*pi), abs(y).^2);
             power_total = sum(abs(y).^2);
             power_natural = compute_spectrum_power(Omega, y, om_natural, dom);
-            for n=2:MAX_HARMONIC_N
-                power_natural = power_natural + compute_spectrum_power(Omega, y, om_natural * n, dom);
-            end
+%             for n=2:MAX_HARMONIC_N
+%                 power_natural = power_natural + compute_spectrum_power(Omega, y, om_natural * n, dom);
+%             end
             power_input = compute_spectrum_power(Omega, y, om_input, dom);
-            for n=2:MAX_HARMONIC_N
-                power_input = power_input + compute_spectrum_power(Omega, y, om_input * n, dom);
-            end
+%             for n=2:MAX_HARMONIC_N
+%                 power_input = power_input + compute_spectrum_power(Omega, y, om_input * n, dom);
+%             end
 
             Q(i, j) = power_input / power_natural;
             W(i, j) = power_input / power_total;
 
+        end
+
+        mean_peak_distance = PDmean(i, j);
+        std_peak_distance = PDstd(i, j);
+        mean_period = mean_peak_distance * dt;
+        if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
+            C(i, j) = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
         end
 
     end
@@ -66,6 +76,14 @@ B = QQ >= ENTRAINMENT_THRESHOLD;
 figure();
 contourf(input_periods, input_amplitudes, B);
 title(['input power fraction >= ', num2str(ENTRAINMENT_THRESHOLD)]);
+xlabel('input period');
+ylabel('input amplitude');
+colorbar();
+
+CC = C';
+figure();
+contourf(input_periods, input_amplitudes, CC);
+title('arnold tongue');
 xlabel('input period');
 ylabel('input amplitude');
 colorbar();
