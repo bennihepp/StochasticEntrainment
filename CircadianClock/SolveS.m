@@ -1,3 +1,6 @@
+addpath('..');
+addpath([getenv('HOME'), '/Documents/MATLAB/wave_matlab']);
+
 doPlot = true;
 
 t0 = 0;
@@ -11,12 +14,14 @@ x0 = [0.1; 0.25; 0.25; 0.25; 0.25] * um;
 dt = 0.001;
 recordStep = 100 * dt;
 Nsteps = ceil(tf / dt);
-Ntrials = 50;
+Ntrials = 100;
 
 %% Results
-% Amplitude 0.2 period 36
+% tf = 20*72 Amplitude 0.2 period 36
 % - for volume inf natural mode has a power of 5e7, input mode has a power
 % of 3e7
+% - effect seen for volume 1e-20, reduction of natural mode from ~5e7 to
+%   ~0.7e7, input mode remains at 3e7
 % - effect seen for volume 1e-21, reduction of natural mode from 2e7 to
 %   0.5e7, input mode remains at 3e7
 % - effect seen for volume 5e-22, reduction of natural mode from ~2e7 to
@@ -31,10 +36,9 @@ Ntrials = 50;
 %   ~0.4e7, input mode remains at ~2e7
 
 
-
-% natural_period = 23.6574;
-% input_amplitude = 0.0;
+natural_period = 23.6574;
 input_amplitude = 0.2;
+% input_amplitude = 0.2;
 input_offset = 1.0;
 input_period = 36.0;
 input_frequency = 1 ./ input_period;
@@ -48,9 +52,12 @@ volume_str = ['volume=', num2str(volume), '> '];
 % [T, X, omega] = SolveS_Java(x0, tf, dt, volume, ...
 %                             input_offset, input_amplitude, input_frequency, Ntrials, ...
 %                             false, recordStep, seed);
-[T, X, omega] = SolveS_Java(x0, tf, dt, volume, ...
+% [T, X, omega] = SolveS_Java(x0, tf, dt, volume, ...
+%                             input_offset, input_amplitude, input_frequency, Ntrials, ...
+%                             false, recordStep);
+[T, X, omega] = SolveS_Java_Parallel(x0, tf, dt, volume, ...
                             input_offset, input_amplitude, input_frequency, Ntrials, ...
-                            false, recordStep);
+                            recordStep);
 P = X;
 X = squeeze(X(1, :, :));
 
@@ -76,6 +83,20 @@ i2 = find(freq <= max_freq, 1, 'last');
 figure();
 plot(freq(i1:i2), abs(y(i1:i2)).^2);
 
+% %% fitting gaussians
+% x = freq(i1:i2);
+% y = abs(y(i1:i2)).^2;
+% % g = fittype(['a1*exp(-((x-', num2str(1/natural_period), ')/c1)^2) + a2*exp(-((x-', num2str(1/input_period), ')/c2)^2)']);
+% g = fittype(['1.3e7*exp(-((x-', num2str(1/natural_period), ')/c1)^2) + 9.92e6*exp(-((x-', num2str(1/input_period), ')/c2)^2)']);
+% % g = fittype(['a1*exp(-((x-b1)/c1)^2) + a2*exp(-((x-b2)/c2)^2)']);
+% f = @(x) 1.3e7*exp(-((x-1/natural_period)/0.001).^2) + 9.92e6*exp(-((x-1/input_period)/0.001).^2);
+% x2 = x;
+% y2 = f(x);
+% % f = fit(x', y, g);
+% plot(x2, y2);
+% hold on;
+% plot(x, y, '.');
+% hold off;
 
 Nn = sum(P(:, :, 2:5), 3);
 
@@ -105,9 +126,9 @@ mean_freq = mean(omega ./ (2 * pi), 1);
 abs_mean_omega = abs(mean(y, 1)) .^ 2;
 mean_abs_omega = mean(abs(y) .^ 2);
 
-dfreq = 0.05;
-disp('average around frequency 0.33');
-freq = 0.33;
+dfreq = 0.005;
+disp('average around frequency 0.0423');
+freq = 0.0423;
 freq1 = freq;
 mask = (mean_freq >= freq-dfreq) & (mean_freq <= freq+dfreq);
 q1 = sum(abs_mean_omega(mask));
@@ -116,8 +137,8 @@ if Ntrials > 1
     w1 = sum(mean_abs_omega(mask));
     disp([' absolute average:', num2str(w1)]);
 end
-disp('average around frequency 0.50');
-freq = 0.50;
+disp('average around frequency 0.0278');
+freq = 0.0278;
 freq2 = freq;
 mask = (mean_freq >= freq-dfreq) & (mean_freq <= freq+dfreq);
 q2 = sum(abs_mean_omega(mask));
@@ -146,3 +167,32 @@ if doPlot
     xlabel('frequency f');
     ylabel('|y|^{2}');
 end
+
+pad = 0;
+dj = 0.05;
+s0 = 24 / 2;
+j1 = ceil(log2(24 * 2 / s0) / dj);
+[wave, period, scale, coi] = wavelet(Nn(1,:), recordStep, pad, dj, s0, j1, 'MORLET');
+power = abs(wave) .^ 2;
+
+figure();
+contourf(T, period, log(power));
+colorbar();
+title('wavelet power spectrum for trajectory 1');
+
+pad = 0;
+dj = 0.05;
+s0 = 24 / 2;
+j1 = 2*ceil(log2(24 * 2 / s0) / dj);
+[wave, period, scale, coi] = wavelet(mean(Nn, 1), recordStep, pad, dj, s0, j1, 'MORLET', 12);
+power = abs(wave) .^ 2;
+
+figure();
+contourf(T, period, log(power));
+colorbar();
+title('wavelet power spectrum for mean trajectory');
+
+% figure();
+% contourf(T, period, angle(wave));
+% colorbar();
+% title('wavelet phases for mean trajectory');
