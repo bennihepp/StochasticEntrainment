@@ -2,7 +2,7 @@ PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
 ENTRAINMENT_THRESHOLD = 0.9;
-% MAX_HARMONIC_N = 1;
+MAX_HARMONIC_N = 4;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 
 % VanDerPol_ArnoldTongue;
@@ -36,9 +36,9 @@ for i=1:length(input_periods)
 %                 power_natural = power_natural + compute_spectrum_power(Omega, y, om_natural * n, dom);
 %             end
             power_input = compute_spectrum_power(Omega, y, om_input, dom);
-%             for n=2:MAX_HARMONIC_N
-%                 power_input = power_input + compute_spectrum_power(Omega, y, om_input * n, dom);
-%             end
+            for n=2:MAX_HARMONIC_N
+                power_input = power_input + compute_spectrum_power(Omega, y, om_input * n, dom);
+            end
 
             Q(i, j) = power_input / power_natural;
             W(i, j) = power_input / power_total;

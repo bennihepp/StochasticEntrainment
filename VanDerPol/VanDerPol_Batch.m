@@ -64,7 +64,7 @@ addpath('../');
 omega = [];
 y = [];
 for i=Ntrials:-1:1
-    [omega1, y1]= compute_fft(output(:,i)', dt);
+    [omega1, y1]= compute_normalized_fft(output(:,i)', dt);
     min_omega = 2 * pi * 0.01;
     max_omega = 2 * pi * 1.0;
     i1 = find(omega1 < min_omega, 1, 'last');
