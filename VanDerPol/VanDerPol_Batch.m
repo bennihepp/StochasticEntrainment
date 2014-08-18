@@ -1,3 +1,4 @@
+natural_period = 1/0.1065;
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
@@ -21,7 +22,7 @@ else
     dt = 1e-1;
 end
 
-t0 = 0
+t0 = 0;
 tf = 50000;
 
 % % input_amplitude = 1.0;
@@ -29,8 +30,8 @@ tf = 50000;
 % input_amplitude = 0.0;
 % input_period = 5;
 
-input_period = 19;
-input_amplitude = 0.2;
+input_period = 10;
+input_amplitude = 0.0;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
@@ -64,13 +65,9 @@ addpath('../');
 omega = [];
 y = [];
 for i=Ntrials:-1:1
-    [omega1, y1]= compute_normalized_fft(output(:,i)', dt);
-    min_omega = 2 * pi * 0.01;
-    max_omega = 2 * pi * 1.0;
-    i1 = find(omega1 < min_omega, 1, 'last');
-    i2 = find(omega1 > max_omega, 1, 'first');
-    omega1 = omega1(i1:i2);
-    y1 = y1(i1:i2);
+    min_frequency = 0.01;
+    max_frequency = 1.0;
+    [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', dt, 2*pi*min_frequency, 2*pi*max_frequency);
     omega = [omega; omega1];
     y = [y; y1];
 end
@@ -112,3 +109,19 @@ if abs(factor - round(factor)) < PERIOD_MULTIPLE_THRESHOLD
     output_periodic = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
 end
 output_periodic
+
+
+om_natural = 2 * pi / natural_period;
+om_input = 2 * pi / input_period;
+dom = FREQUENCY_NEIGHBOURHOOD_FACTOR * om_natural;
+
+power_total = sum(abs(y).^2);
+power_input = compute_spectrum_power(omega, y, om_input, dom);
+power_input_harmonics = 0;
+for n=2:MAX_HARMONIC_N
+    power_input_harmonics = power_input_harmonics + compute_spectrum_power(omega, y, om_input * n, dom);
+end
+if power_input >= 0.1 * power_input_harmonics
+    power_input = power_input + power_input_harmonics;
+end
+power_input / power_total
