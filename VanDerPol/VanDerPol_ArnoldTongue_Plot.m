@@ -1,5 +1,6 @@
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
+PERIOD_MULTIPLE_THRESHOLD = 0.01;
 ENTRAINMENT_THRESHOLD = 0.9;
 % MAX_HARMONIC_N = 1;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
@@ -50,6 +51,13 @@ for i=1:length(input_periods)
         if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
             C(i, j) = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
         end
+%         factor = mean_period / input_period;
+%         if mean_period < input_period
+%             factor = input_period / mean_period;
+%         end
+%         if abs(factor - round(factor)) < PERIOD_MULTIPLE_THRESHOLD
+%             C(i, j) = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
+%         end
 
     end
 
@@ -74,7 +82,7 @@ colorbar();
 
 B = QQ >= ENTRAINMENT_THRESHOLD;
 figure();
-contourf(input_periods, input_amplitudes, B);
+contourf(input_periods, input_amplitudes, B, 1);
 title(['input power fraction >= ', num2str(ENTRAINMENT_THRESHOLD)]);
 xlabel('input period');
 ylabel('input amplitude');
@@ -82,7 +90,7 @@ colorbar();
 
 CC = C';
 figure();
-contourf(input_periods, input_amplitudes, CC);
+contourf(input_periods, input_amplitudes, CC, 1);
 title('arnold tongue');
 xlabel('input period');
 ylabel('input amplitude');

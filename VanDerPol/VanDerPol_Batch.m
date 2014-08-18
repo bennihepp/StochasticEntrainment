@@ -1,4 +1,6 @@
-PERIODICITY_THRESHOLD = 0.01;
+PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
+PERIODICITY_THRESHOLD = 0.05;
+PERIOD_MULTIPLE_THRESHOLD = 0.01;
 
 volume = inf;
 % volume = 1e3;
@@ -20,7 +22,7 @@ else
 end
 
 t0 = 0
-tf = 10000;
+tf = 50000;
 
 % % input_amplitude = 1.0;
 % % input_amplitude = 0.8;
@@ -28,7 +30,7 @@ tf = 10000;
 % input_period = 5;
 
 input_period = 19;
-input_amplitude = 0.5;
+input_amplitude = 0.2;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
@@ -93,13 +95,20 @@ ylabel('power |y|^2');
 corr = xcorr(output - mean(output), 'unbiased');
 figure();
 plot(corr);
+title('autocorrelation');
 [pks, locs] = findpeaks(corr);
 peak_distances = locs(2:end) - locs(1:end-1);
 mean_peak_distance = mean(peak_distances);
 std_peak_distance = std(peak_distances);
 
-output_period = mean_peak_distance * dt;
-output_periodic = false;
-if std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD
-    output_periodic = true;
+mean_period = mean_peak_distance * dt;
+factor = mean_period / input_period;
+if mean_period < input_period
+    factor = input_period / mean_period;
 end
+output_periodic = false;
+if abs(factor - round(factor)) < PERIOD_MULTIPLE_THRESHOLD
+% if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
+    output_periodic = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
+end
+output_periodic
