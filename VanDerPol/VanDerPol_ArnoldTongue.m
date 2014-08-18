@@ -28,7 +28,7 @@ min_frequency = 0.01;
 max_frequency = 1.0;
 
 T = t0:dt:tf;
-[Omega, ~] = compute_fft_truncated(T, dt, 2*pi*min_frequency, 2*pi*max_frequency);
+[Omega, ~] = compute_normalized_fft_truncated(T, dt, 2*pi*min_frequency, 2*pi*max_frequency);
 X = zeros(length(input_periods), length(input_amplitudes), length(T));
 Y = zeros(length(input_periods), length(input_amplitudes), length(Omega));
 PDmean = zeros(length(input_periods), length(input_amplitudes));
@@ -62,7 +62,7 @@ parfor i=1:length(input_periods)
         output = output(offset:end, :);
 
         %% Fourier spectrum analysis
-        [omega1, y1]= compute_fft_truncated(output, dt, 2*pi*min_frequency, 2*pi*max_frequency);
+        [omega1, y1]= compute_normalized_fft_truncated(output, dt, 2*pi*min_frequency, 2*pi*max_frequency);
         min_omega = 2 * pi * min_frequency;
         max_omega = 2 * pi * max_frequency;
         i1 = find(omega1 < min_omega, 1, 'last');
