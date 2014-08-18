@@ -35,7 +35,8 @@ PDmean = zeros(length(input_periods), length(input_amplitudes));
 PDstd = zeros(length(input_periods), length(input_amplitudes));
 
 
-parfor i=1:length(input_periods)
+for i=1:length(input_periods)
+% parfor i=1:length(input_periods)
     display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
     input_period = input_periods(i);
 
@@ -45,7 +46,7 @@ parfor i=1:length(input_periods)
     PDstd_tmp = zeros(length(input_amplitudes), 1);
 
     for j=1:length(input_amplitudes)
-        display(['j=', int2str(j), ' out of ', int2str(length(input_amplitudes))]);
+        display(['i=', int2str(i), ' of ', int2str(length(input_periods)), ', j=', int2str(j), ' of ', int2str(length(input_amplitudes))]);
         input_amplitude = input_amplitudes(j);
 
         additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);

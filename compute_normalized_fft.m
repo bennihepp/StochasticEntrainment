@@ -5,13 +5,13 @@ function [omega, y] = compute_normalized_fft(x, dt)
         np2 = np2 - 1;
     end
     NFFT = pow2(np2);
-    y = 2 * fft(x, L) / L;
+    y = 2 * fft(x, NFFT) / NFFT;
 
     Fs = 1 / dt;
-    f = Fs / 2 * linspace(0, 1, NFFT/2+1);
+%     f = Fs / 2 * linspace(0, 1, NFFT/2+1);
 
-%     f = (0:NFFT-1) * (Fs / NFFT);
-%     f = f(1:NFFT/2+1);
+    f = (0:NFFT-1) * (Fs / NFFT);
+    f = f(1:NFFT/2+1);
 
     y = y(1:NFFT/2+1);
     omega = 2 * pi * f;

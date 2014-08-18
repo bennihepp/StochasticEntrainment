@@ -12,31 +12,31 @@ W = zeros(size(Y, 1), size(Y, 2));
 C = zeros(size(PDmean, 1), size(PDmean, 2));
 
 
-%% recompute spectras
-for i=1:length(input_periods)
-    display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
-    input_period = input_periods(i);
-
-    for j=1:length(input_amplitudes)
-        display(['j=', int2str(j), ' out of ', int2str(length(input_amplitudes))]);
-        input_amplitude = input_amplitudes(j);
-
-        TT = T;
-        output = squeeze(X(i, j, :));
-
-        offset_time = (tf - t0) / 5;
-        offset_time = min(offset_time, 1000);
-        offset = find(TT >= offset_time, 1);
-        TT = TT(offset:end);
-        output = output(offset:end, :);
-
-        %% Fourier spectrum analysis
-        [omega1, y1]= compute_normalized_fft_truncated(output, dt, 2*pi*min_frequency, 2*pi*max_frequency);
-%         Omega = omega;
-        Y(i, j, :) = y1;
-    end
-
-end
+% %% recompute spectras
+% for i=1:length(input_periods)
+%     display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
+%     input_period = input_periods(i);
+% 
+%     for j=1:length(input_amplitudes)
+%         display(['j=', int2str(j), ' out of ', int2str(length(input_amplitudes))]);
+%         input_amplitude = input_amplitudes(j);
+% 
+%         TT = T;
+%         output = squeeze(X(i, j, :));
+% 
+%         offset_time = (tf - t0) / 5;
+%         offset_time = min(offset_time, 1000);
+%         offset = find(TT >= offset_time, 1);
+%         TT = TT(offset:end);
+%         output = output(offset:end, :);
+% 
+%         %% Fourier spectrum analysis
+%         [omega1, y1]= compute_normalized_fft_truncated(output, dt, 2*pi*min_frequency, 2*pi*max_frequency);
+% %         Omega = omega;
+%         Y(i, j, :) = y1;
+%     end
+% 
+% end
 
 
 %% compute arnold tongues

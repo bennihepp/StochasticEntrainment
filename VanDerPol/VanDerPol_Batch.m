@@ -3,7 +3,9 @@ PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
 
-volume = inf;
+% volume = inf;
+% volume = 1e4;
+volume = 5e3;
 % volume = 1e3;
 % volume = 1e2;
 % volume = 5e1;
@@ -23,15 +25,15 @@ else
 end
 
 t0 = 0;
-tf = 50000;
+tf = 10000;
 
 % % input_amplitude = 1.0;
 % % input_amplitude = 0.8;
 % input_amplitude = 0.0;
 % input_period = 5;
 
-input_period = 10;
-input_amplitude = 0.0;
+input_period = 15;
+input_amplitude = 0.3;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
@@ -75,6 +77,12 @@ mean_y = mean(y, 1);
 mean_omega = mean(omega, 1);
 
 figure();
+plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
+title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+xlabel('frequency f');
+ylabel('power |y|^2');
+
+figure();
 plot(mean_omega ./ (2 * pi), abs(mean_y) .^ 2);
 title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 xlabel('frequency f');
@@ -89,37 +97,39 @@ ylabel('power |y|^2');
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' offset=', num2str(TNF_offset), ' amplitude=', num2str(TNF_amplitude), ' period=', num2str(TNF_period), '.mat'];
 % save(filename);
 
-corr = xcorr(output - mean(output), 'unbiased');
-figure();
-plot(corr);
-title('autocorrelation');
-[pks, locs] = findpeaks(corr);
-peak_distances = locs(2:end) - locs(1:end-1);
-mean_peak_distance = mean(peak_distances);
-std_peak_distance = std(peak_distances);
+if Ntrials == 1
+    corr = xcorr(output - mean(output, 2), 'unbiased');
+    figure();
+    plot(corr);
+    title('autocorrelation');
+    [pks, locs] = findpeaks(corr);
+    peak_distances = locs(2:end) - locs(1:end-1);
+    mean_peak_distance = mean(peak_distances);
+    std_peak_distance = std(peak_distances);
 
-mean_period = mean_peak_distance * dt;
-factor = mean_period / input_period;
-if mean_period < input_period
-    factor = input_period / mean_period;
+    mean_period = mean_peak_distance * dt;
+    factor = mean_period / input_period;
+    if mean_period < input_period
+        factor = input_period / mean_period;
+    end
+    output_periodic = false;
+    if abs(factor - round(factor)) < PERIOD_MULTIPLE_THRESHOLD
+    % if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
+        output_periodic = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
+    end
+    output_periodic
 end
-output_periodic = false;
-if abs(factor - round(factor)) < PERIOD_MULTIPLE_THRESHOLD
-% if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
-    output_periodic = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
-end
-output_periodic
 
 
 om_natural = 2 * pi / natural_period;
 om_input = 2 * pi / input_period;
 dom = FREQUENCY_NEIGHBOURHOOD_FACTOR * om_natural;
 
-power_total = sum(abs(y).^2);
-power_input = compute_spectrum_power(omega, y, om_input, dom);
+power_total = sum(abs(mean_y).^2);
+power_input = compute_spectrum_power(mean_omega, mean_y, om_input, dom);
 power_input_harmonics = 0;
 for n=2:MAX_HARMONIC_N
-    power_input_harmonics = power_input_harmonics + compute_spectrum_power(omega, y, om_input * n, dom);
+    power_input_harmonics = power_input_harmonics + compute_spectrum_power(mean_omega, mean_y, om_input * n, dom);
 end
 if power_input >= 0.1 * power_input_harmonics
     power_input = power_input + power_input_harmonics;
