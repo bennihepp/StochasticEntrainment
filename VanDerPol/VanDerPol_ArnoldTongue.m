@@ -17,8 +17,8 @@ tf = 10000;
 % input_amplitudes = 0.0:0.2:2.0;
 % input_periods = 5:2.0:40;
 
-input_amplitudes = 0.0:0.05:2.0;
-input_periods = 5:0.5:50;
+input_amplitudes = 0.0:0.05:1.5;
+input_periods = 5:1.0:30;
 
 % input_amplitudes = 0.0:0.1:1.0;
 % input_periods = 1:1:20;
