@@ -23,7 +23,7 @@ tf = 10000;
 % input_periods = 2:2.0:30;
 
 input_amplitudes = 0.0:0.1:1.0;
-input_periods = 1:1:20;
+input_periods = 2:2:20;
 
 
 min_frequency = 0.01;
@@ -67,12 +67,12 @@ parfor i=1:length(input_periods)
         output = output(offset:end, :);
 
         %% Fourier spectrum analysis
-        omega = [];
-        y = [];
+        omega = zeros(Ntrials, length(Omega));
+        y = zeros(Ntrials, length(Omega));
         for l=1:Ntrials
             [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', dt, 2*pi*min_frequency, 2*pi*max_frequency);
-            omega = [omega; omega1];
-            y = [y; y1];
+            omega(l, :) = omega1;
+            y(l, :) = y1;
         end
 %         mean_y = mean(y, 1);
 %         mean_omega = mean(omega, 1);
@@ -82,7 +82,7 @@ parfor i=1:length(input_periods)
         YYabs(j, :) = mean(abs(y), 1);
 
         %% Autocorrelation analysis
-        corr = xcorr(output - mean(output), 'unbiased');
+        corr = xcorr(mean(output,2) - mean(output(:)), 'unbiased');
         [pks, locs] = findpeaks(corr);
         peak_distances = locs(2:end) - locs(1:end-1);
         mean_peak_distance = mean(peak_distances);
