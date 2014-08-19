@@ -1,6 +1,7 @@
-PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
-PERIODICITY_THRESHOLD = 0.05;
+PERIOD_DEVIATION_FACTOR = 0.012;
+PERIODICITY_THRESHOLD = 0.1;
 PERIOD_MULTIPLE_THRESHOLD = 0.05;
+MIN_HARMONICS_POWER_THRESHOLD = 1.0;
 ENTRAINMENT_THRESHOLD = 0.9;
 MAX_HARMONIC_N = 4;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
@@ -56,6 +57,7 @@ for i=1:length(input_periods)
 
         if abs(om_natural - om_input) < 2 * dom
             Q(i, j) = inf;
+            W(i, j) = inf;
         else
             % figure();
             % plot(Omega / (2*pi), abs(y).^2);
@@ -69,7 +71,7 @@ for i=1:length(input_periods)
             for n=2:MAX_HARMONIC_N
                 power_input_harmonics = power_input_harmonics + compute_spectrum_power(Omega, y, om_input * n, dom);
             end
-            if power_input >= 0.1 * power_input_harmonics
+            if power_input >= MIN_HARMONICS_POWER_THRESHOLD * power_input_harmonics
                 power_input = power_input + power_input_harmonics;
             end
 
@@ -81,7 +83,7 @@ for i=1:length(input_periods)
         mean_peak_distance = PDmean(i, j);
         std_peak_distance = PDstd(i, j);
         mean_period = mean_peak_distance * dt;
-        if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
+        if abs(mean_period - input_period) / input_period < PERIOD_DEVIATION_FACTOR
             C(i, j) = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
         end
 %         factor = mean_period / input_period;
