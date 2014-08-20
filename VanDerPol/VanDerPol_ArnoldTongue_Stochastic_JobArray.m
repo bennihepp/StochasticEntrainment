@@ -1,5 +1,5 @@
 % brutus
-% bsub -n 1 -R "rusage[mem=1024]" -W 1:00 -J "job[1-100]" -o logs/VanDerPol_ArnoldTongue_Stochastic_JobArray_%I.out bash VanDerPol_ArnoldTongue_Stochastic_JobArray.sh "\$LSB_JOBINDEX" output/VanDerPol_ArnoldTongue_Stochastic_JobArray
+% bsub -n 1 -R "rusage[mem=1024]" -W 1:00 -J "job[1-624]" -o logs/VanDerPol_ArnoldTongue_Stochastic_JobArray_%I.out bash VanDerPol_ArnoldTongue_Stochastic_JobArray.sh "\$LSB_JOBINDEX" output/VanDerPol_ArnoldTongue_Stochastic_JobArray
 %
 % INDEX=14; bsub -n 8 -R "rusage[mem=4096]" -W 8:00 -R "span[ptile=8]" -o logs3/NFkB_Langevin_Arnold_Tongues_Brutus3_$INDEX.out bash NFkB_Langevin_Arnold_Tongues_Brutus3.sh $INDEX 8
 %
