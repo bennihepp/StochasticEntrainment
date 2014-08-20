@@ -1,11 +1,13 @@
 % brutus
-% bsub -n 1 -R "rusage[mem=1024]" -W 1:00 -J "job[1-624]" -o logs/VanDerPol_ArnoldTongue_Stochastic_JobArray_%I.out bash VanDerPol_ArnoldTongue_Stochastic_JobArray.sh "\$LSB_JOBINDEX" output/VanDerPol_ArnoldTongue_Stochastic_JobArray
+% bsub -n 1 -R "rusage[mem=1024]" -W 1:00 -J "job[1-624]" -o logs/VanDerPol_ArnoldTongue_Stochastic_JobArray_%I.out bash VanDerPol_ArnoldTongue_Stochastic_JobArray.sh "\$LSB_JOBINDEX"
 %
 % INDEX=14; bsub -n 8 -R "rusage[mem=4096]" -W 8:00 -R "span[ptile=8]" -o logs3/NFkB_Langevin_Arnold_Tongues_Brutus3_$INDEX.out bash NFkB_Langevin_Arnold_Tongues_Brutus3.sh $INDEX 8
 %
 % bsub -n 4 -w "done(56236368)" -R "rusage[mem=4096]" -W 8:00 -R "span[ptile=4]" -o logs3/process_arnold_tongues.out bash process_arnold_tongues3.sh 4
 
-function VanDerPol_ArnoldTongue_Stochastic_JobArray(L, output_prefix)
+function VanDerPol_ArnoldTongue_Stochastic_JobArray(L)
+
+    output_prefix = 'output/VanDerPol_ArnoldTongue_Stochastic_JobArray';
 
     addpath('../');
 
