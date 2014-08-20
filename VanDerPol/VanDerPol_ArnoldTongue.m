@@ -14,14 +14,8 @@ t0 = 0;
 tf = 10000;
 
 
-% input_amplitudes = 0.0:0.2:2.0;
-% input_periods = 5:2.0:40;
-
-input_amplitudes = 0.0:0.05:2.0;
-input_periods = 5:0.5:50;
-
-% input_amplitudes = 0.0:0.1:1.0;
-% input_periods = 1:1:20;
+input_amplitudes = 0.0:0.1:1.5;
+input_periods = 1:0.5:20.0;
 
 
 min_frequency = 0.01;
@@ -35,8 +29,8 @@ PDmean = zeros(length(input_periods), length(input_amplitudes));
 PDstd = zeros(length(input_periods), length(input_amplitudes));
 
 
-for i=1:length(input_periods)
-% parfor i=1:length(input_periods)
+% for i=1:length(input_periods)
+parfor i=1:length(input_periods)
     display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
     input_period = input_periods(i);
 
