@@ -12,25 +12,34 @@ else
     dt = 1e-1;
 end
 
+disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+
 t0 = 0;
 tf = 10000;
 
 
-% input_amplitudes = 0.0:0.1:2.0;
-% input_periods = 1:1.0:50;
+input_amplitudes = 0.0:0.1:2.0;
+input_periods = 1:1.0:20;
 
 % input_amplitudes = 0.0:0.2:1.5;
 % input_periods = 2:2.0:30;
 
-input_amplitudes = 0.0:0.1:1.0;
-input_periods = 2:2:20;
+%input_amplitudes = 0.0:0.1:1.0;
+%input_periods = 2:2:20;
+%input_amplitudes = 0.0:0.5:1.0;
+%input_periods = 10:5:20;
 
 
 min_frequency = 0.01;
 max_frequency = 1.0;
 
 T = t0:dt:tf;
+offset_time = (tf - t0) / 5;
+offset_time = min(offset_time, 1000);
+offset = find(T >= offset_time, 1);
+T = T(offset:end);
 [Omega, ~] = compute_normalized_fft_truncated(T, dt, 2*pi*min_frequency, 2*pi*max_frequency);
+
 % X = zeros(length(input_periods), length(input_amplitudes), length(T));
 Y = zeros(length(input_periods), length(input_amplitudes), length(Omega));
 Yabs = zeros(length(input_periods), length(input_amplitudes), length(Omega));
@@ -38,7 +47,7 @@ PDmean = zeros(length(input_periods), length(input_amplitudes));
 PDstd = zeros(length(input_periods), length(input_amplitudes));
 
 
-% for i=1:length(input_periods)
+%for i=1:length(input_periods)
 parfor i=1:length(input_periods)
     display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
     input_period = input_periods(i);
@@ -60,6 +69,7 @@ parfor i=1:length(input_periods)
 
 %         XX(j, :) = output;
 
+	%size(output)
         offset_time = (tf - t0) / 5;
         offset_time = min(offset_time, 1000);
         offset = find(TT >= offset_time, 1);
@@ -67,10 +77,16 @@ parfor i=1:length(input_periods)
         output = output(offset:end, :);
 
         %% Fourier spectrum analysis
+	%disp('q');
         omega = zeros(Ntrials, length(Omega));
         y = zeros(Ntrials, length(Omega));
+	%size(omega)
+	%size(y)
         for l=1:Ntrials
-            [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', dt, 2*pi*min_frequency, 2*pi*max_frequency);
+            [omega1, y1] = compute_normalized_fft_truncated(output(:,l)', dt, 2*pi*min_frequency, 2*pi*max_frequency);
+		%disp('a');
+		%size(omega1)
+		%size(y1)
             omega(l, :) = omega1;
             y(l, :) = y1;
         end
@@ -78,10 +94,16 @@ parfor i=1:length(input_periods)
 %         mean_omega = mean(omega, 1);
 
 %         Omega = omega;
+		%disp('b');
+	%size(mean(y,1))
+	%size(mean(abs(y), 1))
         YY(j, :) = mean(y, 1);
         YYabs(j, :) = mean(abs(y), 1);
 
         %% Autocorrelation analysis
+		%disp('c');
+	%size(mean(output,2))
+	%size(mean(output(:)))
         corr = xcorr(mean(output,2) - mean(output(:)), 'unbiased');
         [pks, locs] = findpeaks(corr);
         peak_distances = locs(2:end) - locs(1:end-1);
