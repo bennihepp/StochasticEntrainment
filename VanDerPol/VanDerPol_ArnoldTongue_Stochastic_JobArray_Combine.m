@@ -2,7 +2,7 @@ output_prefix = 'output/VanDerPol_ArnoldTongue_Stochastic_JobArray';
 
 addpath('../');
 
-% natural_period = 1/0.1065;
+natural_period = 1/0.1065;
 
 volume = 5e3;
 
