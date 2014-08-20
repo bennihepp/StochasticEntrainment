@@ -24,10 +24,11 @@ input_periods = 1:1.0:20;
 % input_amplitudes = 0.0:0.2:1.5;
 % input_periods = 2:2.0:30;
 
-%input_amplitudes = 0.0:0.1:1.0;
-%input_periods = 2:2:20;
-%input_amplitudes = 0.0:0.5:1.0;
-%input_periods = 10:5:20;
+% input_amplitudes = 0.0:0.1:1.0;
+% input_periods = 2:2:20;
+
+input_amplitudes = 0.0:0.1:1.5;
+input_periods = 1:0.5:20.0;
 
 
 min_frequency = 0.01;
