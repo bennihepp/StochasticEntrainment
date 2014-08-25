@@ -2,6 +2,9 @@ natural_period = 1/0.1065;
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
+FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
+MIN_HARMONICS_POWER_THRESHOLD = 1.0;
+MAX_HARMONIC_N = 4;
 
 % volume = inf;
 % volume = 1e4;
@@ -16,20 +19,23 @@ if volume == inf
     Ntrials = 1;
     dt = 1e-1;
 else
-    Ntrials = 50;
+    Ntrials = 500;
     dt = 1e-1;
 end
 
 t0 = 0;
 tf = 10000;
+to = (tf - t0) / 5;
 
 % % input_amplitude = 1.0;
 % % input_amplitude = 0.8;
 % input_amplitude = 0.0;
 % input_period = 5;
 
+% border of arnold tongue (period 15, amplitude 0.4674004, inclusive)
+
 input_period = 15;
-input_amplitude = 0.3;
+input_amplitude = 0.25;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
@@ -51,8 +57,9 @@ xlabel('time t');
 ylabel('state y(1)');
 
 %% cutoff transients
-offset_time = (tf - t0) / 5;
-offset_time = min(offset_time, 1000);
+% offset_time = (tf - t0) / 5;
+% offset_time = max(offset_time, 1000);
+offset_time = to;
 offset = find(T >= offset_time, 1);
 T = T(offset:end);
 output = output(offset:end, :);
@@ -194,6 +201,7 @@ else
 end
 
 % mean(Q)
-disp(['individual eintrainment scores: ', num2str(mean(W)), ' +- ', num2str(std(W))]);
+disp(['maximum individual entrainment score: ', num2str(max(W))]);
+disp(['average individual entrainment score: ', num2str(mean(W)), ' +- ', num2str(std(W))]);
 % Q_mean
 disp(['complex average entrainment score: ', num2str(W_mean)]);
