@@ -7,6 +7,7 @@ MIN_HARMONICS_POWER_THRESHOLD = 1.0;
 MAX_HARMONIC_N = 4;
 
 % volume = inf;
+% volume = 1e6;
 % volume = 1e4;
 volume = 5e3; % good results for average entrainment
 % volume = 1e3;
@@ -16,7 +17,7 @@ if volume == inf
     Ntrials = 1;
     dt = 1e-1;
 else
-    Ntrials = 100;
+    Ntrials = 1000;
     dt = 1e-1;
 end
 
@@ -35,7 +36,7 @@ to = (tf - t0) / 5;
 % border of arnold tongue (period 15, amplitude 0.4674004, inclusive)
 
 input_period = 15;
-input_amplitude = 0.25;
+input_amplitude = 0.3;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
@@ -98,6 +99,23 @@ plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2);
 title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 xlabel('frequency f');
 ylabel('power |y|^2');
+
+
+%% plot phase distribution of natural mode and input mode
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
+figure();
+hist(angle(y(:, ind)));
+title('phase distribution of natural mode');
+xlabel('phase');
+ylabel('occurence');
+
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
+figure();
+hist(angle(y(:, ind)));
+title('phase distribution of input mode');
+xlabel('phase');
+ylabel('occurence');
+
 
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' offset=', num2str(TNF_offset), ' amplitude=', num2str(TNF_amplitude), ' period=', num2str(TNF_period), '.mat'];
 % save(filename);

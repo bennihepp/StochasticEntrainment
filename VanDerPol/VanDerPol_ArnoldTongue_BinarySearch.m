@@ -85,7 +85,6 @@ parfor i=1:length(input_periods)
 
 end
 
-S = struct();
 S.natural_period = natural_period;
 S.input_periods = input_periods;
 S.min_input_amplitude = min_input_amplitude;

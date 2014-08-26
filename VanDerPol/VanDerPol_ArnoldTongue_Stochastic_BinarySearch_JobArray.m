@@ -1,6 +1,8 @@
 % brutus
-% bsub -n 1 -R "rusage[mem=1024]" -W 8:00 -J "job[1-81]" -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_%I.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" "output/"
-% bsub -n 1 -R "rusage[mem=1024]" -W 8:00 -J "job_comb" -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_Combine.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh 0 "output/"
+% bsub -n 1 -R "rusage[mem=1024]" -W 8:00 -J "job[1-81]" -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_%I.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output/
+% bsub -n 1 -R "rusage[mem=1024]" -W 8:00 -J "job_comb" -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_Combine.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh 0 output/
+%
+% INDEX=2; bsub -n 1 -R "rusage[mem=1024]" -W 8:00 -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_$INDEX.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh $INDEX output/
 %
 
 function VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray(n, filename_prefix)
@@ -124,7 +126,7 @@ function VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray(n, filename_pre
             scores = zeros(3, 1);
             input_amplitude = middle_amplitude;
             for j=1:3
-                scores(j) = simulate_and_compute_entrainment_scores(input_period, input_amplitude, options);
+                scores(j) = simulate_and_compute_entrainment_scores(input_period, input_amplitude, S);
             end
             score_variance = std(scores);
 
