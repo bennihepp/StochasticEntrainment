@@ -11,17 +11,17 @@ MAX_HARMONIC_N = 4;
 volume = 5e3; % good results for average entrainment
 % volume = 1e3;
 % volume = 1e2;
-disp(['volume=', num2str(volume)]);
-
-omega = volume;
 
 if volume == inf
     Ntrials = 1;
     dt = 1e-1;
 else
-    Ntrials = 500;
+    Ntrials = 100;
     dt = 1e-1;
 end
+
+disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+
 
 t0 = 0;
 tf = 10000;
@@ -41,7 +41,7 @@ additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplit
 multiplicative_forcing_func = @(t, x) 0;
 
 %% simulate
-[T, output] = VanDerPol_Run(Ntrials, t0, tf, dt, omega, additive_forcing_func, multiplicative_forcing_func);
+[T, output] = VanDerPol_Run(Ntrials, t0, tf, dt, volume, additive_forcing_func, multiplicative_forcing_func);
 
 %% plot trajectories
 figure();

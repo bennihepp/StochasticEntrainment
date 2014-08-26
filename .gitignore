@@ -1,6 +1,7 @@
 #JavaLangevinModel/bin
 #*.class
 *.m~
+*.sh~
 .classpath
 .project
 .settings

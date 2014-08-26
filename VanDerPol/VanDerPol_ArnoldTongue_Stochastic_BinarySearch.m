@@ -11,7 +11,7 @@ if volume == inf
     dt = 1e-1;
 else
 %     Ntrials = 100;
-    Ntrials = 50;
+    Ntrials = 10;
     dt = 1e-1;
 end
 
@@ -25,7 +25,6 @@ to = (tf - t0) / 5;
 min_input_amplitude = 0.0;
 max_input_amplitude = 10.0;
 input_amplitude_tolerance = 1e-1;
-% input_periods = 1:0.2:20.0;
 input_periods = 1:0.5:20.0;
 
 min_frequency = 0.01;
@@ -91,7 +90,6 @@ parfor i=1:length(input_periods)
 
 end
 
-S = struct();
 S.natural_period = natural_period;
 S.input_periods = input_periods;
 S.min_input_amplitude = min_input_amplitude;
