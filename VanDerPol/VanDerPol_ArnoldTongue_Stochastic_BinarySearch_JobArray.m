@@ -60,6 +60,7 @@ function VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray(n, filename_pre
         arnold_tongue_borders = zeros(length(input_periods), 1);
         score_variances = zeros(length(input_periods), 1);
 
+        error_occured = false;
         for i=1:length(input_periods)
             display(['i=', int2str(l), ' out of ', int2str(length(input_periods))]);
             filename = [filename_prefix, 'job_', int2str(n), '.mat'];
@@ -68,6 +69,7 @@ function VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray(n, filename_pre
                 arnold_tongue_borders(i) = tmp_S.arnold_tongue_border;
                 score_variances(i) = tmp_S.score_variance;
             catch
+                error_occured = true;
                 display(['error occured: skipping i=', int2str(i)]);
             end
         end
@@ -84,9 +86,12 @@ function VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray(n, filename_pre
         filename = ['VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_volume=', num2str(volume), '_', date_string, '.mat'];
         save(filename, '-struct', 'S');
 
-        for i=1:length(input_periods)
-            filename = [filename_prefix, 'job_', int2str(n), '.mat'];
-            delete(filename);
+        if ~error_occured
+            for i=1:length(input_periods)
+                filename = [filename_prefix, 'job_', int2str(n), '.mat'];
+                display(['deleting file: ', filename]);
+%                 delete(filename);
+            end
         end
 
     else
