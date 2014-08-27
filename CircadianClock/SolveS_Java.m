@@ -2,19 +2,16 @@
 % time in minutes
 function [T, P, omega] = SolveS_Java(x0, tf, dt, volume, ...
                             input_offset, input_amplitude, input_frequency, Ntrials, ...
-                            doPlot, recordStep, seed)
+                            recordStep, seed)
 
-    if nargin < 10
-        recordStep = dt;
-    end
     if nargin < 9
-        doPlot = true;
+        recordStep = dt;
     end
     if nargin < 8
         Ntrials = 1;
     end
 
-    if nargin < 11
+    if nargin < 10
         seed = randi([0, 2.^31-2]);
 %         seed = 4942634935159178;
         disp(['Java seed=', int2str(seed)]);
@@ -32,7 +29,6 @@ function [T, P, omega] = SolveS_Java(x0, tf, dt, volume, ...
         JavaLangevinModel_path = '../JavaLangevinModel/bin';
     end
 %         disp(JavaLangevinModel_path);
-    par_JavaLangevinModel_path = JavaLangevinModel_path;
     javaaddpath(JavaLangevinModel_path);
     try
         ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);

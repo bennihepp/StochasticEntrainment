@@ -1,4 +1,4 @@
-natural_period = 1/0.1065;
+natural_period = 23.7473;
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
@@ -7,43 +7,34 @@ MIN_HARMONICS_POWER_THRESHOLD = 1.0;
 MAX_HARMONIC_N = 4;
 
 volume = inf;
-% volume = 1e6;
-% volume = 1e4;
-% volume = 5e3; % good results for average entrainment
-% volume = 1e3;
-% volume = 1e2;
+% volume = 1e-20;
 
 if volume == inf
     Ntrials = 1;
-    dt = 1e-1;
+    dt = 0.002;
+    recordStep = 100 * dt;
 else
-    Ntrials = 1000;
-    dt = 1e-1;
+    Ntrials = 100;
+    dt = 0.001;
+    recordStep = 100 * dt;
 end
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
 
 t0 = 0;
-tf = 10000;
+tf = 100*72;
 to = (tf - t0) / 5;
 
-% % input_amplitude = 1.0;
-% % input_amplitude = 0.8;
-% input_amplitude = 0.0;
-% input_period = 5;
-
-% border of arnold tongue (period 15, amplitude 0.4674004, inclusive)
-
-input_period = 15;
-input_amplitude = 0.3;
-
-additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
-multiplicative_forcing_func = @(t, x) 0;
+input_amplitude = 0.2;
+input_amplitude = 0.5;
+input_offset = 1.0;
+input_period = 36.0;
+input_period = 30.0;
 
 %% simulate
 tic;
-[T, output] = VanDerPol_Run(Ntrials, t0, tf, dt, volume, additive_forcing_func, multiplicative_forcing_func);
+[T, output] = CircadianClock_Run(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period);
 toc
 
 %% plot trajectories
@@ -74,9 +65,9 @@ addpath('../');
 omega = [];
 y = [];
 for i=Ntrials:-1:1
-    min_frequency = 0.01;
-    max_frequency = 1.0;
-    [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', dt, 2*pi*min_frequency, 2*pi*max_frequency);
+    min_frequency = 0.005;
+    max_frequency = 0.5;
+    [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', recordStep, 2*pi*min_frequency, 2*pi*max_frequency);
     omega = [omega; omega1];
     y = [y; y1];
 end

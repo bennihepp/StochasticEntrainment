@@ -1,7 +1,7 @@
 % brutus
 % POPULATION_AVERAGE=false
 % POPULATION_AVERAGE=true
-% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job[1-81]" -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_%I.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output2/ $POPULATION_AVERAGE
+% bsub -n 1 -R "rusage[mem=1536]" -W 12:00 -J "job[1-81]" -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_%I.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output2/ $POPULATION_AVERAGE
 % bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job_comb" -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_Combine.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh 0 output2/
 %
 % INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output2/ $POPULATION_AVERAGE
