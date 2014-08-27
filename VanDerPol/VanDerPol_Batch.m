@@ -102,17 +102,18 @@ ylabel('power |y|^2');
 
 
 %% plot phase distribution of natural mode and input mode
+NUM_OF_BINS = 50;
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
 figure();
-hist(angle(y(:, ind)));
-title('phase distribution of natural mode');
+hist(angle(y(:, ind)), NUM_OF_BINS);
+title(['phase distribution of natural mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
 
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
 figure();
-hist(angle(y(:, ind)));
-title('phase distribution of input mode');
+hist(angle(y(:, ind)), NUM_OF_BINS);
+title(['phase distribution of input mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
 

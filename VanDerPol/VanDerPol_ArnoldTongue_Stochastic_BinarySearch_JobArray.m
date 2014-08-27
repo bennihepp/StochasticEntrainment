@@ -2,7 +2,7 @@
 % bsub -n 1 -R "rusage[mem=1024]" -W 8:00 -J "job[1-81]" -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_%I.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output/
 % bsub -n 1 -R "rusage[mem=1024]" -W 8:00 -J "job_comb" -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_Combine.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh 0 output/
 %
-% INDEX=2; bsub -n 1 -R "rusage[mem=1024]" -W 8:00 -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_$INDEX.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh $INDEX output/
+% INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs/VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray_$INDEX.out bash VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray.sh $INDEX output/
 %
 
 function VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray(n, filename_prefix)
@@ -63,9 +63,13 @@ function VanDerPol_ArnoldTongue_Stochastic_BinarySearch_JobArray(n, filename_pre
         for i=1:length(input_periods)
             display(['i=', int2str(l), ' out of ', int2str(length(input_periods))]);
             filename = [filename_prefix, 'job_', int2str(n), '.mat'];
-            tmp_S = load(filename);
-            arnold_tongue_borders(i) = tmp_S.arnold_tongue_border;
-            score_variances(i) = tmp_S.score_variance;
+            try
+                tmp_S = load(filename);
+                arnold_tongue_borders(i) = tmp_S.arnold_tongue_border;
+                score_variances(i) = tmp_S.score_variance;
+            catch
+                display(['error occured: skipping i=', int2str(i)]);
+            end
         end
 
         S.natural_period = natural_period;
