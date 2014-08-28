@@ -28,7 +28,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 %         Ntrials_std = [0];
         dt = 1e-1;
     else
-        Ntrials = 100;
+        Ntrials = 5;
 %         Ntrials_levels = [50, 100, 200, 500, 1000];
 %         Ntrials_std = zeros(size(Ntrials_levels));
         dt = 1e-1;
@@ -43,8 +43,9 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 
     min_input_amplitude = 0.0;
     max_input_amplitude = 2.0;
-    input_amplitude_tolerance = 1e-2;
+    input_amplitude_tolerance = 1e-0;
     input_periods = 4:0.2:20.0;
+    input_periods = 8:1:12;
 
     min_frequency = 0.01;
     max_frequency = 1.0;
@@ -238,8 +239,8 @@ end
 
 function score = simulate_and_compute_entrainment_score_(input_period, input_amplitude, population_average, options)
     if population_average
-        score = simulate_average_and_compuate_entrainment_scores(input_period, input_amplitude, options);
+        score = simulate_average_and_compute_entrainment_scores(input_period, input_amplitude, options);
     else
-        score = simulate_and_compuate_entrainment_scores(input_period, input_amplitude, options);
+        score = simulate_and_compute_entrainment_scores(input_period, input_amplitude, options);
     end
 end
