@@ -182,12 +182,13 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 
             if middle_amp_within_at
                 arnold_tongue_border = middle_amplitude;
+                input_amplitude = middle_amplitude;
             else
                 arnold_tongue_border = upper_amplitude;
+                input_amplitude = upper_amplitude;
             end
 
             scores = zeros(3, 1);
-            input_amplitude = middle_amplitude;
             for j=1:3
                 scores(j) = simulate_and_compute_entrainment_scores(input_period, input_amplitude, S);
             end
