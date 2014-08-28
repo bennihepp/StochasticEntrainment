@@ -2,7 +2,7 @@
 % POPULATION_AVERAGE=false
 % POPULATION_AVERAGE=true
 % bsub -n 1 -R "rusage[mem=1536]" -W 12:00 -J "job[1-81]" -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_%I.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output2/ $POPULATION_AVERAGE
-% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job_comb" -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_Combine.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh 0 output2/
+% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job_comb" -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_Combine.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh 0 output2/ $POPULATION_AVERAGE
 %
 % INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output2/ $POPULATION_AVERAGE
 %
@@ -17,15 +17,20 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
     MAX_HARMONIC_N = 4;
     MIN_HARMONICS_POWER_THRESHOLD = 1.0;
     FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
+%     STD_ESTIMATION_SIZE = 3;
     natural_period = 1/0.1065;
 
     volume = 5e3;
 
     if volume == inf
         Ntrials = 1;
+%         Ntrials_levels = [1];
+%         Ntrials_std = [0];
         dt = 1e-1;
     else
         Ntrials = 100;
+%         Ntrials_levels = [50, 100, 200, 500, 1000];
+%         Ntrials_std = zeros(size(Ntrials_levels));
         dt = 1e-1;
     end
 
@@ -47,7 +52,10 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 
     S = struct();
     S.volume = volume;
+    S.population_average = population_average;
     S.Ntrials = Ntrials;
+%     S.Ntrials_levels = Ntrials_levels;
+%     S.Ntrials_std = Ntrials_std;
     S.t0 = t0;
     S.tf = tf;
     S.to = to;
@@ -59,12 +67,40 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
     S.MAX_HARMONIC_N = MAX_HARMONIC_N;
     S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
     S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
+%     S.STD_ESTIMATION_SIZE = STD_ESTIMATION_SIZE;
 
+
+%     if n == -1
+%         %% compute variances for Ntrials_levels
+% 
+%         input_period = median(input_periods);
+%         input_amplitude = 0.5;
+%         for level=1:length(Ntrials_levels)
+%             S.Ntrials = Ntrials_levels(level);
+%             scores = zeros(STD_ESTIMATION_SIZE, 1);
+%             for i=1:length(scores)
+%                 scores(i) = simulate_and_compute_entrainment_score_(input_period, input_amplitude, population_average, S);
+%             end
+%             S.Ntrials_std(level) = std(scores);
+%         end
+% 
+%         filename = get_Ntrials_std_filename(filename_prefix);
+%         save(filename, '-struct', 'S');
+% 
+%         return;
+%     end
+% 
+%     filename = get_Ntrials_std_filename(filename_prefix);
+%     S = load(filename);
 
     if n == 0
+        %% combine results of all jobs
 
         arnold_tongue_borders = zeros(length(input_periods), 1);
-        score_variances = zeros(length(input_periods), 1);
+        Ntrials = zeros(length(input_periods), 1);
+        score = zeros(length(input_periods), 1);
+        score_mean = zeros(length(input_periods), 1);
+        score_std = zeros(length(input_periods), 1);
 
         for i=1:length(input_periods)
             display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
@@ -78,7 +114,10 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
             end
             if ~error_occured
                 arnold_tongue_borders(i) = tmp_S.arnold_tongue_border;
-                score_variances(i) = tmp_S.score_variance;
+                Ntrials(i) = tmp_S.Ntrials;
+                score(i) = tmp_S.score;
+                score_mean(i) = tmp_S.score_mean;
+                score_std(i) = tmp_S.score_std;
             end
         end
 
@@ -88,7 +127,10 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
         S.max_input_amplitude = max_input_amplitude;
         S.input_amplitude_tolerance = input_amplitude_tolerance;
         S.arnold_tongue_borders = arnold_tongue_borders;
-        S.score_variances = score_variances;
+        S.score = score;
+        S.score_mean = score_mean;
+        S.score_std = score_std;
+        S.Ntrials = Ntrials;
 
         date_string = datestr(clock());
         filename = ['VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=', num2str(volume), '_', date_string, '.mat'];
@@ -103,6 +145,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 %         end
 
     else
+        %% perform a single job
 
         i = n;
 
@@ -115,7 +158,9 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
         upper_amp_within_at = is_within_arnold_tongue_(input_period, upper_amplitude, population_average, S);
         lower_amp_within_at = is_within_arnold_tongue_(input_period, lower_amplitude, population_average, S);
 
-        score_variance = inf;
+        score = inf;
+        score_mean = inf;
+        score_std = inf;
 
         if lower_amp_within_at
             arnold_tongue_border = lower_amplitude;
@@ -126,7 +171,8 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
             while (upper_amplitude - lower_amplitude) >= input_amplitude_tolerance
                 middle_amplitude = (lower_amplitude + upper_amplitude) / 2.0;
                 display(['i=', int2str(i), ' of ', int2str(length(input_periods)), ', trying input=', num2str(middle_amplitude)]);
-                middle_amp_within_at = is_within_arnold_tongue_(input_period, middle_amplitude, population_average, S);
+                score = simulate_and_compute_entrainment_score_(input_period, middle_amplitude, population_average, S);
+                middle_amp_within_at = is_within_arnold_tongue__(score, S);
                 if middle_amp_within_at
                     upper_amplitude = middle_amplitude;
                 else
@@ -145,7 +191,8 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
             for j=1:3
                 scores(j) = simulate_and_compute_entrainment_scores(input_period, input_amplitude, S);
             end
-            score_variance = std(scores);
+            score_mean = mean(scores);
+            score_std = std(scores);
 
         end
 
@@ -153,7 +200,10 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 
         S = struct();
         S.arnold_tongue_border = arnold_tongue_border;
-        S.score_variance = score_variance;
+        S.score = score;
+        S.score_mean = score_mean;
+        S.score_std = score_std;
+%         S.Ntrials = Ntrials;
 
         filename = get_filename(filename_prefix, n);
         save(filename, '-struct', 'S');
@@ -162,8 +212,20 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 
 end
 
+% function filename = get_Ntrials_std_filename(prefix)
+%     filename = [prefix, 'Ntrials_std.mat'];
+% end
+
 function filename = get_filename(prefix, n)
     filename = [prefix, 'job_', int2str(n), '.mat'];
+end
+
+function within_arnold_tongue = is_within_arnold_tongue__(score, options)
+    if isnan(score)
+        within_arnold_tongue = true;
+    else
+        within_arnold_tongue = score >= options.ENTRAINMENT_THRESHOLD;
+    end;
 end
 
 function within_arnold_tongue = is_within_arnold_tongue_(input_period, input_amplitude, population_average, options)
@@ -171,5 +233,13 @@ function within_arnold_tongue = is_within_arnold_tongue_(input_period, input_amp
         within_arnold_tongue = is_average_within_arnold_tongue(input_period, input_amplitude, options);
     else
         within_arnold_tongue = is_within_arnold_tongue(input_period, input_amplitude, options);
+    end
+end
+
+function score = simulate_and_compute_entrainment_score_(input_period, input_amplitude, population_average, options)
+    if population_average
+        score = simulate_average_and_compuate_entrainment_scores(input_period, input_amplitude, options);
+    else
+        score = simulate_and_compuate_entrainment_scores(input_period, input_amplitude, options);
     end
 end

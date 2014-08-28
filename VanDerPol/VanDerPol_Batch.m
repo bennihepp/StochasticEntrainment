@@ -6,10 +6,10 @@ FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 MIN_HARMONICS_POWER_THRESHOLD = 1.0;
 MAX_HARMONIC_N = 4;
 
-volume = inf;
+% volume = inf;
 % volume = 1e6;
 % volume = 1e4;
-% volume = 5e3; % good results for average entrainment
+volume = 5e3; % good results for average entrainment
 % volume = 1e3;
 % volume = 1e2;
 
@@ -17,7 +17,7 @@ if volume == inf
     Ntrials = 1;
     dt = 1e-1;
 else
-    Ntrials = 1000;
+    Ntrials = 100;
     dt = 1e-1;
 end
 
@@ -35,8 +35,8 @@ to = (tf - t0) / 5;
 
 % border of arnold tongue (period 15, amplitude 0.4674004, inclusive)
 
-input_period = 15;
-input_amplitude = 0.3;
+input_period = 10.8;
+input_amplitude = 0.0;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
