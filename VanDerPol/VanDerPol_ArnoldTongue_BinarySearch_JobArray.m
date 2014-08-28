@@ -97,7 +97,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
         %% combine results of all jobs
 
         arnold_tongue_borders = zeros(length(input_periods), 1);
-        Ntrials = zeros(length(input_periods), 1);
+%         Ntrials = zeros(length(input_periods), 1);
         score = zeros(length(input_periods), 1);
         score_mean = zeros(length(input_periods), 1);
         score_std = zeros(length(input_periods), 1);
@@ -114,7 +114,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
             end
             if ~error_occured
                 arnold_tongue_borders(i) = tmp_S.arnold_tongue_border;
-                Ntrials(i) = tmp_S.Ntrials;
+%                 Ntrials(i) = tmp_S.Ntrials;
                 score(i) = tmp_S.score;
                 score_mean(i) = tmp_S.score_mean;
                 score_std(i) = tmp_S.score_std;
@@ -130,7 +130,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
         S.score = score;
         S.score_mean = score_mean;
         S.score_std = score_std;
-        S.Ntrials = Ntrials;
+%         S.Ntrials = Ntrials;
 
         date_string = datestr(clock());
         filename = ['VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=', num2str(volume), '_', date_string, '.mat'];
