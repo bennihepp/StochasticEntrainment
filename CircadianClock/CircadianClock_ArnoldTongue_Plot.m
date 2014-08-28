@@ -5,6 +5,7 @@ Q = S.scores >= S.ENTRAINMENT_THRESHOLD;
 
 Q(isinf(Q)) = max(Q(:));
 
+Q = Q';
 figure();
 contourf(input_periods, input_amplitudes, Q, 1);
 title('arnold tongue');

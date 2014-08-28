@@ -20,7 +20,8 @@ function CircadianClock_ArnoldTongue_JobArray(n, filename_prefix, population_ave
 %     STD_ESTIMATION_SIZE = 3;
     natural_period = 23.7473;
 
-    volume = inf;
+%     volume = inf;
+    volume = 1e-20;
 
     if volume == inf
         Ntrials = 1;

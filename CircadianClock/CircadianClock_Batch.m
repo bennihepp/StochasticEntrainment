@@ -7,7 +7,7 @@ MIN_HARMONICS_POWER_THRESHOLD = 1.0;
 MAX_HARMONIC_N = 4;
 
 volume = inf;
-% volume = 1e-20;
+volume = 1e-20;
 
 if volume == inf
     Ntrials = 1;
@@ -29,10 +29,10 @@ to = (tf - t0) / 5;
 input_offset = 1.0;
 
 input_period = 36.0;
-input_amplitude = 0.2;
+input_amplitude = 0.5;
 
-input_period = 27.2;
-input_amplitude = 0.2;
+input_period = 27.5;
+input_amplitude = 0.13;
 
 
 %% simulate
