@@ -22,10 +22,8 @@ tf = 100*72;
 to = (tf - t0) / 5;
 
 
-min_input_amplitude = 0.0;
-max_input_amplitude = 1.0;
-input_amplitude_tolerance = 1e-2;
-input_periods = 12:0.25:36;
+input_periods = 12:1.0:36;
+input_amplitudes = 0.0:0.05:1.0;
 
 min_frequency = 0.005;
 max_frequency = 0.5;
@@ -47,10 +45,6 @@ S.ENTRAINMENT_THRESHOLD = ENTRAINMENT_THRESHOLD;
 S.MAX_HARMONIC_N = MAX_HARMONIC_N;
 S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
 S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
-
-
-arnold_tongue_borders = zeros(length(input_periods), 1);
-scores = zeros(length(input_periods), 1);
 
 
 for i=1:length(input_periods)
