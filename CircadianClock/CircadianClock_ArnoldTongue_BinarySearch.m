@@ -50,6 +50,7 @@ S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
 
 
 arnold_tongue_borders = zeros(length(input_periods), 1);
+scores = zeros(length(input_periods), 1);
 
 
 % for i=1:length(input_periods)
@@ -88,6 +89,12 @@ parfor i=1:length(input_periods)
 
     end
 
+    if isinf(arnold_tongue_borders(i))
+        scores(i) = nan;
+    else
+        scores(i) = simulate_and_compute_entrainment_scores(input_period, arnold_tongue_borders(i), S);
+    end
+
     display(['i=', int2str(i), ' arnold tongue border at ', num2str(arnold_tongue_borders(i))]);
 
 end
@@ -98,6 +105,7 @@ S.min_input_amplitude = min_input_amplitude;
 S.max_input_amplitude = max_input_amplitude;
 S.input_amplitude_tolerance = input_amplitude_tolerance;
 S.arnold_tongue_borders = arnold_tongue_borders;
+S.scores = scores;
 
 date_string = datestr(clock());
 filename = ['CircadianClock_ArnoldTongue_BinarySearch_', date_string, '.mat'];
