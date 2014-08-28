@@ -43,7 +43,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 
     min_input_amplitude = 0.0;
     max_input_amplitude = 2.0;
-    input_amplitude_tolerance = 2e-2;
+    input_amplitude_tolerance = 1e-2;
     input_periods = 4:0.2:20.0;
 
     min_frequency = 0.01;
