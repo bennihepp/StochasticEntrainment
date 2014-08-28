@@ -11,7 +11,7 @@ volume = inf;
 
 if volume == inf
     Ntrials = 1;
-    dt = 0.002;
+    dt = 0.001;
     recordStep = 100 * dt;
 else
     Ntrials = 100;
@@ -29,9 +29,9 @@ to = (tf - t0) / 5;
 input_offset = 1.0;
 
 input_period = 36.0;
-input_period = 30.0;
+input_period = 30;
 input_amplitude = 0.2;
-input_amplitude = 0.5;
+input_amplitude = 1.0;
 
 
 %% simulate

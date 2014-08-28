@@ -23,9 +23,9 @@ to = (tf - t0) / 5;
 
 
 min_input_amplitude = 0.0;
-max_input_amplitude = 2.0;
-input_amplitude_tolerance = 1e-1;
-input_periods = 12:1:36;
+max_input_amplitude = 1.0;
+input_amplitude_tolerance = 1e-2;
+input_periods = 12:0.25:36;
 
 min_frequency = 0.005;
 max_frequency = 0.5;
@@ -53,8 +53,8 @@ arnold_tongue_borders = zeros(length(input_periods), 1);
 scores = zeros(length(input_periods), 1);
 
 
-% for i=1:length(input_periods)
-parfor i=1:length(input_periods)
+for i=1:length(input_periods)
+% parfor i=1:length(input_periods)
     display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
     input_period = input_periods(i);
 
