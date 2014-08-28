@@ -15,7 +15,7 @@ if volume == inf
     recordStep = 100 * dt;
 else
     Ntrials = 100;
-    dt = 0.001;
+    dt = 0.002;
     recordStep = 100 * dt;
 end
 
@@ -26,11 +26,13 @@ t0 = 0;
 tf = 100*72;
 to = (tf - t0) / 5;
 
-input_amplitude = 0.2;
-input_amplitude = 0.5;
 input_offset = 1.0;
+
 input_period = 36.0;
 input_period = 30.0;
+input_amplitude = 0.2;
+input_amplitude = 0.8;
+
 
 %% simulate
 tic;
