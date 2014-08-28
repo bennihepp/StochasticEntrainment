@@ -117,7 +117,7 @@ function CircadianClock_ArnoldTongue_JobArray(n, filename_prefix, population_ave
                     tmp_S = load(filename);
                 catch
                     error_occured = true;
-                    display(['error occured: skipping j=', int2str(j)]);
+                    display(['error occured: skipping i=', int2str(i), ' j=', int2str(j)]);
                 end
                 if ~error_occured
                     scores(i, j) = tmp_S.score;
