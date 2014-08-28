@@ -110,7 +110,7 @@ function CircadianClock_ArnoldTongue_JobArray(n, filename_prefix, population_ave
             display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
             for j=1:length(input_amplitudes)
                 display(['j=', int2str(j), ' out of ', int2str(length(input_amplitudes))]);
-                id = i * length(input_amplitudes) + j;
+                id = (i- 1) * length(input_amplitudes) + j;
                 filename = get_filename(filename_prefix, id);
                 error_occured = false;
                 try
