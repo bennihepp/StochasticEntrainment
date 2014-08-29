@@ -114,6 +114,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
             filename = get_filename(filename_prefix, i);
             error_occured = false;
             try
+                display(['loading: ', filename]);
                 tmp_S = load(filename);
             catch e
                 error_occured = true;
