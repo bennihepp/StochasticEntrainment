@@ -31,8 +31,8 @@ input_offset = 1.0;
 input_period = 36.0;
 input_amplitude = 0.5;
 
-input_period = 16.0;
-input_amplitude = 0.5;
+input_period = 30.0;
+input_amplitude = 0.15;
 
 
 %% simulate
