@@ -1,6 +1,6 @@
 ENTRAINMENT_THRESHOLD = 0.9;
 MAX_HARMONIC_N = 4;
-MIN_HARMONICS_POWER_THRESHOLD = 1.0;
+MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 natural_period = 23.7473;
 
@@ -18,9 +18,10 @@ else
 end
 
 t0 = 0;
-tf = 100*72;
+tf = 200*72;
 to = (tf - t0) / 5;
 
+input_offset = 1.0;
 
 min_input_amplitude = 0.0;
 max_input_amplitude = 1.0;
@@ -47,14 +48,15 @@ S.ENTRAINMENT_THRESHOLD = ENTRAINMENT_THRESHOLD;
 S.MAX_HARMONIC_N = MAX_HARMONIC_N;
 S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
 S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
+S.entrainment_ratios = [1, 2];
 
 
 arnold_tongue_borders = zeros(length(input_periods), 1);
 scores = zeros(length(input_periods), 1);
 
 
-for i=1:length(input_periods)
-% parfor i=1:length(input_periods)
+% for i=1:length(input_periods)
+parfor i=1:length(input_periods)
     display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
     input_period = input_periods(i);
 
