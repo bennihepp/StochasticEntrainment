@@ -1,10 +1,10 @@
 % brutus
 % POPULATION_AVERAGE=false
 % POPULATION_AVERAGE=true
-% bsub -n 1 -R "rusage[mem=1536]" -W 12:00 -J "job[1-81]" -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_%I.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output2/ $POPULATION_AVERAGE
-% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job_comb" -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_Combine.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh 0 output2/ $POPULATION_AVERAGE
+% bsub -n 1 -R "rusage[mem=1536]" -W 12:00 -J "job[1-81]" -o logs/VanDerPol_ArnoldTongue_BinarySearch_JobArray_%I.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output/ $POPULATION_AVERAGE
+% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job_comb" -o logs/VanDerPol_ArnoldTongue_BinarySearch_JobArray_Combine.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh 0 output/ $POPULATION_AVERAGE
 %
-% INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs2/VanDerPol_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output2/ $POPULATION_AVERAGE
+% INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs/VanDerPol_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash VanDerPol_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output/ $POPULATION_AVERAGE
 %
 
 function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, population_average)
@@ -190,7 +190,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, popula
 
             scores = zeros(3, 1);
             for j=1:3
-                scores(j) = simulate_and_compute_entrainment_scores(input_period, input_amplitude, S);
+                scores(j) = simulate_and_compute_entrainment_score_(input_period, input_amplitude, population_average, S);
             end
             score_mean = mean(scores);
             score_std = std(scores);

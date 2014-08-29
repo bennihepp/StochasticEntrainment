@@ -31,7 +31,11 @@ if isfield(S, 'score_variances')
 end
 
 figure();
-contourf(input_periods, input_amplitudes, Q, levels);
+%contourf(input_periods, input_amplitudes, Q, levels);
+surf(input_periods, input_amplitudes, double(Q),  'LineStyle', 'none');
+xlim([min(input_periods), max(input_periods)]);
+ylim([min(input_amplitudes), max(input_amplitudes)]);
+view(0, 90);
 title(['population arnold tongue for volume=', num2str(S.volume)]);
 % title(['arnold tongue for volume=', num2str(S.volume)]);
 xlabel('input period');
