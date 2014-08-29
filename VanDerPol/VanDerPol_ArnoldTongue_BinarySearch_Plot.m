@@ -18,14 +18,20 @@ for n=1:length(input_period_indices)
     Q(j:end, n) = 1;
 end
 
-if isfield(S, 'score_variances')    
+if isfield(S, 'score_std')    
     for n=1:length(input_period_indices)
         i = input_period_indices(n);
         border = S.arnold_tongue_borders(i);
-        var = S.score_variances(i);
-        j = find(input_amplitudes >= border, 1, 'first');
-        Q(j, n) = 0.5;
-        Q(j+1:end, n) = 1.0;
+        if isinf(border)
+            continue;
+        end
+        std = S.score_std(i);
+        if ~isinf(std)
+            j = find(input_amplitudes >= border, 1, 'first');
+            Q(j:end, n) = 0.5;
+        end
+        j = find(input_amplitudes - std >= border, 1, 'first');
+        Q(j:end, n) = 1.0;
     end
     levels = 2;
 end
@@ -36,8 +42,8 @@ surf(input_periods, input_amplitudes, double(Q),  'LineStyle', 'none');
 xlim([min(input_periods), max(input_periods)]);
 ylim([min(input_amplitudes), max(input_amplitudes)]);
 view(0, 90);
-title(['population arnold tongue for volume=', num2str(S.volume)]);
-% title(['arnold tongue for volume=', num2str(S.volume)]);
+% title(['population arnold tongue for volume=', num2str(S.volume)]);
+title(['arnold tongue for volume=', num2str(S.volume)]);
 xlabel('input period');
 ylabel('input amplitude');
 colorbar();
