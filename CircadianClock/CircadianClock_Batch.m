@@ -1,3 +1,23 @@
+try
+    CircadianClock_Batch;
+catch e
+    display('pause');
+    pause(5);
+    try
+        CircadianClock_Batch;
+    catch e
+        display('pause');
+    pause(5);
+        try
+            CircadianClock_Batch;
+        catch e
+            display('pause');
+            pause(5);
+            CircadianClock_Batch;
+        end
+    end
+end
+
 natural_period = 23.7473;
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
@@ -20,7 +40,6 @@ else
 end
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
-
 
 t0 = 0;
 tf = 200*72;
@@ -160,7 +179,7 @@ end
 
 
 %% compute entrainment scores
-Omega = mean_omega;
+% Omega = mean_omega;
 % Q = zeros(Ntrials, 1);
 % W = zeros(Ntrials, 1);
 % om_natural = 2 * pi / natural_period;
@@ -222,6 +241,7 @@ S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
 S.MIN_HARMONICS_POWER_THRESHOLD = 0;
 S.entrainment_ratios = [1,2];
 
+Omega = mean_omega;
 W = zeros(Ntrials, 1);
 for n=1:Ntrials
     W(n) = compute_entrainment_score(Omega, y(n, :), input_period, S);
