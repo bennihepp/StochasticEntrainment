@@ -3,6 +3,7 @@ MAX_HARMONIC_N = 4;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 natural_period = 23.7473;
+entrainment_ratios = [1, 2];
 
 volume = inf;
 omega = volume;
@@ -48,7 +49,7 @@ S.ENTRAINMENT_THRESHOLD = ENTRAINMENT_THRESHOLD;
 S.MAX_HARMONIC_N = MAX_HARMONIC_N;
 S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
 S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
-S.entrainment_ratios = [1, 2];
+S.entrainment_ratios = entrainment_ratios;
 
 
 arnold_tongue_borders = zeros(length(input_periods), 1);
