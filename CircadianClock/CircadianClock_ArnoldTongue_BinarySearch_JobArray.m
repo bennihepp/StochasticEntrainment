@@ -117,7 +117,8 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
                 tmp_S = load(filename);
             catch e
                 error_occured = true;
-                display(['error occured: skipping i=', int2str(i), ' :', e]);
+                display(['error occured: skipping i=', int2str(i)]);
+                display(e);
             end
             if ~error_occured
                 arnold_tongue_borders(i) = tmp_S.arnold_tongue_border;
