@@ -113,6 +113,8 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
         score_mean = zeros(length(input_periods), 1);
         score_std = zeros(length(input_periods), 1);
 
+        population_average = false;
+
         for i=1:length(input_periods)
             display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
             filename = get_filename(filename_prefix, i);
@@ -131,6 +133,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
                 score(i) = tmp_S.score;
                 score_mean(i) = tmp_S.score_mean;
                 score_std(i) = tmp_S.score_std;
+                population_average = tmp_S.population_average;
             end
         end
 
@@ -144,9 +147,10 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
         S.score_mean = score_mean;
         S.score_std = score_std;
 %         S.Ntrials = Ntrials;
+        S.population_average = population_average;
 
         date_string = datestr(clock());
-        filename = ['CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=', num2str(volume), '_', date_string, '.mat'];
+        filename = ['CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=', num2str(volume), '_population=', num2str(population_average), '_', date_string, '.mat'];
         save(filename, '-struct', 'S');
 
 %         if ~error_occured
@@ -233,6 +237,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
         S.score_mean = score_mean;
         S.score_std = score_std;
 %         S.Ntrials = Ntrials;
+        S.population_average = population_average;
 
         filename = get_filename(filename_prefix, n);
         save(filename, '-struct', 'S');
