@@ -9,6 +9,7 @@ input_period_indices = 1:length(input_periods);
 input_amplitudes = S.min_input_amplitude:S.input_amplitude_tolerance:S.max_input_amplitude;
 
 Q = zeros(length(input_amplitudes), length(input_period_indices));
+levels = 1;
 
 for n=1:length(input_period_indices)
     i = input_period_indices(n);
@@ -17,9 +18,32 @@ for n=1:length(input_period_indices)
     Q(j:end, n) = 1;
 end
 
+if isfield(S, 'score_std')    
+    for n=1:length(input_period_indices)
+        i = input_period_indices(n);
+        border = S.arnold_tongue_borders(i);
+        if isinf(border)
+            continue;
+        end
+        std = S.score_std(i);
+        if ~isinf(std)
+            j = find(input_amplitudes >= border, 1, 'first');
+            Q(j:end, n) = 0.5;
+        end
+        j = find(input_amplitudes - std >= border, 1, 'first');
+        Q(j:end, n) = 1.0;
+    end
+    levels = 2;
+end
+
 figure();
 contourf(input_periods, input_amplitudes, Q, 1);
-title(['arnold tongue for volume=', num2str(S.volume)]);
+% title(['population arnold tongue for volume=', num2str(S.volume)]);
+if isfield(S, 'population_average') && S.population_average
+    title(['population arnold tongue for volume=', num2str(S.volume)]);
+else
+    title(['arnold tongue for volume=', num2str(S.volume)]);
+end
 xlabel('input period');
 ylabel('input amplitude');
 colorbar();

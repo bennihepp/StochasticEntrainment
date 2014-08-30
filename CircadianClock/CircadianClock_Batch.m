@@ -1,33 +1,13 @@
-try
-    CircadianClock_Batch;
-catch e
-    display('pause');
-    pause(5);
-    try
-        CircadianClock_Batch;
-    catch e
-        display('pause');
-    pause(5);
-        try
-            CircadianClock_Batch;
-        catch e
-            display('pause');
-            pause(5);
-            CircadianClock_Batch;
-        end
-    end
-end
-
 natural_period = 23.7473;
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
-MIN_HARMONICS_POWER_THRESHOLD = 1.0;
+MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 MAX_HARMONIC_N = 4;
 
-volume = inf;
-% volume = 1e-20;
+% volume = inf;
+volume = 1e-20;
 
 if volume == inf
     Ntrials = 1;
@@ -52,6 +32,9 @@ input_amplitude = 0.5;
 
 input_period = 30.0;
 input_amplitude = 0.15;
+
+input_period = 21.0;
+input_amplitude = 1.0;
 
 
 %% simulate
@@ -117,6 +100,15 @@ ylabel('power |y|^2');
 
 
 %% plot phase distribution of natural mode and input mode
+% S = struct();
+% S.mean_omega = mean_omega;
+% S.natural_period = natural_period;
+% S.y = y;
+% S.volume = volume;
+% S.input_period = input_period;
+% S.Ntrials = Ntrials;
+% saveas(['phase_distribution_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.mat'], '-struct', 'S');
+
 NUM_OF_BINS = 50;
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
 figure();
@@ -124,6 +116,7 @@ hist(angle(y(:, ind)), NUM_OF_BINS);
 title(['phase distribution of natural mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
+% saveas(['phase_distribution_natural_mode_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.fig']);
 
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
 figure();
@@ -131,6 +124,7 @@ hist(angle(y(:, ind)), NUM_OF_BINS);
 title(['phase distribution of input mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
+% saveas(['phase_distribution_input_mode_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.fig']);
 
 
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' offset=', num2str(TNF_offset), ' amplitude=', num2str(TNF_amplitude), ' period=', num2str(TNF_period), '.mat'];

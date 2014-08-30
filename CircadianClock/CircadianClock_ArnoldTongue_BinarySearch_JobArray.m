@@ -1,7 +1,7 @@
 % brutus
 % POPULATION_AVERAGE=false
 % POPULATION_AVERAGE=true
-% bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -J "job[1-97]" -o logs2/CircadianClock_ArnoldTongue_BinarySearch_JobArray_%I.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output2/ $POPULATION_AVERAGE
+% bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -J "job[1-25]" -o logs2/CircadianClock_ArnoldTongue_BinarySearch_JobArray_%I.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output2/ $POPULATION_AVERAGE
 % bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job_comb" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_Combine.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh 0 output/ $POPULATION_AVERAGE
 %
 % INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output/ $POPULATION_AVERAGE
@@ -9,9 +9,9 @@
 
 function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, population_average)
 
-    if nargin < 3
-        population_average = false;
-    end
+%     if nargin < 3
+%         population_average = false;
+%     end
 
     ENTRAINMENT_THRESHOLD = 0.9;
     MAX_HARMONIC_N = 4;
@@ -49,6 +49,9 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
     max_input_amplitude = 1.0;
     input_amplitude_tolerance = 1e-2;
     input_periods = 12:0.25:36;
+
+    input_amplitude_tolerance = 1e-1;
+    input_periods = 12:1:36;
 
     min_frequency = 0.005;
     max_frequency = 0.5;
@@ -164,8 +167,10 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
         lower_amplitude = min_input_amplitude;
         upper_amplitude = max_input_amplitude;
 
-        upper_amp_within_at = is_within_arnold_tongue_(input_period, upper_amplitude, population_average, S);
-        lower_amp_within_at = is_within_arnold_tongue_(input_period, lower_amplitude, population_average, S);
+        upper_amp_score = simulate_and_compute_entrainment_score_(input_period, upper_amplitude, population_average, S);
+        upper_amp_within_at = is_within_arnold_tongue__(upper_amp_score, S);
+        lower_amp_score = simulate_and_compute_entrainment_score_(input_period, lower_amplitude, population_average, S);
+        lower_amp_within_at = is_within_arnold_tongue__(lower_amp_score, S);
 
         score = inf;
         score_mean = inf;
@@ -173,8 +178,10 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
 
         if lower_amp_within_at
             arnold_tongue_border = lower_amplitude;
+            score = lower_amp_score;
         elseif ~upper_amp_within_at
             arnold_tongue_border = inf;
+            score = upper_amp_score;
         else
 
             while (upper_amplitude - lower_amplitude) >= input_amplitude_tolerance
