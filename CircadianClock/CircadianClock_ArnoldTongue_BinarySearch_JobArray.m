@@ -51,7 +51,8 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
     input_periods = 12:0.25:36;
 
     input_amplitude_tolerance = 1e-1;
-    input_periods = 12:1:36;
+%     input_periods = 12:1:36;
+    input_periods = [24, 30, 36];
 
     min_frequency = 0.005;
     max_frequency = 0.5;
