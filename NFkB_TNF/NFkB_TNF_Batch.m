@@ -34,7 +34,7 @@ input_offset = 1.0;
 % input_amplitude = 0.15;
 
 input_period = 3.0;
-input_amplitude = 0.5;
+input_amplitude = 1.0;
 
 
 %% simulate

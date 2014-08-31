@@ -28,6 +28,8 @@ min_input_amplitude = 0.0;
 max_input_amplitude = 1.0;
 input_amplitude_tolerance = 1e-2;
 input_periods = 0.5:0.05:5.0;
+input_amplitude_tolerance = 1e-1;
+input_periods = [1.0, 2.0, 3.0];
 
 min_frequency = 0.05;
 max_frequency = 5.0;
