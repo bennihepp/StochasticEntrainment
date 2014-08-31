@@ -4,7 +4,10 @@ PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
-MAX_HARMONIC_N = 10;
+% MAX_HARMONIC_N = 15;
+MAX_HARMONIC_N = double(intmax());
+% entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+entrainment_ratios = 1:15;
 
 volume = inf;
 % volume = 1e-20;
@@ -12,7 +15,7 @@ volume = inf;
 if volume == inf
     Ntrials = 1;
     dt = 0.0001;
-    recordStep = 100 * dt;
+    recordStep = 1000 * dt;
 else
     Ntrials = 1;
     dt = 0.0001;
@@ -22,7 +25,7 @@ end
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
 t0 = 0;
-tf = 500;
+tf = 1000;
 to = (tf - t0) / 5;
 
 input_offset = 1.0;
@@ -33,9 +36,12 @@ input_offset = 1.0;
 % input_period = 30.0;
 % input_amplitude = 0.15;
 
-input_period = 3.0;
-input_amplitude = 1.0;
+input_period = 2.1;
+input_period = natural_period;
+input_amplitude = 0.5;
 
+min_frequency = 0.01;
+max_frequency = 10.0;
 
 %% simulate
 tic;
@@ -45,12 +51,18 @@ toc
 %% plot trajectories
 figure();
 plot(T, output(:, 1));
+hold on;
+plot([to, to], ylim(), '-r');
+hold off;
 title(['y(1) first trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 xlabel('time t');
 ylabel('state y(1)');
 
 figure();
 plot(T, mean(output, 2));
+hold on;
+plot([to, to], ylim(), '-r');
+hold off;
 title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 xlabel('time t');
 ylabel('state y(1)');
@@ -70,8 +82,6 @@ addpath('../');
 omega = [];
 y = [];
 for i=Ntrials:-1:1
-    min_frequency = 0.05;
-    max_frequency = 5.0;
     [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', recordStep, 2*pi*min_frequency, 2*pi*max_frequency);
     omega = [omega; omega1];
     y = [y; y1];
@@ -132,7 +142,7 @@ ylabel('occurence');
 
 %% compute autocorrelation if only one trajectory is simulated
 if Ntrials == 1
-    corr = xcorr(output - mean(output, 2), 'unbiased');
+    corr = xcorr(output - mean(output, 1), 'unbiased');
     figure();
     plot(corr);
     title('autocorrelation');
@@ -141,7 +151,7 @@ if Ntrials == 1
     mean_peak_distance = mean(peak_distances);
     std_peak_distance = std(peak_distances);
 
-    mean_period = mean_peak_distance * dt;
+    mean_period = mean_peak_distance * recordStep;
     factor = mean_period / input_period;
     if mean_period < input_period
         factor = input_period / mean_period;
@@ -152,6 +162,10 @@ if Ntrials == 1
         output_periodic = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
     end
     output_periodic
+
+%     [q,w] = compute_fft(corr, recordStep);
+%     figure();
+%     plot(q/2/pi, abs(w).^2);
 end
 
 
@@ -233,7 +247,7 @@ S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
 S.MAX_HARMONIC_N = MAX_HARMONIC_N;
 S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
 S.MIN_HARMONICS_POWER_THRESHOLD = 0;
-S.entrainment_ratios = [1,2];
+S.entrainment_ratios = entrainment_ratios;
 
 Omega = mean_omega;
 W = zeros(Ntrials, 1);

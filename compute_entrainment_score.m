@@ -25,7 +25,11 @@ function score = compute_entrainment_score(omega, y, input_period, options)
             power_input = compute_spectrum_power(omega, y, om_input, dom);
             power_input_harmonics = 0;
             for n=2:S.MAX_HARMONIC_N
-                power_input_harmonics = power_input_harmonics + compute_spectrum_power(omega, y, om_input * n, dom);
+                om_harmonic = om_input * n;
+                if om_harmonic > max(omega)
+                    break;
+                end
+                power_input_harmonics = power_input_harmonics + compute_spectrum_power(omega, y, om_harmonic, dom);
             end
             if power_input >= S.MIN_HARMONICS_POWER_THRESHOLD * power_input_harmonics
                 power_input = power_input + power_input_harmonics;

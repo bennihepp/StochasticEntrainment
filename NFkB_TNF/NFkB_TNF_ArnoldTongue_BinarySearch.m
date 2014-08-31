@@ -1,9 +1,11 @@
 natural_period = 2.1013;
 ENTRAINMENT_THRESHOLD = 0.9;
-MAX_HARMONIC_N = 10;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
-entrainment_ratios = [1, 2];
+% MAX_HARMONIC_N = 15;
+MAX_HARMONIC_N = double(intmax());
+% entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+entrainment_ratios = 1:15;
 
 volume = inf;
 omega = volume;
@@ -19,7 +21,7 @@ else
 end
 
 t0 = 0;
-tf = 500;
+tf = 1000;
 to = (tf - t0) / 5;
 
 input_offset = 1.0;
@@ -31,8 +33,8 @@ input_periods = 0.5:0.05:5.0;
 input_amplitude_tolerance = 1e-1;
 input_periods = [1.0, 2.0, 3.0];
 
-min_frequency = 0.05;
-max_frequency = 5.0;
+min_frequency = 0.01;
+max_frequency = 10.0;
 
 
 S = struct();
