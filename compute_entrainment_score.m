@@ -18,9 +18,9 @@ function score = compute_entrainment_score(omega, y, input_period, options)
         om_input = 2 * pi / input_period / ratio;
         dom = S.FREQUENCY_NEIGHBOURHOOD_FACTOR * om_natural;
 
-        if abs(om_natural - om_input) < 2 * dom
-            score = inf;
-        else
+%         if abs(om_natural - om_input) < 2 * dom
+%             score = inf;
+%         else
             power_total = sum(abs(y).^2);
             power_input = compute_spectrum_power(omega, y, om_input, dom);
             power_input_harmonics = 0;
@@ -33,7 +33,7 @@ function score = compute_entrainment_score(omega, y, input_period, options)
 
             score = power_input / power_total;
 
-        end
+%         end
 
         scores(i) = score;
 

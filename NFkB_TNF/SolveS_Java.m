@@ -37,10 +37,11 @@ function [T, P, omega] = SolveS_Java(x0, tf, dt, volume, ...
     end
 
     inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
-    sde = ch.ethz.bhepp.sdesolver.models.CircadianClockDrosophilaSde(volume, inputFunction);
+    sde = ch.ethz.bhepp.sdesolver.models.NFkBSpikySde(volume, inputFunction);
 
     omega = sde.getOmega();
     stepper = ch.ethz.bhepp.sdesolver.EulerMaruyamaStepper(sde, dt, seed);
+
     positiveStateHook = ch.ethz.bhepp.sdesolver.EnsurePositiveStateHook();
     stepper.addStepHook(positiveStateHook);
 %     boundedStateHook = ch.ethz.bhepp.sdesolver.EnsureBoundedStateHook(0, 0.0, 1.0);

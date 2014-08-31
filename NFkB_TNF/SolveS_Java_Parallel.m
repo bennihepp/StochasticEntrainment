@@ -31,7 +31,7 @@ function [T, P, omega] = SolveS_Java_Parallel(x0, tf, dt, volume, ...
     end
 
     inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
-    sde = ch.ethz.bhepp.sdesolver.models.NFkBSpikySde(volume, inputFunction);
+    sde = ch.ethz.bhepp.sdesolver.models.CircadianClockDrosophilaSde(volume, inputFunction);
 
 %     initial time t0
     t0 = 0;
