@@ -8,7 +8,8 @@
 % INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output/ $POPULATION_AVERAGE
 %
 
-function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, output_folder, input_periods, tolerance, population_average)
+function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
+    input_periods, input_amplitude_tolerance, population_average)
 
 %     if n == -2
 %         %% compute variances for Ntrials_levels
@@ -68,7 +69,6 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, output_folder, inp
 
         min_input_amplitude = 0.0;
         max_input_amplitude = 1.0;
-        input_amplitude_tolerance = 1e-2;
 
         min_frequency = 0.005;
         max_frequency = 0.5;
