@@ -13,7 +13,7 @@ function score = simulate_average_and_compute_entrainment_scores(input_period, i
 
     %% Fourier spectrum analysis
     for m=1:S.Ntrials
-        [omega1, y1] = compute_normalized_fft_truncated(output(:,m)', S.dt, 2*pi*S.min_frequency, 2*pi*S.max_frequency);
+        [omega1, y1] = compute_normalized_fft_truncated(output(:,m)', S.recordStep, 2*pi*S.min_frequency, 2*pi*S.max_frequency);
         if m == 1
             omega = omega1;
             y = zeros(S.Ntrials, length(y1));

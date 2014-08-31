@@ -14,7 +14,7 @@ function [T, P, omega] = SolveS_Java(x0, tf, dt, volume, ...
     if nargin < 10
         seed = randi([0, 2.^31-2]);
 %         seed = 4942634935159178;
-        disp(['Java seed=', int2str(seed)]);
+%         disp(['Java seed=', int2str(seed)]);
     end
 
     if Ntrials > 1 && volume == inf && size(x0, 1) == 1

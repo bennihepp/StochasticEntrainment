@@ -18,19 +18,19 @@ for n=1:length(input_period_indices)
     Q(j:end, n) = 1;
 end
 
-if isfield(S, 'score_std')    
+if isfield(S, 'score_std')
     for n=1:length(input_period_indices)
         i = input_period_indices(n);
         border = S.arnold_tongue_borders(i);
         if isinf(border)
             continue;
         end
-        std = S.score_std(i);
-        if ~isinf(std)
+        stddev = S.score_std(i);
+        if ~isinf(stddev)
             j = find(input_amplitudes >= border, 1, 'first');
             Q(j:end, n) = 0.5;
         end
-        j = find(input_amplitudes - std >= border, 1, 'first');
+        j = find(input_amplitudes - stddev >= border, 1, 'first');
         Q(j:end, n) = 1.0;
     end
     levels = 2;

@@ -31,7 +31,6 @@ public class EulerMaruyamaStepper implements SdeStepper {
 
 	public EulerMaruyamaStepper(Sde sde, double dt, int seed) {
 		this(sde, dt, new MersenneTwister(seed));
-		System.out.println("Java seed=" + seed);
 	}
 
 	public EulerMaruyamaStepper(Sde sde, double dt, RandomEngine rng) {

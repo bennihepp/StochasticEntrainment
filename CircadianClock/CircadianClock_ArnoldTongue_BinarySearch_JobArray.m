@@ -1,87 +1,16 @@
 % brutus
 % POPULATION_AVERAGE=false
 % POPULATION_AVERAGE=true
-% bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -J "job[1-25]" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_%I.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output/ $POPULATION_AVERAGE
-% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job_comb" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_Combine.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh 0 output/ $POPULATION_AVERAGE
+% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job1a" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_Combine.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh -1 output/ "12:0.25:36" 1e-2 $POPULATION_AVERAGE
+% bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -w "done(job1a)" -J "job1b[1-3]" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_%I.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output/
+% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -w "done(job1b)" -J "job1c" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_Combine.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh 0 output/
 %
 % INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output/ $POPULATION_AVERAGE
 %
 
-function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, population_average)
+function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, output_folder, input_periods, tolerance, population_average)
 
-%     if nargin < 3
-%         population_average = false;
-%     end
-
-    ENTRAINMENT_THRESHOLD = 0.9;
-    MAX_HARMONIC_N = 4;
-    MIN_HARMONICS_POWER_THRESHOLD = 0.0;
-    FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
-%     STD_ESTIMATION_SIZE = 3;
-    natural_period = 23.7473;
-    entrainment_ratios = [1, 2];
-
-    volume = 1e-20;
-
-    if volume == inf
-        Ntrials = 1;
-%         Ntrials_levels = [1];
-%         Ntrials_std = [0];
-        dt = 0.002;
-        recordStep = 100 * dt;
-    else
-        Ntrials = 100;
-%         Ntrials_levels = [50, 100, 200, 500, 1000];
-%         Ntrials_std = zeros(size(Ntrials_levels));
-        dt = 0.002;
-        recordStep = 100 * dt;
-    end
-
-    disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
-
-    t0 = 0;
-    tf = 200*72;
-    to = (tf - t0) / 5;
-
-    input_offset = 1.0;
-
-    min_input_amplitude = 0.0;
-    max_input_amplitude = 1.0;
-    input_amplitude_tolerance = 1e-2;
-    input_periods = 12:0.25:36;
-
-    input_amplitude_tolerance = 1e-1;
-%     input_periods = 12:1:36;
-    input_periods = [24, 30, 36];
-
-    min_frequency = 0.005;
-    max_frequency = 0.5;
-
-
-    S = struct();
-    S.volume = volume;
-    S.population_average = population_average;
-    S.Ntrials = Ntrials;
-%     S.Ntrials_levels = Ntrials_levels;
-%     S.Ntrials_std = Ntrials_std;
-    S.t0 = t0;
-    S.tf = tf;
-    S.to = to;
-    S.dt = dt;
-    S.recordStep = recordStep;
-    S.input_offset = input_offset;
-    S.natural_period = natural_period;
-    S.min_frequency = min_frequency;
-    S.max_frequency = max_frequency;
-    S.ENTRAINMENT_THRESHOLD = ENTRAINMENT_THRESHOLD;
-    S.MAX_HARMONIC_N = MAX_HARMONIC_N;
-    S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
-    S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
-%     S.STD_ESTIMATION_SIZE = STD_ESTIMATION_SIZE;
-    S.entrainment_ratios = entrainment_ratios;
-
-
-%     if n == -1
+%     if n == -2
 %         %% compute variances for Ntrials_levels
 % 
 %         input_period = median(input_periods);
@@ -95,32 +24,109 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
 %             S.Ntrials_std(level) = std(scores);
 %         end
 % 
-%         filename = get_Ntrials_std_filename(filename_prefix);
+%         filename = get_Ntrials_std_filename(output_folder);
 %         save(filename, '-struct', 'S');
 % 
 %         return;
 %     end
 % 
-%     filename = get_Ntrials_std_filename(filename_prefix);
+%     filename = get_Ntrials_std_filename(output_folder);
 %     S = load(filename);
+
+    if n == -1
+        ENTRAINMENT_THRESHOLD = 0.9;
+        MAX_HARMONIC_N = 4;
+        MIN_HARMONICS_POWER_THRESHOLD = 0.0;
+        FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
+    %     STD_ESTIMATION_SIZE = 3;
+        natural_period = 23.7473;
+        entrainment_ratios = [1, 2];
+
+        volume = 1e-20;
+
+        if volume == inf
+            Ntrials = 1;
+    %         Ntrials_levels = [1];
+    %         Ntrials_std = [0];
+            dt = 0.002;
+            recordStep = 100 * dt;
+        else
+            Ntrials = 100;
+    %         Ntrials_levels = [50, 100, 200, 500, 1000];
+    %         Ntrials_std = zeros(size(Ntrials_levels));
+            dt = 0.002;
+            recordStep = 100 * dt;
+        end
+
+        disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+
+        t0 = 0;
+        tf = 200*72;
+        to = (tf - t0) / 5;
+
+        input_offset = 1.0;
+
+        min_input_amplitude = 0.0;
+        max_input_amplitude = 1.0;
+        input_amplitude_tolerance = 1e-2;
+
+        min_frequency = 0.005;
+        max_frequency = 0.5;
+
+
+        S = struct();
+        S.volume = volume;
+        S.population_average = population_average;
+        S.Ntrials = Ntrials;
+    %     S.Ntrials_levels = Ntrials_levels;
+    %     S.Ntrials_std = Ntrials_std;
+        S.t0 = t0;
+        S.tf = tf;
+        S.to = to;
+        S.dt = dt;
+        S.recordStep = recordStep;
+        S.input_offset = input_offset;
+        S.natural_period = natural_period;
+        S.min_frequency = min_frequency;
+        S.max_frequency = max_frequency;
+        S.input_periods = input_periods;
+        S.min_input_amplitude = min_input_amplitude;
+        S.max_input_amplitude = max_input_amplitude;
+        S.input_amplitude_tolerance = input_amplitude_tolerance;
+
+        S.ENTRAINMENT_THRESHOLD = ENTRAINMENT_THRESHOLD;
+        S.MAX_HARMONIC_N = MAX_HARMONIC_N;
+        S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
+        S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
+    %     S.STD_ESTIMATION_SIZE = STD_ESTIMATION_SIZE;
+        S.entrainment_ratios = entrainment_ratios;
+
+
+        %% create MAT-file for all jobs
+        info_filename = get_info_filename(output_folder);
+        save(info_filename, '-struct', 'S');
+
+        return;
+    end
+
+    info_filename = get_info_filename(output_folder);
+    S = load(info_filename);
 
     if n == 0
         %% combine results of all jobs
 
-        arnold_tongue_borders = zeros(length(input_periods), 1);
+        arnold_tongue_borders = zeros(length(S.input_periods), 1);
 %         Ntrials = zeros(length(input_periods), 1);
-        score = zeros(length(input_periods), 1);
-        score_mean = zeros(length(input_periods), 1);
-        score_std = zeros(length(input_periods), 1);
+        score = zeros(length(S.input_periods), 1);
+        score_mean = zeros(length(S.input_periods), 1);
+        score_std = zeros(length(S.input_periods), 1);
 
-        population_average = false;
-
-        for i=1:length(input_periods)
-            display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
-            filename = get_filename(filename_prefix, i);
+        for i=1:length(S.input_periods)
+            display(['i=', int2str(i), ' out of ', int2str(length(S.input_periods))]);
+            filename = get_job_filename(output_folder, i);
             error_occured = false;
             try
-                display(['loading: ', filename]);
+                display(['  loading: ', filename]);
                 tmp_S = load(filename);
             catch e
                 error_occured = true;
@@ -133,29 +139,21 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
                 score(i) = tmp_S.score;
                 score_mean(i) = tmp_S.score_mean;
                 score_std(i) = tmp_S.score_std;
-                population_average = tmp_S.population_average;
             end
         end
 
-        S.natural_period = natural_period;
-        S.input_periods = input_periods;
-        S.min_input_amplitude = min_input_amplitude;
-        S.max_input_amplitude = max_input_amplitude;
-        S.input_amplitude_tolerance = input_amplitude_tolerance;
         S.arnold_tongue_borders = arnold_tongue_borders;
         S.score = score;
         S.score_mean = score_mean;
         S.score_std = score_std;
-%         S.Ntrials = Ntrials;
-        S.population_average = population_average;
 
         date_string = datestr(clock());
-        filename = ['CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=', num2str(volume), '_population=', num2str(population_average), '_', date_string, '.mat'];
+        filename = ['CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=', num2str(S.volume), '_population=', num2str(S.population_average), '_', date_string, '.mat'];
         save(filename, '-struct', 'S');
 
 %         if ~error_occured
 %             for i=1:length(input_periods)
-%                 filename = [filename_prefix, 'job_', int2str(n), '.mat'];
+%                 filename = [output_folder, 'job_', int2str(n), '.mat'];
 %                 display(['deleting file: ', filename]);
 % %                 delete(filename);
 %             end
@@ -166,17 +164,17 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
 
         i = n;
 
-        display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
-        input_period = input_periods(i);
+        display(['i=', int2str(i), ' out of ', int2str(length(S.input_periods))]);
+        input_period = S.input_periods(i);
 
         display(['input_period=', num2str(input_period)]);
 
-        lower_amplitude = min_input_amplitude;
-        upper_amplitude = max_input_amplitude;
+        lower_amplitude = S.min_input_amplitude;
+        upper_amplitude = S.max_input_amplitude;
 
-        upper_amp_score = simulate_and_compute_entrainment_score_(input_period, upper_amplitude, population_average, S);
+        upper_amp_score = simulate_and_compute_entrainment_score_(input_period, upper_amplitude, S.population_average, S);
         upper_amp_within_at = is_within_arnold_tongue__(upper_amp_score, S);
-        lower_amp_score = simulate_and_compute_entrainment_score_(input_period, lower_amplitude, population_average, S);
+        lower_amp_score = simulate_and_compute_entrainment_score_(input_period, lower_amplitude, S.population_average, S);
         lower_amp_within_at = is_within_arnold_tongue__(lower_amp_score, S);
 
         display(['lower_amplitude=', num2str(lower_amplitude), ', score=', num2str(lower_amp_score), ', within_at=', num2str(lower_amp_within_at)]);
@@ -196,9 +194,9 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
             score = upper_amp_score;
         else
 
-            while (upper_amplitude - lower_amplitude) >= input_amplitude_tolerance
+            while (upper_amplitude - lower_amplitude) >= S.input_amplitude_tolerance
                 middle_amplitude = (lower_amplitude + upper_amplitude) / 2.0;
-                score = simulate_and_compute_entrainment_score_(input_period, middle_amplitude, population_average, S);
+                score = simulate_and_compute_entrainment_score_(input_period, middle_amplitude, S.population_average, S);
                 middle_amp_within_at = is_within_arnold_tongue__(score, S);
                 display(['upper_amp=', num2str(upper_amplitude), ', lower_amp=', num2str(lower_amplitude), ', middle_amp=', num2str(middle_amplitude)]);
                 display(['  score=', num2str(score), ', within_at=', num2str(middle_amp_within_at)]);
@@ -220,7 +218,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
             input_amplitude = arnold_tongue_border;
             scores = zeros(3, 1);
             for j=1:3
-                scores(j) = simulate_and_compute_entrainment_score_(input_period, input_amplitude, population_average, S);
+                scores(j) = simulate_and_compute_entrainment_score_(input_period, input_amplitude, S.population_average, S);
                 display([' j=', int2str(j), ', score=', num2str(scores(j))]);
             end
             score_mean = mean(scores);
@@ -236,10 +234,8 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, p
         S.score = score;
         S.score_mean = score_mean;
         S.score_std = score_std;
-%         S.Ntrials = Ntrials;
-        S.population_average = population_average;
 
-        filename = get_filename(filename_prefix, n);
+        filename = get_job_filename(output_folder, n);
         save(filename, '-struct', 'S');
 
     end
@@ -250,8 +246,12 @@ end
 %     filename = [prefix, 'Ntrials_std.mat'];
 % end
 
-function filename = get_filename(prefix, n)
-    filename = [prefix, 'job_', int2str(n), '.mat'];
+function filename = get_info_filename(folder)
+    filename = [folder, 'info.mat'];
+end
+
+function filename = get_job_filename(folder, n)
+    filename = [folder, 'job_', int2str(n), '.mat'];
 end
 
 function within_arnold_tongue = is_within_arnold_tongue__(score, options)
