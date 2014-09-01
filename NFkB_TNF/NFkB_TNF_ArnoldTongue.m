@@ -27,13 +27,11 @@ to = (tf - t0) / 5;
 
 input_offset = 1.0;
 
-input_periods = 0.5:0.1:5.0;
-input_amplitudes = 0.0:0.05:1.0;
-
+input_periods = 1.0:0.05:5.0;
+input_amplitudes = 0.0:0.05:2.0;
 
 min_frequency = 0.0;
 max_frequency = 50.0;
-
 
 S = struct();
 S.volume = volume;
