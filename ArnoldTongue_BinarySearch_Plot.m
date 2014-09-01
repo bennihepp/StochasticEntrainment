@@ -34,6 +34,7 @@ if isfield(S, 'score_std')
         j = find(input_amplitudes - stddev >= border, 1, 'first');
         Q(j:end, n) = 1.0;
     end
+    levels = 2;
 end
 
 figure();

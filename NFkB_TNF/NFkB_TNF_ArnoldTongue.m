@@ -5,7 +5,7 @@ FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 % MAX_HARMONIC_N = 15;
 MAX_HARMONIC_N = double(intmax());
 % entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-entrainment_ratios = 1:15;
+entrainment_ratios = 1:5;
 
 volume = inf;
 omega = volume;

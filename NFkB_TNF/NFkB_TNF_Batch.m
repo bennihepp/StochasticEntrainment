@@ -7,7 +7,7 @@ MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 % MAX_HARMONIC_N = 15;
 MAX_HARMONIC_N = double(intmax());
 % entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-entrainment_ratios = 1:15;
+entrainment_ratios = 1:5;
 
 volume = inf;
 % volume = 1e-20;
@@ -28,19 +28,22 @@ t0 = 0;
 tf = 1000;
 to = (tf - t0) / 5;
 
-input_offset = 0.5;
+input_offset = 1.0;
 
 % input_period = 36.0;
 % input_amplitude = 0.5;
 
-% input_period = 30.0;
-% input_amplitude = 0.15;
-
 input_period = 2.1013;
 input_amplitude = 0.2;
 
-min_frequency = 0.001;
-max_frequency = 20.0;
+input_period = 3.0;
+input_amplitude = 0.0;
+
+% min_frequency = 0.001;
+% max_frequency = 20.0;
+
+min_frequency = 0.01;
+max_frequency = 10.0;
 
 %% simulate
 tic;
