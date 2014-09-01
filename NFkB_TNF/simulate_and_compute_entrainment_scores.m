@@ -7,9 +7,12 @@ function score = simulate_and_compute_entrainment_scores(input_period, input_amp
     [TT, output] = NFkB_TNF_Run(S.Ntrials, S.t0, S.tf, S.dt, S.recordStep, S.volume, ...
         S.input_offset, input_amplitude, input_period);
 
+    %% cutoff transient
     offset_time = S.to;
     offset = find(TT >= offset_time, 1);
     output = output(offset:end, :);
+    %% substract mean
+    output = output - mean(output, 1);
 
     %% Fourier spectrum analysis
     scores = zeros(S.Ntrials, 1);

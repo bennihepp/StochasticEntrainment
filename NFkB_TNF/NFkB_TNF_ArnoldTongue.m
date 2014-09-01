@@ -5,7 +5,7 @@ FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 % MAX_HARMONIC_N = 15;
 MAX_HARMONIC_N = double(intmax());
 % entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-entrainment_ratios = 1:5;
+entrainment_ratios = 1:2;
 
 volume = inf;
 omega = volume;
@@ -31,8 +31,8 @@ input_periods = 0.5:0.1:5.0;
 input_amplitudes = 0.0:0.05:1.0;
 
 
-min_frequency = 0.01;
-max_frequency = 10.0;
+min_frequency = 0.0;
+max_frequency = 50.0;
 
 
 S = struct();

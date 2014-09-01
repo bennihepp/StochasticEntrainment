@@ -7,7 +7,7 @@ MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 % MAX_HARMONIC_N = 15;
 MAX_HARMONIC_N = double(intmax());
 % entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-entrainment_ratios = 1:5;
+entrainment_ratios = 1:2;
 
 volume = inf;
 % volume = 1e-20;
@@ -36,13 +36,14 @@ input_offset = 1.0;
 input_period = 2.1013;
 input_amplitude = 0.2;
 
-input_period = 3.0;
+input_period = 2.8;
 input_amplitude = 0.0;
 
 % min_frequency = 0.001;
 % max_frequency = 20.0;
 
-min_frequency = 0.01;
+% min_frequency = 0.001;
+min_frequency = 0.0;
 max_frequency = 10.0;
 
 %% simulate
@@ -50,24 +51,24 @@ tic;
 [T, output] = NFkB_TNF_Run(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period);
 toc
 
-%% plot trajectories
-figure();
-plot(T, output(:, 1));
-hold on;
-plot([to, to], ylim(), '-r');
-hold off;
-title(['y(1) first trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-xlabel('time t');
-ylabel('state y(1)');
-
-figure();
-plot(T, mean(output, 2));
-hold on;
-plot([to, to], ylim(), '-r');
-hold off;
-title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-xlabel('time t');
-ylabel('state y(1)');
+% %% plot trajectories
+% figure();
+% plot(T, output(:, 1));
+% hold on;
+% plot([to, to], ylim(), '-r');
+% hold off;
+% title(['y(1) first trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+% xlabel('time t');
+% ylabel('state y(1)');
+% 
+% figure();
+% plot(T, mean(output, 2));
+% hold on;
+% plot([to, to], ylim(), '-r');
+% hold off;
+% title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+% xlabel('time t');
+% ylabel('state y(1)');
 
 %% cutoff transients
 % offset_time = (tf - t0) / 5;
@@ -76,6 +77,19 @@ offset_time = to;
 offset = find(T >= offset_time, 1);
 T = T(offset:end);
 output = output(offset:end, :);
+
+%% substract mean
+output = output - mean(output, 1);
+
+%% plot corrected output
+figure();
+plot(T, mean(output, 2));
+hold on;
+plot([to, to], ylim(), '-r');
+hold off;
+title(['y(1) corrected average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+xlabel('time t');
+ylabel('state y(1)');
 
 
 %% compute spectras
@@ -92,11 +106,11 @@ mean_y = mean(y, 1);
 mean_omega = mean(omega, 1);
 
 %% plot spectras
-figure();
-plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
-title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-xlabel('frequency f');
-ylabel('power |y|^2');
+% figure();
+% plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
+% title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+% xlabel('frequency f');
+% ylabel('power |y|^2');
 
 figure();
 plot(mean_omega ./ (2 * pi), abs(mean_y) .^ 2);
@@ -104,11 +118,11 @@ title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(d
 xlabel('frequency f');
 ylabel('power |y|^2');
 
-figure();
-plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2);
-title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-xlabel('frequency f');
-ylabel('power |y|^2');
+% figure();
+% plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2);
+% title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+% xlabel('frequency f');
+% ylabel('power |y|^2');
 
 
 %% plot phase distribution of natural mode and input mode
@@ -121,22 +135,22 @@ ylabel('power |y|^2');
 % S.Ntrials = Ntrials;
 % saveas(['phase_distribution_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.mat'], '-struct', 'S');
 
-NUM_OF_BINS = 50;
-[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
-figure();
-hist(angle(y(:, ind)), NUM_OF_BINS);
-title(['phase distribution of natural mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
-xlabel('phase');
-ylabel('occurence');
-% saveas(['phase_distribution_natural_mode_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.fig']);
-
-[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
-figure();
-hist(angle(y(:, ind)), NUM_OF_BINS);
-title(['phase distribution of input mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
-xlabel('phase');
-ylabel('occurence');
-% saveas(['phase_distribution_input_mode_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.fig']);
+% NUM_OF_BINS = 50;
+% [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
+% figure();
+% hist(angle(y(:, ind)), NUM_OF_BINS);
+% title(['phase distribution of natural mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
+% xlabel('phase');
+% ylabel('occurence');
+% % saveas(['phase_distribution_natural_mode_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.fig']);
+% 
+% [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
+% figure();
+% hist(angle(y(:, ind)), NUM_OF_BINS);
+% title(['phase distribution of input mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
+% xlabel('phase');
+% ylabel('occurence');
+% % saveas(['phase_distribution_input_mode_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.fig']);
 
 
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' offset=', num2str(TNF_offset), ' amplitude=', num2str(TNF_amplitude), ' period=', num2str(TNF_period), '.mat'];
