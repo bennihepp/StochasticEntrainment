@@ -131,7 +131,7 @@ function CircadianClock_ArnoldTongue_JobArray(n, filename_prefix, population_ave
         S.scores = scores;
 
         date_string = datestr(clock());
-        filename = ['CircadianClock_ArnoldTongue_JobArray_volume=', num2str(volume), '_', date_string, '.mat'];
+        filename = [output_folder, 'CircadianClock_ArnoldTongue_JobArray_volume=', num2str(volume), '_', date_string, '.mat'];
         save(filename, '-struct', 'S');
 
 %         if ~error_occured

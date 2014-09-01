@@ -28,7 +28,7 @@ t0 = 0;
 tf = 1000;
 to = (tf - t0) / 5;
 
-input_offset = 1.0;
+input_offset = 0.5;
 
 % input_period = 36.0;
 % input_amplitude = 0.5;
@@ -36,12 +36,11 @@ input_offset = 1.0;
 % input_period = 30.0;
 % input_amplitude = 0.15;
 
-input_period = 2.1;
-input_period = natural_period;
-input_amplitude = 0.5;
+input_period = 2.1013;
+input_amplitude = 0.2;
 
-min_frequency = 0.01;
-max_frequency = 10.0;
+min_frequency = 0.001;
+max_frequency = 20.0;
 
 %% simulate
 tic;

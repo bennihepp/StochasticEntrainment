@@ -19,6 +19,7 @@ for n=1:length(input_period_indices)
 end
 
 if isfield(S, 'score_std')
+    levels = 2;
     for n=1:length(input_period_indices)
         i = input_period_indices(n);
         border = S.arnold_tongue_borders(i);
@@ -37,7 +38,7 @@ if isfield(S, 'score_std')
 end
 
 figure();
-contourf(input_periods, input_amplitudes, Q, 1);
+contourf(input_periods, input_amplitudes, Q, levels);
 % title(['population arnold tongue for volume=', num2str(S.volume)]);
 if isfield(S, 'population_average') && S.population_average
     title(['population arnold tongue for volume=', num2str(S.volume)]);
