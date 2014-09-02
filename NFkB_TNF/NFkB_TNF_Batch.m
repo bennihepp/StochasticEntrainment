@@ -10,7 +10,7 @@ MAX_HARMONIC_N = double(intmax());
 entrainment_ratios = 1:2;
 
 volume = inf;
-volume = 1e-13;
+volume = 5e-13;
 
 if volume == inf
     Ntrials = 1;
@@ -34,7 +34,7 @@ disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str
 % volume=1e-12:  0.76091
 % volume=5e-13:  -
 % volume=2e-13:  0.86608
-% volume=1e-13:  -
+% volume=1e-13:  0.80698
 
 %% parameters
 t0 = 0;
