@@ -31,7 +31,7 @@ function [T, P, omega] = SolveS_Java_Parallel(x0, tf, dt, volume, ...
     end
 
     inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
-    sde = ch.ethz.bhepp.sdesolver.models.CircadianClockDrosophilaSde(volume, inputFunction);
+    sde = ch.ethz.bhepp.sdesolver.models.NFkBSpikySde(volume, inputFunction);
 
 %     initial time t0
     t0 = 0;
@@ -57,6 +57,7 @@ function [T, P, omega] = SolveS_Java_Parallel(x0, tf, dt, volume, ...
     end
 
     parfor n=1:Ntrials
+%     for n=1:Ntrials
         javaaddpath([getenv('HOME'), '/local/lib/java/colt.jar']);
         javaaddpath(JavaLangevinModel_path);
         try
@@ -66,7 +67,7 @@ function [T, P, omega] = SolveS_Java_Parallel(x0, tf, dt, volume, ...
         end
 
         inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
-        sde = ch.ethz.bhepp.sdesolver.models.CircadianClockDrosophilaSde(volume, inputFunction);
+        sde = ch.ethz.bhepp.sdesolver.models.NFkBSpikySde(volume, inputFunction);
 %         omega = sde.getOmega();
         stepper = ch.ethz.bhepp.sdesolver.EulerMaruyamaStepper(sde, dt, par_seeds(n));
         positiveStateHook = ch.ethz.bhepp.sdesolver.EnsurePositiveStateHook();

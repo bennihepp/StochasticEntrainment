@@ -11,4 +11,4 @@ population_average=$6
 
 echo "index=$index, output=$output, input_periods=$input_periods, tolerance=$tolerance, Ntrials=$Ntrials, population_average=$population_average"
 
-matlab -nodisplay -singleCompThread -r "CircadianClock_ArnoldTongue_BinarySearch_JobArrayWrapper($index, '$output', $input_periods, $tolerance, $Ntrials, $population_average); exit;"
+matlab -nodisplay -singleCompThread -r "NFkB_TNF_ArnoldTongue_BinarySearch_JobArrayWrapper($index, '$output', $input_periods, $tolerance, $Ntrials, $population_average); exit;"

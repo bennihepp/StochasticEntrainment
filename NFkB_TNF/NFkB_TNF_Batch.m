@@ -10,20 +10,33 @@ MAX_HARMONIC_N = double(intmax());
 entrainment_ratios = 1:2;
 
 volume = inf;
-% volume = 1e-20;
+volume = 1e-13;
 
 if volume == inf
     Ntrials = 1;
     dt = 0.0001;
     recordStep = 1000 * dt;
 else
-    Ntrials = 1;
+    Ntrials = 200;
     dt = 0.0001;
     recordStep = 100 * dt;
 end
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
+%% complex average entrainment score with Ntrials=100, input_period=2.6, input_amplitude=0.055
+% volume=1e-10:  -
+% volume=5e-11:  -
+% volume=2e-11:  -
+% volume=1e-11:  0.67525
+% volume=5e-12:  0.71624
+% volume=2e-12:  0.74775
+% volume=1e-12:  0.76091
+% volume=5e-13:  -
+% volume=2e-13:  0.86608
+% volume=1e-13:  -
+
+%% parameters
 t0 = 0;
 tf = 1000;
 to = (tf - t0) / 5;
@@ -36,8 +49,8 @@ input_offset = 1.0;
 input_period = 2.1013;
 input_amplitude = 0.2;
 
-input_period = 2.8;
-input_amplitude = 0.0;
+input_period = 2.6;
+input_amplitude = 0.055;
 
 % min_frequency = 0.001;
 % max_frequency = 20.0;
@@ -79,7 +92,7 @@ T = T(offset:end);
 output = output(offset:end, :);
 
 %% substract mean
-output = output - mean(output, 1);
+output = output - repmat(mean(output, 1), [size(output, 1), 1]);
 
 %% plot corrected output
 figure();
@@ -118,11 +131,11 @@ title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(d
 xlabel('frequency f');
 ylabel('power |y|^2');
 
-% figure();
-% plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2);
-% title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-% xlabel('frequency f');
-% ylabel('power |y|^2');
+figure();
+plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2);
+title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+xlabel('frequency f');
+ylabel('power |y|^2');
 
 
 %% plot phase distribution of natural mode and input mode

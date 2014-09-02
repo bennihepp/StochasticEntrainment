@@ -32,9 +32,9 @@ input_offset = 1.0;
 % input_periods = 0.5:0.05:5.0;
 
 min_input_amplitude = 0.0;
-max_input_amplitude = 0.2;
-input_amplitude_tolerance = 1e-2;
-input_periods = 1.0:0.05:5.0;
+max_input_amplitude = 0.1;
+input_amplitude_tolerance = 1e-3;
+input_periods = 1.9:0.01:2.8;
 
 min_frequency = 0.0;
 max_frequency = 50.0;

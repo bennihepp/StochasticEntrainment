@@ -6,17 +6,18 @@
 % INPUT_PERIODS=[24,30,36]
 % NTRIALS=100
 % AMPLITUDE_TOLERANCE=1e-1
-% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job1a" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_Combine.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh -1 output/ "$INPUT_PERIODS" $AMPLITUDE_TOLERANCE $NTRIALS $POPULATION_AVERAGE
-% bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -w "done(job1a)" -J "job1b[1-3]" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_%I.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output/
-% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -w "done(job1b)" -J "job1c" -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_Combine.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh 0 output/
+% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job1a" -o logs/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_Combine.out bash NFkB_TNF_ArnoldTongue_BinarySearch_JobArray.sh -1 output/ "$INPUT_PERIODS" $AMPLITUDE_TOLERANCE $NTRIALS $POPULATION_AVERAGE
+% bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -w "done(job1a)" -J "job1b[1-3]" -o logs/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_%I.out bash NFkB_TNF_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output/
+% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -w "done(job1b)" -J "job1c" -o logs/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_Combine.out bash NFkB_TNF_ArnoldTongue_BinarySearch_JobArray.sh 0 output/
 %
-% INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs/CircadianClock_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash CircadianClock_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output/ $POPULATION_AVERAGE
+% INDEX=71; bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -o logs/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_$INDEX.out bash NFkB_TNF_ArnoldTongue_BinarySearch_JobArray.sh $INDEX output/ $POPULATION_AVERAGE
 %
 
-function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
+function NFkB_TNF_ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
     input_periods, input_amplitude_tolerance, Ntrials, population_average)
 
 %     if n == -2
+%
 %         %% compute variances for Ntrials_levels
 % 
 %         input_period = median(input_periods);
@@ -40,41 +41,42 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
 %     S = load(filename);
 
     if n == -1
+
         ENTRAINMENT_THRESHOLD = 0.9;
-        MAX_HARMONIC_N = 4;
+        MAX_HARMONIC_N = double(intmax());
         MIN_HARMONICS_POWER_THRESHOLD = 0.0;
         FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
     %     STD_ESTIMATION_SIZE = 3;
-        natural_period = 23.7473;
-        entrainment_ratios = [1, 2];
+        natural_period = 2.1013;
+        entrainment_ratios = 1:2;
 
         volume = 1e-20;
 
         if volume == inf
     %         Ntrials_levels = [1];
     %         Ntrials_std = [0];
-            dt = 0.002;
+            dt = 0.0001;
             recordStep = 100 * dt;
         else
     %         Ntrials_levels = [50, 100, 200, 500, 1000];
     %         Ntrials_std = zeros(size(Ntrials_levels));
-            dt = 0.002;
+            dt = 0.0001;
             recordStep = 100 * dt;
         end
 
         disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
         t0 = 0;
-        tf = 200*72;
+        tf = 1000;
         to = (tf - t0) / 5;
 
         input_offset = 1.0;
 
         min_input_amplitude = 0.0;
-        max_input_amplitude = 1.0;
+        max_input_amplitude = 0.1;
 
-        min_frequency = 0.005;
-        max_frequency = 0.5;
+        min_frequency = 0.0;
+        max_frequency = 50.0;
 
 
         S = struct();
@@ -110,6 +112,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
         save(info_filename, '-struct', 'S');
 
         return;
+
     end
 
     info_filename = get_info_filename(output_folder);
@@ -151,7 +154,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
         S.score_std = score_std;
 
         date_string = datestr(clock());
-        filename = [output_folder, 'CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=', num2str(S.volume), '_population=', num2str(S.population_average), '_', date_string, '.mat'];
+        filename = [output_folder, 'NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=', num2str(S.volume), '_population=', num2str(S.population_average), '_', date_string, '.mat'];
         save(filename, '-struct', 'S');
 
 %         if ~error_occured
