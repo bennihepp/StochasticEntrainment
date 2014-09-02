@@ -9,7 +9,7 @@ MAX_HARMONIC_N = double(intmax());
 % entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 entrainment_ratios = 1:2;
 
-volume = inf;
+% volume = inf;
 volume = 5e-13;
 
 if volume == inf
@@ -17,7 +17,7 @@ if volume == inf
     dt = 0.0001;
     recordStep = 1000 * dt;
 else
-    Ntrials = 200;
+    Ntrials = 500;
     dt = 0.0001;
     recordStep = 100 * dt;
 end
@@ -26,15 +26,16 @@ disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str
 
 %% complex average entrainment score with Ntrials=100, input_period=2.6, input_amplitude=0.055
 % volume=1e-10:  -
-% volume=5e-11:  -
-% volume=2e-11:  -
-% volume=1e-11:  0.67525
+% volume=5e-11:  0.80324
+% volume=2e-11:  0.82477
+% volume=1e-11:  0.80033
 % volume=5e-12:  0.71624
 % volume=2e-12:  0.74775
 % volume=1e-12:  0.76091
-% volume=5e-13:  -
+% volume=5e-13:  0.87799
 % volume=2e-13:  0.86608
 % volume=1e-13:  0.80698
+% volume=5e-14:  0.63785
 
 %% parameters
 t0 = 0;
@@ -50,14 +51,14 @@ input_period = 2.1013;
 input_amplitude = 0.2;
 
 input_period = 2.6;
-input_amplitude = 0.055;
+input_amplitude = 0.04;
 
 % min_frequency = 0.001;
 % max_frequency = 20.0;
 
 % min_frequency = 0.001;
 min_frequency = 0.0;
-max_frequency = 10.0;
+max_frequency = 50.0;
 
 %% simulate
 tic;

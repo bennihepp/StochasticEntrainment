@@ -6,7 +6,8 @@
 % INPUT_PERIODS=[24,30,36]
 % NTRIALS=100
 % AMPLITUDE_TOLERANCE=1e-1
-% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job1a" -o logs/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_Combine.out bash NFkB_TNF_ArnoldTongue_BinarySearch_JobArray.sh -1 output/ "$INPUT_PERIODS" $AMPLITUDE_TOLERANCE $NTRIALS $POPULATION_AVERAGE
+% VOLUME=5e-13
+% bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -J "job1a" -o logs/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_Combine.out bash NFkB_TNF_ArnoldTongue_BinarySearch_JobArray.sh -1 output/ $VOLUME "$INPUT_PERIODS" $AMPLITUDE_TOLERANCE $NTRIALS $POPULATION_AVERAGE
 % bsub -n 1 -R "rusage[mem=2048]" -W 16:00 -w "done(job1a)" -J "job1b[1-3]" -o logs/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_%I.out bash NFkB_TNF_ArnoldTongue_BinarySearch_JobArray.sh "\$LSB_JOBINDEX" output/
 % bsub -n 1 -R "rusage[mem=1536]" -W 8:00 -w "done(job1b)" -J "job1c" -o logs/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_Combine.out bash NFkB_TNF_ArnoldTongue_BinarySearch_JobArray.sh 0 output/
 %
@@ -14,7 +15,7 @@
 %
 
 function NFkB_TNF_ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
-    input_periods, input_amplitude_tolerance, Ntrials, population_average)
+    volume, input_periods, input_amplitude_tolerance, Ntrials, population_average)
 
 %     if n == -2
 %
@@ -50,19 +51,15 @@ function NFkB_TNF_ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
         natural_period = 2.1013;
         entrainment_ratios = 1:2;
 
-        volume = 1e-20;
-
-        if volume == inf
-    %         Ntrials_levels = [1];
-    %         Ntrials_std = [0];
-            dt = 0.0001;
-            recordStep = 100 * dt;
-        else
-    %         Ntrials_levels = [50, 100, 200, 500, 1000];
-    %         Ntrials_std = zeros(size(Ntrials_levels));
-            dt = 0.0001;
-            recordStep = 100 * dt;
-        end
+%         if volume == inf
+%             Ntrials_levels = [1];
+%             Ntrials_std = [0];
+%         else
+%             Ntrials_levels = [50, 100, 200, 500, 1000];
+%             Ntrials_std = zeros(size(Ntrials_levels));
+%         end
+        dt = 0.0001;
+        recordStep = 100 * dt;
 
         disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
