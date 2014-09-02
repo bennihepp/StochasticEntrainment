@@ -3,7 +3,7 @@ MAX_HARMONIC_N = 4;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 natural_period = 23.7473;
-entrainment_ratios = [1, 2];
+entrainment_ratios = 1:3;
 
 volume = inf;
 omega = volume;
@@ -29,8 +29,8 @@ max_input_amplitude = 1.0;
 input_amplitude_tolerance = 1e-2;
 input_periods = 12:0.25:36;
 
-min_frequency = 0.005;
-max_frequency = 0.5;
+min_frequency = 0.0;
+max_frequency = 5.0;
 
 
 S = struct();
@@ -112,5 +112,5 @@ S.scores = scores;
 
 
 date_string = datestr(clock());
-filename = ['CircadianClock_ArnoldTongue_BinarySearch_', date_string, '.mat'];
+filename = ['output/CircadianClock_ArnoldTongue_BinarySearch_', date_string, '.mat'];
 save(filename, '-struct', 'S');

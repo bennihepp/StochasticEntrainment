@@ -11,8 +11,9 @@ function score = simulate_average_and_compute_entrainment_scores(input_period, i
     offset_time = S.to;
     offset = find(TT >= offset_time, 1);
     output = output(offset:end, :);
+
     %% substract mean
-    output = output - mean(output, 1);
+    output = output - repmat(mean(output, 1), [size(output, 1), 1]);
 
     %% Fourier spectrum analysis
     for m=1:S.Ntrials

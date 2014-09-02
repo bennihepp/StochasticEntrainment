@@ -1,5 +1,11 @@
 HEATMAP_TYPE = 'surface';
 
+addpath('../');
+
+S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_01-Sep-2014 10:19:54');
+S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_30-Aug-2014 12:26:58');
+S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population_average=true_30-Aug-2014 12:26:10');
+
 assert(all(S1.input_periods == S2.input_periods));
 
 input_periods = S1.input_periods;
@@ -20,7 +26,12 @@ for n=1:length(input_period_indices)
     Q1(j:end, n) = 1;
     % S2
     border = S2.arnold_tongue_borders(i);
-    j = find(input_amplitudes >= border, 1, 'first');
+    if ~isinf(S2.score_std(i))
+        j = find(input_amplitudes >= border, 1, 'first') + 1;
+    else
+        j = find(input_amplitudes >= border, 1, 'first');
+    end
+%     j = find(input_amplitudes >= border, 1, 'first');
     Q2(j:end, n) = 1;
 end
 

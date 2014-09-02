@@ -4,7 +4,8 @@ PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
-MAX_HARMONIC_N = 4;
+MAX_HARMONIC_N = 10;
+entrainment_ratios = 1:2;
 
 % volume = inf;
 volume = 1e-20;
@@ -14,7 +15,7 @@ if volume == inf
     dt = 0.002;
     recordStep = 100 * dt;
 else
-    Ntrials = 1;
+    Ntrials = 50;
     dt = 0.002;
     recordStep = 100 * dt;
 end
@@ -22,7 +23,7 @@ end
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
 t0 = 0;
-tf = 200*72;
+tf = 800*72;
 to = (tf - t0) / 5;
 
 input_offset = 1.0;
@@ -34,7 +35,7 @@ input_period = 30.0;
 input_amplitude = 0.15;
 
 input_period = 30.0;
-input_amplitude = 1.0;
+input_amplitude = 0.18;
 
 
 %% simulate
@@ -63,15 +64,21 @@ offset = find(T >= offset_time, 1);
 T = T(offset:end);
 output = output(offset:end, :);
 
+%% substract mean
+output = output - repmat(mean(output, 1), [size(output, 1), 1]);
+
 
 %% compute spectras
 addpath('../');
 
+min_frequency = 0.005;
+max_frequency = 0.5;
+min_frequency = 0.0;
+max_frequency = 5.0;
+
 omega = [];
 y = [];
 for i=Ntrials:-1:1
-    min_frequency = 0.005;
-    max_frequency = 0.5;
     [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', recordStep, 2*pi*min_frequency, 2*pi*max_frequency);
     omega = [omega; omega1];
     y = [y; y1];
@@ -233,7 +240,7 @@ S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
 S.MAX_HARMONIC_N = MAX_HARMONIC_N;
 S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
 S.MIN_HARMONICS_POWER_THRESHOLD = 0;
-S.entrainment_ratios = [1,2];
+S.entrainment_ratios = entrainment_ratios;
 
 Omega = mean_omega;
 W = zeros(Ntrials, 1);

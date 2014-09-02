@@ -23,7 +23,7 @@ else
 end
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
-
+ 
 %% complex average entrainment score with Ntrials=100, input_period=2.6, input_amplitude=0.055
 % volume=1e-10:  -
 % volume=5e-11:  0.80324
@@ -51,7 +51,7 @@ input_period = 2.1013;
 input_amplitude = 0.2;
 
 input_period = 2.6;
-input_amplitude = 0.04;
+input_amplitude = 0.03;
 
 % min_frequency = 0.001;
 % max_frequency = 20.0;
