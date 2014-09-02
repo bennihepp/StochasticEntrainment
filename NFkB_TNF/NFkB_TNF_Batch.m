@@ -17,7 +17,7 @@ if volume == inf
     dt = 0.0001;
     recordStep = 1000 * dt;
 else
-    Ntrials = 500;
+    Ntrials = 1000;
     dt = 0.0001;
     recordStep = 100 * dt;
 end
