@@ -51,7 +51,6 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
         volume = 5e3;
         dt = 1e-1;
-        recordStep = dt;
 
 %         if volume == inf
 %             Ntrials_levels = [1];
@@ -81,8 +80,6 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         S.tf = tf;
         S.to = to;
         S.dt = dt;
-        S.recordStep = recordStep;
-        S.input_offset = input_offset;
         S.natural_period = natural_period;
         S.min_frequency = min_frequency;
         S.max_frequency = max_frequency;
