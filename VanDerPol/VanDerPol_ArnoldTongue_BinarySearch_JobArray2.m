@@ -69,6 +69,9 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         min_input_amplitude = 0.0;
         max_input_amplitude = 1.0;
 
+        min_frequency = 0.01;
+        max_frequency = 1.0;
+
 
         S = struct();
         S.volume = volume;
