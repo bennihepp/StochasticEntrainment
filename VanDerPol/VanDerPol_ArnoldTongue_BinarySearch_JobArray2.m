@@ -116,6 +116,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         arnold_tongue_borders = zeros(length(S.input_periods), 1);
 %         Ntrials = zeros(length(input_periods), 1);
         score = zeros(length(S.input_periods), 1);
+        scores = zeros(length(S.input_periods), 3);
         score_mean = zeros(length(S.input_periods), 1);
         score_std = zeros(length(S.input_periods), 1);
 
@@ -135,6 +136,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
                 arnold_tongue_borders(i) = tmp_S.arnold_tongue_border;
 %                 Ntrials(i) = tmp_S.Ntrials;
                 score(i) = tmp_S.score;
+                scores(i, :) = tmp_S.scores;
                 score_mean(i) = tmp_S.score_mean;
                 score_std(i) = tmp_S.score_std;
             end
@@ -142,6 +144,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
         S.arnold_tongue_borders = arnold_tongue_borders;
         S.score = score;
+        S.scores = scores;
         S.score_mean = score_mean;
         S.score_std = score_std;
 
@@ -218,11 +221,14 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
             display(['arnold_tongue_border=', num2str(arnold_tongue_border)]);
             input_amplitude = arnold_tongue_border;
-            scores = zeros(3, S.Ntrials);
-            for j=1:3
-                scores(j,:) = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, S.population_average, S);
-                mean_score = mean(scores(j,:));
-                display([' j=', int2str(j), ', score=', num2str(mean_score)]);
+            scores = zeros(3, 1);
+            if S.population_average || S.Ntrials == 1
+                scores = zeros(3, S.Ntrials);
+                for j=1:3
+                    scores(j,:) = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, S.population_average, S);
+                    mean_score = mean(scores(j,:));
+                    display([' j=', int2str(j), ', score=', num2str(mean_score)]);
+                end
             end
             score_mean = mean(scores, 1);
             score_std = std(scores, 1);
