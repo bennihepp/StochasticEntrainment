@@ -25,7 +25,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 %             S.Ntrials = Ntrials_levels(level);
 %             scores = zeros(STD_ESTIMATION_SIZE, 1);
 %             for i=1:length(scores)
-%                 scores(i) = simulate_and_compute_entrainment_score_(input_period, input_amplitude, population_average, S);
+%                 scores(i) = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, population_average, S);
 %             end
 %             S.Ntrials_std(level) = std(scores);
 %         end
@@ -177,9 +177,9 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         lower_amplitude = S.min_input_amplitude;
         upper_amplitude = S.max_input_amplitude;
 
-        upper_amp_scores = simulate_and_compute_entrainment_score_(input_period, upper_amplitude, S.population_average, S);
+        upper_amp_scores = simulate_and_compute_all_entrainment_scores_(input_period, upper_amplitude, S.population_average, S);
         upper_amp_within_at = is_within_arnold_tongue__(upper_amp_scores, S);
-        lower_amp_scores = simulate_and_compute_entrainment_score_(input_period, lower_amplitude, S.population_average, S);
+        lower_amp_scores = simulate_and_compute_all_entrainment_scores_(input_period, lower_amplitude, S.population_average, S);
         lower_amp_within_at = is_within_arnold_tongue__(lower_amp_scores, S);
 
         mean_upper_amp_score = mean(upper_amp_scores);
@@ -227,7 +227,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
             input_amplitude = arnold_tongue_border;
             scores = zeros(3, S.Ntrials);
             for j=1:3
-                scores(j,:) = simulate_and_compute_entrainment_score_(input_period, input_amplitude, S.population_average, S);
+                scores(j,:) = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, S.population_average, S);
                 mean_score = mean(scores(j,:));
                 display([' j=', int2str(j), ', score=', num2str(mean_score)]);
             end
