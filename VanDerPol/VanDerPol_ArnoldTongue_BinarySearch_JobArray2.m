@@ -261,7 +261,7 @@ function filename = get_job_filename(folder, n)
 end
 
 function within_arnold_tongue = is_within_arnold_tongue__(scores, options)
-    if any(isnan(score))
+    if any(isnan(scores))
         within_arnold_tongue = true;
     else
         if length(scores) > 1
