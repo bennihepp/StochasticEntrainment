@@ -188,11 +188,11 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         if lower_amp_within_at
             display('lower_amp_within_at');
             arnold_tongue_border = lower_amplitude;
-            score = lower_amp_score;
+            mean_score = mean(lower_amp_scores);
         elseif ~upper_amp_within_at
             display('~upper_amp_within_at');
             arnold_tongue_border = inf;
-            score = upper_amp_score;
+            mean_score = mean(upper_amp_scores);
         else
 
             while (upper_amplitude - lower_amplitude) >= S.input_amplitude_tolerance
@@ -236,7 +236,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
         S = struct();
         S.arnold_tongue_border = arnold_tongue_border;
-        S.score = score;
+        S.score = mean_score;
         S.scores = scores;
         S.score_mean = score_mean;
         S.score_std = score_std;
