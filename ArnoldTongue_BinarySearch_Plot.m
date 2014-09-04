@@ -1,3 +1,5 @@
+S = load('NFkB_TNF/output/NFkB_TNF_ArnoldTongue_BinarySearch_01-Sep-2014 14:24:46');
+
 input_periods = S.input_periods;
 input_period_indices = 1:length(input_periods);
 % i1 = find(S.input_periods >= 4.0, 1, 'first');

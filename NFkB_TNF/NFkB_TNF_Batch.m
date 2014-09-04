@@ -9,8 +9,8 @@ MAX_HARMONIC_N = double(intmax());
 % entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 entrainment_ratios = 1:2;
 
-volume = inf;
-% volume = 5e-13;
+% volume = inf;
+volume = 5e-13;
 
 if volume == inf
     Ntrials = 1;

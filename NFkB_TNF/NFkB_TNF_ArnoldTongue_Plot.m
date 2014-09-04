@@ -1,3 +1,5 @@
+S = load('output/NFkB_TNF_ArnoldTongue_01-Sep-2014 13:31:07');
+
 ENTRAINMENT_THRESHOLD = 0.9;
 
 Q = S.scores' > ENTRAINMENT_THRESHOLD;
