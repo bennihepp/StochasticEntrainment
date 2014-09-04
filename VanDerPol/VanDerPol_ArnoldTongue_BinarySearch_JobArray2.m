@@ -42,40 +42,32 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
     if n == -1
         ENTRAINMENT_THRESHOLD = 0.9;
         MAX_HARMONIC_N = 4;
-        MIN_HARMONICS_POWER_THRESHOLD = 0.0;
+        MIN_HARMONICS_POWER_THRESHOLD = 1.0;
         FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
         MINIMUM_ENTRAINMENT_RATIO = 0.5;
     %     STD_ESTIMATION_SIZE = 3;
-        natural_period = 23.7473;
-        entrainment_ratios = [1, 2];
+        natural_period = 1/0.1065;
+        entrainment_ratios = 1;
 
-        volume = 1e-20;
+        volume = 5e3;
+        dt = 1e-1;
 
-        if volume == inf
-    %         Ntrials_levels = [1];
-    %         Ntrials_std = [0];
-            dt = 0.002;
-            recordStep = 100 * dt;
-        else
-    %         Ntrials_levels = [50, 100, 200, 500, 1000];
-    %         Ntrials_std = zeros(size(Ntrials_levels));
-            dt = 0.002;
-            recordStep = 100 * dt;
-        end
+%         if volume == inf
+%             Ntrials_levels = [1];
+%             Ntrials_std = [0];
+%         else
+%             Ntrials_levels = [50, 100, 200, 500, 1000];
+%             Ntrials_std = zeros(size(Ntrials_levels));
+%         end
 
         disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
         t0 = 0;
-        tf = 200*72;
+        tf = 10000;
         to = (tf - t0) / 5;
-
-        input_offset = 1.0;
 
         min_input_amplitude = 0.0;
         max_input_amplitude = 1.0;
-
-        min_frequency = 0.005;
-        max_frequency = 0.5;
 
 
         S = struct();
