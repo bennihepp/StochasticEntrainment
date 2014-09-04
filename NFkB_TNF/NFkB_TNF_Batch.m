@@ -9,8 +9,8 @@ MAX_HARMONIC_N = double(intmax());
 % entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 entrainment_ratios = 1:2;
 
-% volume = inf;
-volume = 5e-13;
+volume = inf;
+% volume = 5e-13;
 
 if volume == inf
     Ntrials = 1;
@@ -23,7 +23,7 @@ else
 end
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
- 
+
 %% complex average entrainment score with Ntrials=100, input_period=2.6, input_amplitude=0.055
 % volume=1e-10:  -
 % volume=5e-11:  0.80324
@@ -51,7 +51,7 @@ input_period = 2.1013;
 input_amplitude = 0.2;
 
 input_period = 2.6;
-input_amplitude = 0.03;
+input_amplitude = 0.5;
 
 % min_frequency = 0.001;
 % max_frequency = 20.0;
