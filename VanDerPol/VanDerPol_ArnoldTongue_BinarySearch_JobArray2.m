@@ -51,6 +51,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
         volume = 5e3;
         dt = 1e-1;
+        recordStep = dt;
 
 %         if volume == inf
 %             Ntrials_levels = [1];
