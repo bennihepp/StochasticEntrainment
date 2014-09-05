@@ -27,6 +27,7 @@ function [T, P, omega] = SolveS_Java_Parallel(x0, tf, dt, volume, ...
     try
         ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);
     catch e
+        display('Java error #1');
         display(e);
     end
 
@@ -57,11 +58,13 @@ function [T, P, omega] = SolveS_Java_Parallel(x0, tf, dt, volume, ...
     end
 
     parfor n=1:Ntrials
+        display(['  iteration ', int2str(n), ' out of ', int2str(Ntrials)]);
         javaaddpath([getenv('HOME'), '/local/lib/java/colt.jar']);
         javaaddpath(JavaLangevinModel_path);
         try
             ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);
         catch e
+            display('Java error #2');
             display(e);
         end
 

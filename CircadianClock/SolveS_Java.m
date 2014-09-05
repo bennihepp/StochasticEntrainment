@@ -33,6 +33,7 @@ function [T, P, omega] = SolveS_Java(x0, tf, dt, volume, ...
     try
         ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);
     catch e
+        display('Java error');
         display(e);
     end
 
@@ -68,6 +69,7 @@ function [T, P, omega] = SolveS_Java(x0, tf, dt, volume, ...
     P = zeros(Ntrials, numOfTimeSteps, sde.getDriftDimension);
 
     for n=1:Ntrials
+        display(['  iteration ', int2str(n), ' out of ', int2str(Ntrials)]);
         if n > 1
             for i=1:size(x0, 1)
                 x0Matrix.set(i-1, x0(i, n));
