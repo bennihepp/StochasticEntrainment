@@ -187,6 +187,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         score = inf;
         score_mean = inf;
         score_std = inf;
+        scores = inf * zeros(3, 1);
 
         if lower_amp_within_at
             display('lower_amp_within_at');
@@ -221,7 +222,6 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
             display(['arnold_tongue_border=', num2str(arnold_tongue_border)]);
             input_amplitude = arnold_tongue_border;
-            scores = zeros(3, 1);
             if S.population_average || S.Ntrials == 1
                 scores = zeros(3, S.Ntrials);
                 for j=1:3
