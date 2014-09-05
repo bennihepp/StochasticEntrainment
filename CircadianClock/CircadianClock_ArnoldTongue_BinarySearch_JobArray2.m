@@ -202,9 +202,9 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ..
 
             while (upper_amplitude - lower_amplitude) >= S.input_amplitude_tolerance
                 middle_amplitude = (lower_amplitude + upper_amplitude) / 2.0;
+                display(['upper_amp=', num2str(upper_amplitude), ', lower_amp=', num2str(lower_amplitude), ', middle_amp=', num2str(middle_amplitude)]);
                 score = simulate_and_compute_all_entrainment_score_(input_period, middle_amplitude, S.population_average, S);
                 middle_amp_within_at = is_within_arnold_tongue__(score, S);
-                display(['upper_amp=', num2str(upper_amplitude), ', lower_amp=', num2str(lower_amplitude), ', middle_amp=', num2str(middle_amplitude)]);
                 display(['  score=', num2str(score), ', within_at=', num2str(middle_amp_within_at)]);
                 if middle_amp_within_at
                     upper_amplitude = middle_amplitude;

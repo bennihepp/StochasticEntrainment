@@ -44,7 +44,6 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         MAX_HARMONIC_N = 4;
         MIN_HARMONICS_POWER_THRESHOLD = 1.0;
         FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
-        MINIMUM_ENTRAINMENT_RATIO = 0.5;
     %     STD_ESTIMATION_SIZE = 3;
         natural_period = 1/0.1065;
         entrainment_ratios = 1;
@@ -95,7 +94,6 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         S.MAX_HARMONIC_N = MAX_HARMONIC_N;
         S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
         S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
-        S.MINIMUM_ENTRAINMENT_RATIO = MINIMUM_ENTRAINMENT_RATIO;
     %     S.STD_ESTIMATION_SIZE = STD_ESTIMATION_SIZE;
         S.entrainment_ratios = entrainment_ratios;
 
@@ -175,11 +173,13 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
         upper_amp_score = simulate_and_compute_all_entrainment_score_(input_period, upper_amplitude, S.population_average, S);
         upper_amp_within_at = is_within_arnold_tongue__(upper_amp_score, S);
+
+        display(['upper_amplitude=', num2str(upper_amplitude), ', score=', num2str(upper_amp_score), ', within_at=', num2str(upper_amp_within_at)]);
+
         lower_amp_score = simulate_and_compute_all_entrainment_score_(input_period, lower_amplitude, S.population_average, S);
         lower_amp_within_at = is_within_arnold_tongue__(lower_amp_score, S);
 
         display(['lower_amplitude=', num2str(lower_amplitude), ', score=', num2str(lower_amp_score), ', within_at=', num2str(lower_amp_within_at)]);
-        display(['upper_amplitude=', num2str(upper_amplitude), ', score=', num2str(upper_amp_score), ', within_at=', num2str(upper_amp_within_at)]);
 
         score = inf;
         scores = inf * zeros(3, 1);
@@ -196,9 +196,9 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
             while (upper_amplitude - lower_amplitude) >= S.input_amplitude_tolerance
                 middle_amplitude = (lower_amplitude + upper_amplitude) / 2.0;
+                display(['upper_amp=', num2str(upper_amplitude), ', lower_amp=', num2str(lower_amplitude), ', middle_amp=', num2str(middle_amplitude)]);
                 score = simulate_and_compute_all_entrainment_score_(input_period, middle_amplitude, S.population_average, S);
                 middle_amp_within_at = is_within_arnold_tongue__(score, S);
-                display(['upper_amp=', num2str(upper_amplitude), ', lower_amp=', num2str(lower_amplitude), ', middle_amp=', num2str(middle_amplitude)]);
                 display(['  score=', num2str(score), ', within_at=', num2str(middle_amp_within_at)]);
                 if middle_amp_within_at
                     upper_amplitude = middle_amplitude;
