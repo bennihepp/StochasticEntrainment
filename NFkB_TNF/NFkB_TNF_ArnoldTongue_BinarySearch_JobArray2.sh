@@ -11,6 +11,6 @@ Ntrials=$6
 population_average=$7
 Nthreads=$8
 
-echo "index=$index, output=$output, volume=$volume, input_periods=$input_periods, tolerance=$tolerance, Ntrials=$Ntrials, population_average=$population_average"
+echo "index=$index, output=$output, volume=$volume, input_periods=$input_periods, tolerance=$tolerance, Ntrials=$Ntrials, population_average=$population_average, Nthreads=$Nthreads"
 
 matlab -nodisplay -singleCompThread -r "NFkB_TNF_ArnoldTongue_BinarySearch_JobArray2Wrapper($index, '$output', $volume, $input_periods, $tolerance, $Ntrials, $population_average, $Nthreads); exit;"
