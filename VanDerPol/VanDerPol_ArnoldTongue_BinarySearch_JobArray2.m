@@ -173,39 +173,33 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         lower_amplitude = S.min_input_amplitude;
         upper_amplitude = S.max_input_amplitude;
 
-        upper_amp_scores = simulate_and_compute_all_entrainment_scores_(input_period, upper_amplitude, S.population_average, S);
-        upper_amp_within_at = is_within_arnold_tongue__(upper_amp_scores, S);
-        lower_amp_scores = simulate_and_compute_all_entrainment_scores_(input_period, lower_amplitude, S.population_average, S);
-        lower_amp_within_at = is_within_arnold_tongue__(lower_amp_scores, S);
+        upper_amp_score = simulate_and_compute_all_entrainment_score_(input_period, upper_amplitude, S.population_average, S);
+        upper_amp_within_at = is_within_arnold_tongue__(upper_amp_score, S);
+        lower_amp_score = simulate_and_compute_all_entrainment_score_(input_period, lower_amplitude, S.population_average, S);
+        lower_amp_within_at = is_within_arnold_tongue__(lower_amp_score, S);
 
-        mean_upper_amp_score = mean(upper_amp_scores);
-        mean_lower_amp_score = mean(lower_amp_scores);
-
-        display(['lower_amplitude=', num2str(lower_amplitude), ', score=', num2str(mean_lower_amp_score), ', within_at=', num2str(lower_amp_within_at)]);
-        display(['upper_amplitude=', num2str(upper_amplitude), ', score=', num2str(mean_upper_amp_score), ', within_at=', num2str(upper_amp_within_at)]);
+        display(['lower_amplitude=', num2str(lower_amplitude), ', score=', num2str(lower_amp_score), ', within_at=', num2str(lower_amp_within_at)]);
+        display(['upper_amplitude=', num2str(upper_amplitude), ', score=', num2str(upper_amp_score), ', within_at=', num2str(upper_amp_within_at)]);
 
         score = inf;
-        score_mean = inf;
-        score_std = inf;
         scores = inf * zeros(3, 1);
 
         if lower_amp_within_at
             display('lower_amp_within_at');
             arnold_tongue_border = lower_amplitude;
-            mean_score = mean(lower_amp_scores);
+            score = lower_amp_score;
         elseif ~upper_amp_within_at
             display('~upper_amp_within_at');
             arnold_tongue_border = inf;
-            mean_score = mean(upper_amp_scores);
+            score = upper_amp_score;
         else
 
             while (upper_amplitude - lower_amplitude) >= S.input_amplitude_tolerance
                 middle_amplitude = (lower_amplitude + upper_amplitude) / 2.0;
-                scores = simulate_and_compute_all_entrainment_scores_(input_period, middle_amplitude, S.population_average, S);
-                middle_amp_within_at = is_within_arnold_tongue__(scores, S);
-                mean_score = mean(scores);
+                score = simulate_and_compute_all_entrainment_score_(input_period, middle_amplitude, S.population_average, S);
+                middle_amp_within_at = is_within_arnold_tongue__(score, S);
                 display(['upper_amp=', num2str(upper_amplitude), ', lower_amp=', num2str(lower_amplitude), ', middle_amp=', num2str(middle_amplitude)]);
-                display(['  score=', num2str(mean_score), ', within_at=', num2str(middle_amp_within_at)]);
+                display(['  score=', num2str(score), ', within_at=', num2str(middle_amp_within_at)]);
                 if middle_amp_within_at
                     upper_amplitude = middle_amplitude;
                 else
@@ -223,23 +217,21 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
             display(['arnold_tongue_border=', num2str(arnold_tongue_border)]);
             input_amplitude = arnold_tongue_border;
             for j=1:3
-                tmp_scores = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, S.population_average, S);
-                scores(j) = mean(tmp_scores)
+                scores(j) = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, S.population_average, S);
                 display([' j=', int2str(j), ', score=', num2str(scores(j))]);
-            end
-            score_mean = mean(scores, 1);
-            score_std = std(scores, 1);
-            if S.Ntrials == 1
-                display(['score_mean=', num2str(score_mean), ', score_std=', num2str(score_std)]);
             end
 
         end
+
+        score_mean = mean(scores, 1);
+        score_std = std(scores, 1);
+        display(['score_mean=', num2str(score_mean), ', score_std=', num2str(score_std)]);
 
         display(['arnold tongue border at ', num2str(arnold_tongue_border)]);
 
         S = struct();
         S.arnold_tongue_border = arnold_tongue_border;
-        S.score = mean_score;
+        S.score = score;
         S.scores = scores;
         S.score_mean = score_mean;
         S.score_std = score_std;
@@ -263,16 +255,15 @@ function filename = get_job_filename(folder, n)
     filename = [folder, 'job_', int2str(n), '.mat'];
 end
 
-function within_arnold_tongue = is_within_arnold_tongue__(scores, options)
-    if any(isnan(scores))
+function within_arnold_tongue = is_within_arnold_tongue__(score, options)
+    if any(isnan(score))
         within_arnold_tongue = true;
     else
-        if length(scores) > 1
-            ratio_within_arnold_tongue = sum(scores >= options.ENTRAINMENT_THRESHOLD) / length(scores);
-            within_arnold_tongue = ratio_within_arnold_tongue >= options.MINIMUM_ENTRAINMENT_RATIO;
-        else
-            within_arnold_tongue = scores >= options.ENTRAINMENT_THRESHOLD;
-        end
+%         if length(score) > 1
+%             ratio_within_arnold_tongue = sum(scores >= options.ENTRAINMENT_THRESHOLD) / length(scores);
+%             within_arnold_tongue = ratio_within_arnold_tongue >= options.MINIMUM_ENTRAINMENT_RATIO;
+%         end
+        within_arnold_tongue = score >= options.ENTRAINMENT_THRESHOLD;
     end;
 end
 
@@ -284,10 +275,14 @@ end
 %     end
 % end
 
-function scores = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, population_average, options)
+function score = simulate_and_compute_all_entrainment_score_(input_period, input_amplitude, population_average, options)
     if population_average
-        scores = simulate_average_and_compute_entrainment_scores(input_period, input_amplitude, options);
+        score = simulate_average_and_compute_entrainment_scores(input_period, input_amplitude, options);
     else
-        scores = simulate_and_compute_all_entrainment_scores(input_period, input_amplitude, options);
+        score = simulate_and_compute_all_entrainment_scores(input_period, input_amplitude, options);
+        if length(score) > 1
+            score = sort(score);
+            score = mean(score(round(length(score) / 2):end));
+        end
     end
 end

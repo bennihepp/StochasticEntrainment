@@ -1,3 +1,5 @@
+S = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_04-Sep-2014 23:58:25');
+
 % input_periods = S.input_periods;
 % input_period_indices = 1:length(input_periods);
 i1 = find(S.input_periods >= 4.0, 1, 'first');
