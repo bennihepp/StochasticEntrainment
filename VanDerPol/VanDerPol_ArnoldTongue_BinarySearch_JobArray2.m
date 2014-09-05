@@ -222,12 +222,10 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
             display(['arnold_tongue_border=', num2str(arnold_tongue_border)]);
             input_amplitude = arnold_tongue_border;
-            if S.population_average || S.Ntrials == 1
-                for j=1:3
-                    tmp_scores = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, S.population_average, S);
-                    scores(j) = mean(tmp_scores)
-                    display([' j=', int2str(j), ', score=', num2str(mean_score)]);
-                end
+            for j=1:3
+                tmp_scores = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, S.population_average, S);
+                scores(j) = mean(tmp_scores)
+                display([' j=', int2str(j), ', score=', num2str(scores(j))]);
             end
             score_mean = mean(scores, 1);
             score_std = std(scores, 1);
