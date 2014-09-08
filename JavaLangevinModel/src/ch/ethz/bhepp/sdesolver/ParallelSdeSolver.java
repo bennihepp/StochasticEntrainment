@@ -3,6 +3,7 @@ package ch.ethz.bhepp.sdesolver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -66,8 +67,8 @@ public class ParallelSdeSolver {
 	public List<SdeSolution> solve(int samples, final double t0, DoubleMatrix2D X0, final double tf, final double recordStep) throws Exception {
 		assert(samples > 0);
 		ensurePoolStarted();
+		ExecutorCompletionService<SdeSolution> ecs = new ExecutorCompletionService<>(executor);
 		List<SdeSolution> solutions = new ArrayList<>(samples);
-		List<Future<SdeSolution> > results = new ArrayList<>(samples);
 		for (int i=0; i < samples; i++) {
 			SdeStepper stepper = stepperFactory.createStepper();
 			final DoubleMatrix1D x0 = X0.viewColumn(i);
@@ -81,11 +82,11 @@ public class ParallelSdeSolver {
 				}
 
 			};
-			results.add(executor.submit(task));
+			ecs.submit(task);
 		}
 		for (int i=0; i < samples; i++) {
-			Future<SdeSolution> result = results.get(i);
-			SdeSolution solution = result.get();
+			Future<SdeSolution> future = ecs.take();
+			SdeSolution solution = future.get();
 			solutions.add(solution);
 		}
 		return solutions;
