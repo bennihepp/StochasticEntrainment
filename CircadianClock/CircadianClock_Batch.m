@@ -34,7 +34,7 @@ input_amplitude = 0.5;
 % input_period = 30.0;
 % input_amplitude = 0.15;
 
-% input_period = 30.0;
+% input_period = 13.0;
 % input_amplitude = 0.18;
 
 

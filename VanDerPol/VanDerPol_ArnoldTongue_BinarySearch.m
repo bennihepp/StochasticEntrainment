@@ -15,12 +15,12 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
     end
 
     t0 = 0;
-    tf = 100;
+    tf = 10000;
     to = (tf - t0) / 5;
 
 
     min_input_amplitude = 0.0;
-    max_input_amplitude = 10.0;
+    max_input_amplitude = 1.0;
 %     input_amplitude_tolerance = 1e-2;
 %     input_amplitude_tolerance = 4e-1;
 %     input_periods = 1:0.2:50.0;
@@ -81,7 +81,7 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
         display(['lower_amplitude=', num2str(lower_amplitude), ', score=', num2str(lower_amp_score), ', within_at=', num2str(lower_amp_within_at)]);
 
         score = inf;
-        scores = inf * zeros(3, 1);
+        scores = inf * ones(3, 1);
 
         if lower_amp_within_at
             display('lower_amp_within_at');

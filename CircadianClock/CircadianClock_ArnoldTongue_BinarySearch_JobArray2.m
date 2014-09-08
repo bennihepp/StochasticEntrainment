@@ -188,7 +188,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ..
         display(['lower_amplitude=', num2str(lower_amplitude), ', score=', num2str(lower_amp_score), ', within_at=', num2str(lower_amp_within_at)]);
 
         score = inf;
-        scores = inf * zeros(3, 1);
+        scores = inf * ones(3, 1);
 
         if lower_amp_within_at
             display('lower_amp_within_at');

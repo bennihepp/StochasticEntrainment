@@ -71,10 +71,9 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
         display(e);
     end
 
-    inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
-    sde = ch.ethz.bhepp.sdesolver.models.NFkBSpikySde(volume, inputFunction);
 %     omega = sde.getOmega();
-    stepperFactory = ch.ethz.bhepp.sdesolver.EulerMaruyamaStepperFactory(sde, dt, seed);
+    sdeFactory = ch.ethz.bhepp.sdesolver.models.NFkBSpikySdeFactory(volume, inputFunction);
+    stepperFactory = ch.ethz.bhepp.sdesolver.EulerMaruyamaStepperFactory(sdeFactory, dt, seed);
     positiveStateHook = ch.ethz.bhepp.sdesolver.EnsurePositiveStateHook();
     stepperFactory.addStepHook(positiveStateHook);
 %     boundedStateHook = ch.ethz.bhepp.sdesolver.EnsureBoundedStateHook(0, 0.0, 1.0);
@@ -84,7 +83,7 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
     x0Matrix = ch.ethz.bhepp.sdesolver.MatrixHelper.createZeroDoubleMatrix2D(size(x0, 1), Ntrials);
     for i=1:size(x0, 1)
         for n=1:Ntrials
-            x0Matrix.set(i-1, n, x0(i, n));
+            x0Matrix.set(i-1, n-1, x0(i, n));
         end
     end
     sdeSolutions = parallelSolver.solve(Ntrials, 0, x0Matrix, tf, recordStep);
@@ -92,7 +91,7 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
     T = zeros(Ntrials, numOfTimeSteps);
     P = zeros(Ntrials, numOfTimeSteps, sde.getDriftDimension);
     for n=1:Ntrials
-        sdeSolution = sdeSolutions.get(n);
+        sdeSolution = sdeSolutions.get(n - 1);
         TArray = sdeSolution.getTArray();
         XArray = sdeSolution.getXArray();
         T(n, :) = TArray;
@@ -101,6 +100,6 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
     T = T(1, :);
 
     inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
-    sde = ch.ethz.bhepp.sdesolver.models.CircadianClockDrosophilaSde(volume, inputFunction);
+    sde = ch.ethz.bhepp.sdesolver.models.NFkBSpikySde(volume, inputFunction);
     omega = sde.getOmega();
 end

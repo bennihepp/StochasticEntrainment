@@ -35,8 +35,8 @@ to = (tf - t0) / 5;
 
 % border of arnold tongue (period 15, amplitude 0.4674004, inclusive)
 
-input_period = 19.2;
-input_amplitude = 0.125;
+input_period = 13.6;
+input_amplitude = 1;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
