@@ -1,12 +1,12 @@
 function CircadianClock_ArnoldTongue_BinarySearch_JobArray2Wrapper(n, filename_prefix, ...
-    input_periods, input_amplitude_tolerance, Ntrials, population_average)
+    input_periods, input_amplitude_tolerance, Ntrials, population_average, Nthreads)
 
-    threads = 1;
-    if ~isempty(getenv('NUM_OF_THREADS'))
-        threads = str2double(getenv('NUM_OF_THREADS'));
+    if nargin < 7
+        Nthreads = 1;
     end
-    if threads > 1
-        matlabpool('local', threads);
+
+    if Nthreads > 1
+        matlabpool('local', Nthreads);
     end
 
 	try
@@ -29,7 +29,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray2Wrapper(n, filename_p
 		end
     end
 
-    if threads > 1
+    if Nthreads > 1
         matlabpool close;
     end
 
