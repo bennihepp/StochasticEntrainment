@@ -171,12 +171,12 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         lower_amplitude = S.min_input_amplitude;
         upper_amplitude = S.max_input_amplitude;
 
-        upper_amp_score = simulate_and_compute_all_entrainment_score_(input_period, upper_amplitude, S.population_average, S);
+        upper_amp_score = simulate_and_compute_all_entrainment_scores_(input_period, upper_amplitude, S.population_average, S);
         upper_amp_within_at = is_within_arnold_tongue__(upper_amp_score, S);
 
         display(['upper_amplitude=', num2str(upper_amplitude), ', score=', num2str(upper_amp_score), ', within_at=', num2str(upper_amp_within_at)]);
 
-        lower_amp_score = simulate_and_compute_all_entrainment_score_(input_period, lower_amplitude, S.population_average, S);
+        lower_amp_score = simulate_and_compute_all_entrainment_scores_(input_period, lower_amplitude, S.population_average, S);
         lower_amp_within_at = is_within_arnold_tongue__(lower_amp_score, S);
 
         display(['lower_amplitude=', num2str(lower_amplitude), ', score=', num2str(lower_amp_score), ', within_at=', num2str(lower_amp_within_at)]);
@@ -197,7 +197,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
             while (upper_amplitude - lower_amplitude) >= S.input_amplitude_tolerance
                 middle_amplitude = (lower_amplitude + upper_amplitude) / 2.0;
                 display(['upper_amp=', num2str(upper_amplitude), ', lower_amp=', num2str(lower_amplitude), ', middle_amp=', num2str(middle_amplitude)]);
-                score = simulate_and_compute_all_entrainment_score_(input_period, middle_amplitude, S.population_average, S);
+                score = simulate_and_compute_all_entrainment_scores_(input_period, middle_amplitude, S.population_average, S);
                 middle_amp_within_at = is_within_arnold_tongue__(score, S);
                 display(['  score=', num2str(score), ', within_at=', num2str(middle_amp_within_at)]);
                 if middle_amp_within_at
@@ -275,7 +275,7 @@ end
 %     end
 % end
 
-function score = simulate_and_compute_all_entrainment_score_(input_period, input_amplitude, population_average, options)
+function score = simulate_and_compute_all_entrainment_scores_(input_period, input_amplitude, population_average, options)
     if population_average
         score = simulate_average_and_compute_entrainment_scores(input_period, input_amplitude, options);
     else
