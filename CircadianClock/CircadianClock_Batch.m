@@ -15,7 +15,7 @@ if volume == inf
     dt = 0.002;
     recordStep = 100 * dt;
 else
-    Ntrials = 2;
+    Ntrials = 100;
     dt = 0.002;
     recordStep = 100 * dt;
 end
@@ -34,8 +34,8 @@ input_amplitude = 0.5;
 % input_period = 30.0;
 % input_amplitude = 0.15;
 
-% input_period = 13.0;
-% input_amplitude = 0.18;
+input_period = 18.5;
+input_amplitude = 1.0;
 
 
 %% simulate
