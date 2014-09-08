@@ -5,7 +5,6 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
     FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
     natural_period = 1/0.1065;
     entrainment_ratios = 1;
-    population_average = false;
 
     % volume = inf;
     volume = 5e3;
@@ -22,10 +21,10 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
 
     min_input_amplitude = 0.0;
     max_input_amplitude = 10.0;
-    input_amplitude_tolerance = 1e-2;
-    input_amplitude_tolerance = 4e-1;
-    input_periods = 1:0.2:50.0;
-    input_periods = 9:1:10;
+%     input_amplitude_tolerance = 1e-2;
+%     input_amplitude_tolerance = 4e-1;
+%     input_periods = 1:0.2:50.0;
+%     input_periods = 9:1:10;
 
     min_frequency = 0.01;
     max_frequency = 1.0;
