@@ -15,7 +15,7 @@ if volume == inf
     dt = 0.002;
     recordStep = 100 * dt;
 else
-    Ntrials = 50;
+    Ntrials = 2;
     dt = 0.002;
     recordStep = 100 * dt;
 end
@@ -23,7 +23,7 @@ end
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
 t0 = 0;
-tf = 800*72;
+tf = 200*72;
 to = (tf - t0) / 5;
 
 input_offset = 1.0;
@@ -31,11 +31,11 @@ input_offset = 1.0;
 input_period = 36.0;
 input_amplitude = 0.5;
 
-input_period = 30.0;
-input_amplitude = 0.15;
+% input_period = 30.0;
+% input_amplitude = 0.15;
 
-input_period = 30.0;
-input_amplitude = 0.18;
+% input_period = 30.0;
+% input_amplitude = 0.18;
 
 
 %% simulate

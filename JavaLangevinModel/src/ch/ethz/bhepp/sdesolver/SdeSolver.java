@@ -13,7 +13,7 @@ public class SdeSolver {
 	}
 
 	public SdeSolution solve(double t0, DoubleMatrix1D X0, double tf) throws Exception {
-		return solve(t0, X0, tf, 1);
+		return solve(t0, X0, tf, 1.0);
 	}
 
 	public SdeSolution solve(double t0, DoubleMatrix1D X0, double tf, double recordStep) throws Exception {

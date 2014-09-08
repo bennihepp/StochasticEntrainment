@@ -15,14 +15,14 @@ function [T, P, omega] = SolveS_Java_Parallel(x0, tf, dt, volume, ...
         Ntrials = 1;
     end
 
-%         global JavaLangevinModel
-%         JavaLangevinModel_path = '/cluster/home02/misc/bhepp/StochasticEntrainment/JavaLangevinModel/bin';
-%         import_java();
+%     global JavaLangevinModel
+%     JavaLangevinModel_path = '/cluster/home02/misc/bhepp/StochasticEntrainment/JavaLangevinModel/bin';
+%     import_java();
     javaaddpath([getenv('HOME'), '/local/lib/java/colt.jar']);
     if ~exist('JavaLangevinModel_path', 'var') || ~ischar(JavaLangevinModel_path) %#ok<NODEF>
         JavaLangevinModel_path = '../JavaLangevinModel/bin';
     end
-%         disp(JavaLangevinModel_path);
+%     disp(JavaLangevinModel_path);
     javaaddpath(JavaLangevinModel_path);
     try
         ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);

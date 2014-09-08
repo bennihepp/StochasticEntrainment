@@ -1,37 +1,26 @@
 function CircadianClock_ArnoldTongue_BinarySearch_JobArray2Wrapper(n, filename_prefix, ...
-    input_periods, input_amplitude_tolerance, Ntrials, population_average, Nthreads)
+    input_periods, input_amplitude_tolerance, Ntrials, population_average)
 
-    if nargin < 7
-        Nthreads = 1;
-    end
-
-    if Nthreads > 1
-        matlabpool('local', Nthreads);
-    end
-
-	try
-		CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
-	catch e
-		display('pause');
-		pause(5);
-		try
-			CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
-		catch e
-			display('pause');
-			pause(5);
-			try
-				CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
-			catch e
-				display('pause');
-				pause(5);
-				CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
-			end
-		end
-    end
-
-    if Nthreads > 1
-        matlabpool close;
-    end
+    CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
+% 	try
+% 		CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
+% 	catch e
+% 		display('pause');
+% 		pause(5);
+% 		try
+% 			CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
+% 		catch e
+% 			display('pause');
+% 			pause(5);
+% 			try
+% 				CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
+% 			catch e
+% 				display('pause');
+% 				pause(5);
+% 				CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, filename_prefix, input_periods, input_amplitude_tolerance, Ntrials, population_average);
+% 			end
+% 		end
+%     end
 
 end
 
