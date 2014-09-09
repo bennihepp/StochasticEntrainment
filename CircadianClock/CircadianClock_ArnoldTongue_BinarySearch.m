@@ -3,20 +3,18 @@ MAX_HARMONIC_N = 4;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 natural_period = 23.7473;
-entrainment_ratios = 1:3;
+entrainment_ratios = 1:2;
 
 volume = inf;
-omega = volume;
 
 if volume == inf
     Ntrials = 1;
-    dt = 0.002;
-    recordStep = 100 * dt;
 else
     Ntrials = 100;
-    dt = 0.002;
-    recordStep = 100 * dt;
 end
+
+dt = 0.002;
+recordStep = 100 * dt;
 
 t0 = 0;
 tf = 200*72;
@@ -29,8 +27,8 @@ max_input_amplitude = 1.0;
 input_amplitude_tolerance = 1e-2;
 input_periods = 12:0.25:36;
 
-min_frequency = 0.0;
-max_frequency = 5.0;
+min_frequency = 0.005;
+max_frequency = 0.5;
 
 
 S = struct();

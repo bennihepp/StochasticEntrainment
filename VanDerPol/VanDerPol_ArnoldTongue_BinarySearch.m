@@ -122,33 +122,6 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
 
         end
 
-
-
-        if lower_amp_within_at
-            arnold_tongue_borders(i) = lower_amplitude;
-        elseif ~upper_amp_within_at
-            arnold_tongue_borders(i) = inf;
-        else
-
-            while (upper_amplitude - lower_amplitude) >= input_amplitude_tolerance
-                middle_amplitude = (lower_amplitude + upper_amplitude) / 2.0;
-                display(['i=', int2str(i), ' of ', int2str(length(input_periods)), ', trying input=', num2str(middle_amplitude)]);
-                middle_amp_within_at = is_within_arnold_tongue(input_period, middle_amplitude, S);
-                if middle_amp_within_at
-                    upper_amplitude = middle_amplitude;
-                else
-                    lower_amplitude = middle_amplitude;
-                end
-            end
-
-            if middle_amp_within_at
-                arnold_tongue_borders(i) = middle_amplitude;
-            else
-                arnold_tongue_borders(i) = upper_amplitude;
-            end
-
-        end
-
         score_mean = mean(scores, 1);
         score_std = std(scores, 1);
         display(['score_mean=', num2str(score_mean), ', score_std=', num2str(score_std)]);
@@ -160,7 +133,6 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
         par_scores(i, :) = scores;
         par_score_mean(i) = score_mean;
         par_score_std(i) = score_std;
-
     end
 
     S.natural_period = natural_period;

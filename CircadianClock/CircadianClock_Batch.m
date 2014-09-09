@@ -4,11 +4,11 @@ PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
-MAX_HARMONIC_N = 10;
-entrainment_ratios = 1:2;
+MAX_HARMONIC_N = 4;
+entrainment_ratios = 1:3;
 
-% volume = inf;
-volume = 1e-20;
+volume = inf;
+% volume = 1e-20;
 
 if volume == inf
     Ntrials = 1;
@@ -16,7 +16,7 @@ else
     Ntrials = 100;
 end
 
-dt = 0.001;
+dt = 0.002;
 recordStep = 100 * dt;
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
@@ -72,8 +72,8 @@ addpath('../');
 
 min_frequency = 0.005;
 max_frequency = 0.5;
-min_frequency = 0.0;
-max_frequency = 5.0;
+% min_frequency = 0.0;
+% max_frequency = 5.0;
 
 omega = [];
 y = [];

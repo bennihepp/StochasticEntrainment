@@ -88,32 +88,19 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
     end
     sdeSolutions = parallelSolver.solve(Ntrials, 0, x0Matrix, tf, recordStep);
 
-%     T = zeros(Ntrials, numOfTimeSteps);
-%     P = zeros(Ntrials, numOfTimeSteps, sde.getDriftDimension());
     for n=1:Ntrials
         sdeSolution = sdeSolutions.get(n - 1);
-        TMatrix = sdeSolution.getT();
-        XMatrix = sdeSolution.getX();
-        numOfTimeSteps = TMatrix.size();
+        TArray = sdeSolution.getTArray();
+        XArray = sdeSolution.getXArray();
         if n == 1
-            T = zeros(1, numOfTimeSteps);
-            assert(sde.getDriftDimension() == XMatrix.columns());
+            numOfTimeSteps = length(TArray);
+            T = zeros(Ntrials, numOfTimeSteps);
             P = zeros(Ntrials, numOfTimeSteps, sde.getDriftDimension());
-            for i=1:numOfTimeSteps
-                T(i) = TMatrix.get(i-1);
-            end
         end
-        for j=1:sde.getDriftDimension()
-            for i=1:numOfTimeSteps
-                P(n, i, j) = XMatrix.get(i-1, j-1);
-            end
-        end
-%         TArray = sdeSolution.getTArray();
-%         XArray = sdeSolution.getXArray();
-%         T(n, :) = TArray;
-%         P(n, :, :) = XArray;
+        T(n, :) = TArray;
+        P(n, :, :) = XArray;
     end
-%     T = T(1, :);
+    T = T(1, :);
 
     inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
     sde = ch.ethz.bhepp.sdesolver.models.CircadianClockDrosophilaSde(volume, inputFunction);

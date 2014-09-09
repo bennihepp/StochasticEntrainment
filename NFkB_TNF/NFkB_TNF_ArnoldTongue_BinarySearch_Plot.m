@@ -1,4 +1,6 @@
-S = load('NFkB_TNF/output/NFkB_TNF_ArnoldTongue_BinarySearch_01-Sep-2014 14:24:46');
+% S = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_01-Sep-2014 14:24:46');
+S = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_09-Sep-2014 13:21:49');
+S = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_09-Sep-2014 13:49:21');
 
 input_periods = S.input_periods;
 input_period_indices = 1:length(input_periods);

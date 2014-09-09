@@ -88,12 +88,15 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
     end
     sdeSolutions = parallelSolver.solve(Ntrials, 0, x0Matrix, tf, recordStep);
 
-    T = zeros(Ntrials, numOfTimeSteps);
-    P = zeros(Ntrials, numOfTimeSteps, sde.getDriftDimension);
     for n=1:Ntrials
         sdeSolution = sdeSolutions.get(n - 1);
         TArray = sdeSolution.getTArray();
         XArray = sdeSolution.getXArray();
+        if n == 1
+            numOfTimeSteps = length(TArray);
+            T = zeros(Ntrials, numOfTimeSteps);
+            P = zeros(Ntrials, numOfTimeSteps, sde.getDriftDimension());
+        end
         T(n, :) = TArray;
         P(n, :, :) = XArray;
     end

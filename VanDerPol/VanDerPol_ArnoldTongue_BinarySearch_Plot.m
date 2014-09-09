@@ -28,7 +28,7 @@ if isfield(S, 'score_std')
             continue;
         end
         std = S.score_std(i);
-        if ~isinf(std)
+        if ~isinf(stddev) && ~isnan(stddev)
             j = find(input_amplitudes >= border, 1, 'first');
             Q(j:end, n) = 0.5;
         end
