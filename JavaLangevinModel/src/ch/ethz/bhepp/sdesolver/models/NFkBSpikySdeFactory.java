@@ -16,7 +16,7 @@ public class NFkBSpikySdeFactory implements SdeFactory {
 
 	@Override
 	public Sde createSde() {
-		return new NFkBLangevinSde(volume, inputFunction);
+		return new NFkBSpikySde(volume, inputFunction);
 	}
 
 }

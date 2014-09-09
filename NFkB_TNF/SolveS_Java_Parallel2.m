@@ -48,7 +48,6 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
 
 %     initial time t0
     t0 = 0;
-    numOfTimeSteps = length(t0:recordStep:tf);
 
     if size(x0, 2) == 1
         x0 = repmat(x0, 1, Ntrials);
