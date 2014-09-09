@@ -69,8 +69,8 @@ function NFkB_TNF_ArnoldTongue_BinarySearch(output_folder, volume, input_periods
     par_score_std = zeros(length(S.input_periods), 1);
 
 
-    for i=1:length(input_periods)
-%     parfor i=1:length(input_periods)
+%     for i=1:length(input_periods)
+    parfor i=1:length(input_periods)
         display(['i=', int2str(i), ' out of ', int2str(length(input_periods))]);
         input_period = input_periods(i);
 
