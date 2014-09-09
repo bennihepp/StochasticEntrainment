@@ -10,8 +10,8 @@ public class SdeSolution {
 	private DoubleMatrix2D X;
 
 	public SdeSolution(DoubleMatrix1D T, DoubleMatrix2D X) {
-		this.T = new DenseDoubleMatrix1D(T.toArray());
-		this.X = new DenseDoubleMatrix2D(X.toArray());
+		this.T = T;
+		this.X = X;
 	}
 
 	public DoubleMatrix1D getT() {

@@ -5,7 +5,9 @@ addpath('../');
 S1 = load('output/CircadianClock_ArnoldTongue_BinarySearch_29-Aug-2014 11:28:54');
 % S1 = load('output/CircadianClock_ArnoldTongue_BinarySearch_02-Sep-2014 16:30:40');
 % S2 = load('output/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=0_01-Sep-2014 16:33:13');
-S2 = load('output/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=1_01-Sep-2014 06:58:41');
+S2 = load('output_200/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=0_09-Sep-2014 09:53:49');
+% S2 = load('output/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=1_01-Sep-2014 06:58:41');
+% S2 = load('output_population_200/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=1_09-Sep-2014 08:15:38');
 
 assert(all(S1.input_periods == S2.input_periods));
 
