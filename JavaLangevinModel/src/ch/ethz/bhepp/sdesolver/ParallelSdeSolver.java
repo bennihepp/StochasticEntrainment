@@ -101,6 +101,8 @@ public class ParallelSdeSolver {
 				System.out.print("\r" + (i+1) + " out of " + samples + " samples finished");
 				System.out.flush();
 			}
+		}
+		if (printProgress) {
 			System.out.println();
 		}
 		return solutions;

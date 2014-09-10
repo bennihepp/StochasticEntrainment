@@ -15,7 +15,9 @@ entrainment_ratios = 1:2;
 % volume = 1e-10; % with Ntrials=500, population=0.92258, individual=0.10358
 % volume = 5e-11; % with Ntrials=500, population=0.92245, individual=0.21997
 % volume = 2e-11; % with Ntrials=500, population=0.9321, individual=0.35831
+% volume = 1e-11; % with Ntrials=500, population=0.93519, individual=0.32637
 % volume = 5e-12; % with Ntrials=500, population=0.93405, individual=0.27137
+% volume = 1e-12; % with Ntrials=500, population=0.90784, individual=0.14164
 
 % volume = 5e-11; % with Ntrials=100, population=0.88063, individual=0.20546
 % volume = 2e-11; % with Ntrials=100, population=0.88031, individual=0.3355
@@ -25,14 +27,16 @@ entrainment_ratios = 1:2;
 % volume = 5e-13; % with Ntrials=100, population=0.71225, individual=0.10105
 % volume = 1e-13; % with Ntrials=100, population=0.18849, individual=0.053604
 
-volume = 5e-12;
+% volume = 5e-12;
+% volume = 1e-11;
+volume = 1e-12;
 
 if volume == inf
     Ntrials = 1;
     dt = 0.0001;
     recordStep = 1000 * dt;
 else
-    Ntrials = 100;
+    Ntrials = 500;
     dt = 0.0001;
     recordStep = 100 * dt;
 end
@@ -70,7 +74,7 @@ input_amplitude = 0.1;
 
 input_period = 2.28;
 input_amplitude = 0.016;
-input_amplitude = 0.04;
+% input_amplitude = 0.04;
 
 % min_frequency = 0.001;
 % max_frequency = 20.0;

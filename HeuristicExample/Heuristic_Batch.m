@@ -14,11 +14,12 @@ disp(['Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
 % phi_0_mean = 1.0 * randn(1, Ntrials) * pi;
 phi_0_mean = 1.0 * (2 * rand(1, Ntrials) - 1.0) * pi;
-phi_0_std = 0.2 * pi;
+phi_0_std = 0.0 * pi;
 phi_0_rand = @(n, s1, s2) phi_0_mean(n) + phi_0_std * randn(s1, s2);
 % phi_0_rand = @(n1, n2) (2 * rand(n1, n2) - 1) * pi;
-phi_1_mean = 0.0 * randn(1, Ntrials) * pi;
-phi_1_std = 0.2 * pi;
+% phi_1_mean = 0.1 * randn(1, Ntrials) * pi;
+phi_1_mean = 0.2 * (2 * rand(1, Ntrials) - 1.0) * pi;
+phi_1_std = 0.0 * pi;
 phi_1_rand = @(n, s1, s2) phi_1_mean(n) + phi_1_std * randn(s1, s2);
 
 
