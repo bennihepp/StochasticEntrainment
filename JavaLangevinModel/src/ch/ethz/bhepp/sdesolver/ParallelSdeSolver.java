@@ -97,7 +97,6 @@ public class ParallelSdeSolver {
 			SdeSolution solution = future.get();
 			solutions.add(solution);
 			if (printProgress) {
-				System.out.println();
 				System.out.print("\r" + (i+1) + " out of " + samples + " samples finished");
 				System.out.flush();
 			}
