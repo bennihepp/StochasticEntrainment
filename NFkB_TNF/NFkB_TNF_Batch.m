@@ -10,14 +10,29 @@ MAX_HARMONIC_N = double(intmax());
 entrainment_ratios = 1:2;
 
 % volume = inf;
-volume = 5e-13;
+% volume = 1e-10;
+
+% volume = 1e-10; % with Ntrials=500, population=0.92258, individual=0.10358
+% volume = 5e-11; % with Ntrials=500, population=0.92245, individual=0.21997
+% volume = 2e-11; % with Ntrials=500, population=0.9321, individual=0.35831
+% volume = 5e-12; % with Ntrials=500, population=0.93405, individual=0.27137
+
+% volume = 5e-11; % with Ntrials=100, population=0.88063, individual=0.20546
+% volume = 2e-11; % with Ntrials=100, population=0.88031, individual=0.3355
+% volume = 1e-11; % with Ntrials=100, population=0.8837, individual=0.32711
+% volume = 5e-12; % with Ntrials=100, population=0.879, individual=0.27711
+% volume = 1e-12; % with Ntrials=100, population=0.80449, individual=0.1464
+% volume = 5e-13; % with Ntrials=100, population=0.71225, individual=0.10105
+% volume = 1e-13; % with Ntrials=100, population=0.18849, individual=0.053604
+
+volume = 5e-12;
 
 if volume == inf
     Ntrials = 1;
     dt = 0.0001;
     recordStep = 1000 * dt;
 else
-    Ntrials = 1000;
+    Ntrials = 100;
     dt = 0.0001;
     recordStep = 100 * dt;
 end
@@ -50,8 +65,12 @@ input_offset = 1.0;
 input_period = 2.1013;
 input_amplitude = 0.2;
 
-input_period = 2.6;
-input_amplitude = 0.5;
+input_period = 2.28;
+input_amplitude = 0.1;
+
+input_period = 2.28;
+input_amplitude = 0.016;
+input_amplitude = 0.04;
 
 % min_frequency = 0.001;
 % max_frequency = 20.0;
@@ -62,7 +81,8 @@ max_frequency = 50.0;
 
 %% simulate
 tic;
-[T, output] = NFkB_TNF_Run(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period);
+printProgress = true;
+[T, output] = NFkB_TNF_Run(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period, printProgress);
 toc
 
 % %% plot trajectories
@@ -289,5 +309,8 @@ W_mean = compute_entrainment_score(Omega, mean_y, input_period, S);
 % mean(Q)
 disp(['maximum individual entrainment score: ', num2str(max(W))]);
 disp(['average individual entrainment score: ', num2str(mean(W)), ' +- ', num2str(std(W))]);
+avg_upper_50_score = sort(W);
+avg_upper_50_score = mean(avg_upper_50_score(round(length(avg_upper_50_score) / 2):end));
+disp(['average individual upper 50% percentile score: ', num2str(avg_upper_50_score)]);
 % Q_mean
 disp(['complex average entrainment score: ', num2str(W_mean)]);

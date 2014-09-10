@@ -61,10 +61,18 @@ public class ParallelSdeSolver {
 	}
 
 	public List<SdeSolution> solve(int samples, double t0, DoubleMatrix2D X0, double tf) throws Exception {
-		return solve(samples, t0, X0, tf, 1.0);
+		return solve(samples, t0, X0, tf, 1.0, false);
+	}
+
+	public List<SdeSolution> solve(int samples, double t0, DoubleMatrix2D X0, double tf, boolean printProgress) throws Exception {
+		return solve(samples, t0, X0, tf, 1.0, printProgress);
 	}
 
 	public List<SdeSolution> solve(int samples, final double t0, DoubleMatrix2D X0, final double tf, final double recordStep) throws Exception {
+		return solve(samples, t0, X0, tf, recordStep, false);
+	}
+
+	public List<SdeSolution> solve(int samples, final double t0, DoubleMatrix2D X0, final double tf, final double recordStep, boolean printProgress) throws Exception {
 		assert(samples > 0);
 		ensurePoolStarted();
 		ExecutorCompletionService<SdeSolution> ecs = new ExecutorCompletionService<>(executor);
@@ -88,6 +96,12 @@ public class ParallelSdeSolver {
 			Future<SdeSolution> future = ecs.take();
 			SdeSolution solution = future.get();
 			solutions.add(solution);
+			if (printProgress) {
+				System.out.println();
+				System.out.print("\r" + (i+1) + " out of " + samples + " samples finished");
+				System.out.flush();
+			}
+			System.out.println();
 		}
 		return solutions;
 	}

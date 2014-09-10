@@ -2,13 +2,8 @@ HEATMAP_TYPE = 'surface';
 
 addpath('../');
 
-% S1 = load('output/CircadianClock_ArnoldTongue_BinarySearch_29-Aug-2014 11:28:54');
-% S1 = load('output/CircadianClock_ArnoldTongue_BinarySearch_02-Sep-2014 16:30:40');
-S1 = load('output/CircadianClock_ArnoldTongue_BinarySearch_09-Sep-2014 12:45:00');
-% S2 = load('output/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=0_01-Sep-2014 16:33:13');
-% S2 = load('output_200/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=0_09-Sep-2014 23:14:44');
-% S2 = load('output/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=1_01-Sep-2014 06:58:41');
-S2 = load('output_population_200/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=1_09-Sep-2014 23:15:58');
+S1 = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_09-Sep-2014 15:31:04');
+S2 = load('output_population_200/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=5e-13_population=1_10-Sep-2014 09:26:08');
 
 assert(all(S1.input_periods == S2.input_periods));
 
