@@ -66,6 +66,8 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         tf = 10000;
         to = (tf - t0) / 5;
 
+        input_offset = 0.0;
+
         min_input_amplitude = 0.0;
         max_input_amplitude = 1.0;
 
