@@ -85,6 +85,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         S.dt = dt;
         S.recordStep = recordStep;
         S.natural_period = natural_period;
+        S.input_offset = input_offset;
         S.min_frequency = min_frequency;
         S.max_frequency = max_frequency;
         S.input_periods = input_periods;
