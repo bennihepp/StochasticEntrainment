@@ -3,23 +3,26 @@ PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
-MIN_HARMONICS_POWER_THRESHOLD = 1.0;
-MAX_HARMONIC_N = 4;
+MIN_HARMONICS_POWER_THRESHOLD = 0.0;
+% MAX_HARMONIC_N = 4;
+MAX_HARMONIC_N = double(intmax());
+entrainment_ratios = 1:2;
 
-% volume = inf;
+volume = inf;
 % volume = 1e6;
 % volume = 1e4;
-volume = 5e3; % good results for average entrainment
+% volume = 5e3; % good results for average entrainment
 % volume = 1e3;
 % volume = 1e2;
 
 if volume == inf
     Ntrials = 1;
-    dt = 1e-1;
 else
     Ntrials = 100;
-    dt = 1e-1;
 end
+
+dt = 1e-1;
+recordStep = dt;
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
@@ -35,15 +38,23 @@ to = (tf - t0) / 5;
 
 % border of arnold tongue (period 15, amplitude 0.4674004, inclusive)
 
-input_period = 13.6;
-input_amplitude = 1;
+input_offset = 0.0;
+
+input_period = 12;
+input_amplitude = 0.2;
+
+min_frequency = 0.01;
+max_frequency = 1.0;
+min_frequency = 0.0;
+max_frequency = inf;
 
 additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 multiplicative_forcing_func = @(t, x) 0;
 
 %% simulate
 tic;
-[T, output] = VanDerPol_Run(Ntrials, t0, tf, dt, volume, additive_forcing_func, multiplicative_forcing_func);
+% [T, output] = VanDerPol_Run(Ntrials, t0, tf, dt, volume, additive_forcing_func, multiplicative_forcing_func);
+[T, output] = VanDerPol_Run2(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period);
 toc
 
 %% plot trajectories
@@ -74,9 +85,7 @@ addpath('../');
 omega = [];
 y = [];
 for i=Ntrials:-1:1
-    min_frequency = 0.01;
-    max_frequency = 1.0;
-    [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', dt, 2*pi*min_frequency, 2*pi*max_frequency);
+    [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', recordStep, 2*pi*min_frequency, 2*pi*max_frequency);
     omega = [omega; omega1];
     y = [y; y1];
 end
@@ -134,7 +143,7 @@ if Ntrials == 1
     mean_peak_distance = mean(peak_distances);
     std_peak_distance = std(peak_distances);
 
-    mean_period = mean_peak_distance * dt;
+    mean_period = mean_peak_distance * recordStep;
     factor = mean_period / input_period;
     if mean_period < input_period
         factor = input_period / mean_period;
@@ -166,60 +175,74 @@ end
 
 
 %% compute entrainment scores
-Omega = mean_omega;
-Q = zeros(Ntrials, 1);
-W = zeros(Ntrials, 1);
-om_natural = 2 * pi / natural_period;
-om_input = 2 * pi / input_period;
-dom = FREQUENCY_NEIGHBOURHOOD_FACTOR * om_natural;
-if abs(om_natural - om_input) < 2 * dom
-    Q(:) = inf;
-    W(:) = inf;
-else
-    for n=1:Ntrials
-        power_total = sum(abs(y(n,:)).^2);
-        power_natural = compute_spectrum_power(Omega, y(n,:), om_natural, dom);
-%         for n=2:MAX_HARMONIC_N
-%             power_natural = power_natural + compute_spectrum_power(Omega, y(n,:), om_natural * n, dom);
+% Omega = mean_omega;
+% Q = zeros(Ntrials, 1);
+% W = zeros(Ntrials, 1);
+% om_natural = 2 * pi / natural_period;
+% om_input = 2 * pi / input_period;
+% dom = FREQUENCY_NEIGHBOURHOOD_FACTOR * om_natural;
+% if abs(om_natural - om_input) < 2 * dom
+%     Q(:) = inf;
+%     W(:) = inf;
+% else
+%     for n=1:Ntrials
+%         power_total = sum(abs(y(n,:)).^2);
+%         power_natural = compute_spectrum_power(Omega, y(n,:), om_natural, dom);
+% %         for n=2:MAX_HARMONIC_N
+% %             power_natural = power_natural + compute_spectrum_power(Omega, y(n,:), om_natural * n, dom);
+% %         end
+%         power_input = compute_spectrum_power(Omega, y(n,:), om_input, dom);
+%         power_input_harmonics = 0;
+%         for m=2:MAX_HARMONIC_N
+%             power_input_harmonics = power_input_harmonics + compute_spectrum_power(Omega, y(n,:), om_input * m, dom);
 %         end
-        power_input = compute_spectrum_power(Omega, y(n,:), om_input, dom);
-        power_input_harmonics = 0;
-        for m=2:MAX_HARMONIC_N
-            power_input_harmonics = power_input_harmonics + compute_spectrum_power(Omega, y(n,:), om_input * m, dom);
-        end
-        if power_input >= MIN_HARMONICS_POWER_THRESHOLD * power_input_harmonics
-            power_input = power_input + power_input_harmonics;
-        end
-
-        Q(n) = power_input / power_natural;
-        W(n) = power_input / power_total;
-
-    end
-
-end
-
-if abs(om_natural - om_input) < 2 * dom
-    Q_mean = inf;
-    W_mean = inf;
-else
-    power_total = sum(abs(mean_y).^2);
-    power_natural = compute_spectrum_power(Omega, mean_y, om_natural, dom);
-%     for n=2:MAX_HARMONIC_N
-%         power_natural = power_natural + compute_spectrum_power(Omega, mean_y, om_natural * n, dom);
+%         if power_input >= MIN_HARMONICS_POWER_THRESHOLD * power_input_harmonics
+%             power_input = power_input + power_input_harmonics;
+%         end
+% 
+%         Q(n) = power_input / power_natural;
+%         W(n) = power_input / power_total;
+% 
 %     end
-    power_input = compute_spectrum_power(Omega, mean_y, om_input, dom);
-    power_input_harmonics = 0;
-    for m=2:MAX_HARMONIC_N
-        power_input_harmonics = power_input_harmonics + compute_spectrum_power(Omega, mean_y, om_input * m, dom);
-    end
-    if power_input >= MIN_HARMONICS_POWER_THRESHOLD * power_input_harmonics
-        power_input = power_input + power_input_harmonics;
-    end
+% 
+% end
+% 
+% if abs(om_natural - om_input) < 2 * dom
+%     Q_mean = inf;
+%     W_mean = inf;
+% else
+%     power_total = sum(abs(mean_y).^2);
+%     power_natural = compute_spectrum_power(Omega, mean_y, om_natural, dom);
+% %     for n=2:MAX_HARMONIC_N
+% %         power_natural = power_natural + compute_spectrum_power(Omega, mean_y, om_natural * n, dom);
+% %     end
+%     power_input = compute_spectrum_power(Omega, mean_y, om_input, dom);
+%     power_input_harmonics = 0;
+%     for m=2:MAX_HARMONIC_N
+%         power_input_harmonics = power_input_harmonics + compute_spectrum_power(Omega, mean_y, om_input * m, dom);
+%     end
+%     if power_input >= MIN_HARMONICS_POWER_THRESHOLD * power_input_harmonics
+%         power_input = power_input + power_input_harmonics;
+%     end
+% 
+%     Q_mean = power_input / power_natural;
+%     W_mean = power_input / power_total;
+% 
+% end
 
-    Q_mean = power_input / power_natural;
-    W_mean = power_input / power_total;
+S = struct();
+S.natural_period = natural_period;
+S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
+S.MAX_HARMONIC_N = MAX_HARMONIC_N;
+S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
+S.entrainment_ratios = entrainment_ratios;
 
+Omega = mean_omega;
+W = zeros(Ntrials, 1);
+for n=1:Ntrials
+    W(n) = compute_entrainment_score(Omega, y(n, :), input_period, S);
 end
+W_mean = compute_entrainment_score(Omega, mean_y, input_period, S);
 
 % mean(Q)
 disp(['maximum individual entrainment score: ', num2str(max(W))]);

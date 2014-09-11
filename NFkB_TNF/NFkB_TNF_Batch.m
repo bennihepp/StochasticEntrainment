@@ -9,8 +9,8 @@ MAX_HARMONIC_N = double(intmax());
 % entrainment_ratios = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 entrainment_ratios = 1:2;
 
-% volume = inf;
-% volume = 1e-10;
+
+%% results for input_period = 2.28, input_amplitude = 0.016
 
 % volume = 1e-10; % with Ntrials=500, population=0.92258, individual=0.10358
 % volume = 5e-11; % with Ntrials=500, population=0.92245, individual=0.21997
@@ -27,16 +27,22 @@ entrainment_ratios = 1:2;
 % volume = 5e-13; % with Ntrials=100, population=0.71225, individual=0.10105
 % volume = 1e-13; % with Ntrials=100, population=0.18849, individual=0.053604
 
+
+%% parameters
+
+% volume = inf;
+% volume = 1e-10;
+
 % volume = 5e-12;
 % volume = 1e-11;
-volume = 1e-12;
+volume = 2e-11;
 
 if volume == inf
     Ntrials = 1;
     dt = 0.0001;
     recordStep = 1000 * dt;
 else
-    Ntrials = 500;
+    Ntrials = 100;
     dt = 0.0001;
     recordStep = 100 * dt;
 end
@@ -74,7 +80,10 @@ input_amplitude = 0.1;
 
 input_period = 2.28;
 input_amplitude = 0.016;
-% input_amplitude = 0.04;
+input_amplitude = 0.05;
+
+% input_period = 2.0;
+% input_amplitude = 0.1;
 
 % min_frequency = 0.001;
 % max_frequency = 20.0;
@@ -300,7 +309,6 @@ S.natural_period = natural_period;
 S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
 S.MAX_HARMONIC_N = MAX_HARMONIC_N;
 S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
-S.MIN_HARMONICS_POWER_THRESHOLD = 0;
 S.entrainment_ratios = entrainment_ratios;
 
 Omega = mean_omega;

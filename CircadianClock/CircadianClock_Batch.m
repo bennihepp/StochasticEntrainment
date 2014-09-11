@@ -5,7 +5,7 @@ PERIOD_MULTIPLE_THRESHOLD = 0.01;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 MAX_HARMONIC_N = 4;
-entrainment_ratios = 1:3;
+entrainment_ratios = 1:2;
 
 volume = inf;
 % volume = 1e-20;
@@ -35,6 +35,9 @@ input_amplitude = 0.5;
 
 input_period = 24.0;
 input_amplitude = 0.01;
+
+input_period = 35.5;
+input_amplitude = 0.0;
 
 
 %% simulate

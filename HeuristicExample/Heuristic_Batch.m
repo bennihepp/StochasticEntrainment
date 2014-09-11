@@ -5,8 +5,8 @@ omega_0 = 0.5;
 omega_1 = 0.6;
 
 t0 = 0;
-tf = 1000;
-numOfSteps = 10000;
+tf = 200;
+numOfSteps = 1000;
 dt = tf / numOfSteps;
 Ntrials = 1000;
 

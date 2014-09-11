@@ -1,23 +1,29 @@
 function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input_amplitude_tolerance, Ntrials, population_average)
+    Nthreads = 8;
+    setenv('NUM_OF_THREADS', int2str(Nthreads));
     ENTRAINMENT_THRESHOLD = 0.9;
-    MAX_HARMONIC_N = 4;
-    MIN_HARMONICS_POWER_THRESHOLD = 1.0;
+%     MAX_HARMONIC_N = 4;
+    MAX_HARMONIC_N = double(intmax());
+    MIN_HARMONICS_POWER_THRESHOLD = 0.0;
     FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
     natural_period = 1/0.1065;
     entrainment_ratios = 1;
 
-    % volume = inf;
-    volume = 5e3;
+    volume = inf;
+%     volume = 5e3;
 
-    dt = 1e-1;
     if volume == inf
         Ntrials = 1;
     end
+
+    dt = 1e-1;
+    recordStep = dt;
 
     t0 = 0;
     tf = 10000;
     to = (tf - t0) / 5;
 
+    input_offset = 0.0;
 
     min_input_amplitude = 0.0;
     max_input_amplitude = 1.0;
@@ -28,6 +34,8 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
 
     min_frequency = 0.01;
     max_frequency = 1.0;
+    min_frequency = 0.0;
+    max_frequency = inf;
 
 
     S = struct();
@@ -38,7 +46,9 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
     S.tf = tf;
     S.to = to;
     S.dt = dt;
+    S.recordStep = recordStep;
     S.natural_period = natural_period;
+    S.input_offset = input_offset;
     S.min_frequency = min_frequency;
     S.max_frequency = max_frequency;
     S.input_periods = input_periods;
