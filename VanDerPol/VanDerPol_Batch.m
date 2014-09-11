@@ -6,7 +6,7 @@ FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 % MAX_HARMONIC_N = 4;
 MAX_HARMONIC_N = double(intmax());
-entrainment_ratios = 1:2;
+entrainment_ratios = 1;
 
 volume = inf;
 % volume = 1e6;

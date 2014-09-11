@@ -41,11 +41,11 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
 
     if n == -1
         ENTRAINMENT_THRESHOLD = 0.9;
-        MAX_HARMONIC_N = 4;
-        MIN_HARMONICS_POWER_THRESHOLD = 1.0;
+        MIN_HARMONICS_POWER_THRESHOLD = 0.0;
         FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
     %     STD_ESTIMATION_SIZE = 3;
         natural_period = 1/0.1065;
+        MAX_HARMONIC_N = double(intmax());
         entrainment_ratios = 1;
 
         volume = 5e3;
@@ -82,6 +82,7 @@ function VanDerPol_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         S.tf = tf;
         S.to = to;
         S.dt = dt;
+        S.recordStep = recordStep;
         S.natural_period = natural_period;
         S.min_frequency = min_frequency;
         S.max_frequency = max_frequency;
