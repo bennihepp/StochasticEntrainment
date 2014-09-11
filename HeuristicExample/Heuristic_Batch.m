@@ -5,9 +5,12 @@ omega_0 = 0.5;
 omega_1 = 0.6;
 
 t0 = 0;
-tf = 200;
+% tf = 200;
+tf = 5000;
+to = (tf - t0) / 5;
 numOfSteps = 1000;
-dt = tf / numOfSteps;
+% dt = tf / numOfSteps;
+dt = 0.2;
 Ntrials = 1000;
 
 disp(['Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
@@ -28,6 +31,8 @@ tic;
 [T, output] = Heuristic_Run(Ntrials, t0, tf, dt, A_0, A_1, omega_0, omega_1, phi_0_rand, phi_1_rand);
 toc
 
+return;
+
 %% plot trajectories
 figure();
 plot(T, output(:, 1));
@@ -41,8 +46,6 @@ title(['y average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('time t');
 ylabel('state y');
 
-return;
-
 %% cutoff transients
 % offset_time = (tf - t0) / 5;
 % offset_time = max(offset_time, 1000);
@@ -55,11 +58,13 @@ output = output(offset:end, :);
 %% compute spectras
 addpath('../');
 
+min_frequency = 0.0;
+max_frequency = 0.19;
+
 omega = [];
 y = [];
 for i=Ntrials:-1:1
-    min_frequency = 0.01;
-    max_frequency = 1.0;
+    i
     [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', dt, 2*pi*min_frequency, 2*pi*max_frequency);
     omega = [omega; omega1];
     y = [y; y1];
@@ -70,21 +75,23 @@ mean_omega = mean(omega, 1);
 %% plot spectras
 figure();
 plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
-title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('frequency f');
 ylabel('power |y|^2');
 
 figure();
 plot(mean_omega ./ (2 * pi), abs(mean_y) .^ 2);
-title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('frequency f');
 ylabel('power |y|^2');
 
 figure();
 plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2);
-title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('frequency f');
 ylabel('power |y|^2');
+
+return;
 
 
 %% plot phase distribution of natural mode and input mode

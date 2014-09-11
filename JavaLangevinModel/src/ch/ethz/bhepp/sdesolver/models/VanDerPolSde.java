@@ -13,7 +13,7 @@ public class VanDerPolSde implements Sde {
 	public final int NUM_OF_SPECIES = 2;
 	public final int NUM_OF_REACTIONS = 4;
 
-	public final double Na = 6.022 * 1e23;
+//	public final double Na = 6.022 * 1e23;
 
 	private double B = 10.0;
 	private double d = 2.0;
@@ -30,14 +30,15 @@ public class VanDerPolSde implements Sde {
 	}
 
 	public VanDerPolSde(double volume, ScalarTrajectoryFunction inputFunction) {
-		omega = 1e-6 * Na * volume;
+//		omega = 1e-6 * Na * volume;
+		omega = volume;
 	    this.sqrtOmega = Math.sqrt(omega);
 		this.inputFunction = inputFunction;
 		stoichiometryMatrix = new DenseDoubleMatrix2D(NUM_OF_REACTIONS, NUM_OF_SPECIES);
 		stoichiometryMatrix.set(0, 0, +1);
 		stoichiometryMatrix.set(1, 1, -1);
 		stoichiometryMatrix.set(2, 1, +1);
-		stoichiometryMatrix.set(3, 0, -1);
+		stoichiometryMatrix.set(3, 1, -1);
 		scaledPropensities = new DenseDoubleMatrix1D(NUM_OF_REACTIONS);
 	}
 
@@ -63,15 +64,17 @@ public class VanDerPolSde implements Sde {
 		F.set(0, x2);
 		F.set(1, input + (d - B * Math.pow(x1, 2.0)) * x2 - x1);
 
-        scaledPropensities.set(0, x2);
-        scaledPropensities.set(1, input + (d - B * Math.pow(x1, 2.0)) * x2 - x1);
+        scaledPropensities.set(0, Math.abs(x2));
+        scaledPropensities.set(1, Math.abs(B * Math.pow(x1, 2.0) * x2));
+        scaledPropensities.set(2, Math.abs(d * x2));
+        scaledPropensities.set(3, Math.abs(x1));
 //        for (int k=0; k < scaledPropensities.size(); k++)
 //        	if (scaledPropensities.get(k) < 0.0)
 //        		scaledPropensities.set(k, 0.0);
 
 		G.assign(0.0);
 		for (int k=0; k < NUM_OF_REACTIONS; k++) {
-			double propensitySqrt = Math.sqrt(Math.abs(scaledPropensities.get(k)));
+			double propensitySqrt = Math.sqrt(scaledPropensities.get(k));
 			for (int i=0; i < NUM_OF_SPECIES; i++) {
 				double newValue = G.get(i, k) + propensitySqrt * stoichiometryMatrix.get(k, i) / sqrtOmega;
 				G.set(i, k, newValue);

@@ -1,5 +1,7 @@
 % S = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_04-Sep-2014 23:58:25');
 S = load('output/VanDerPol_ArnoldTongue_BinarySearch_volume=Inf_population=0_11-Sep-2014 15:30:33');
+% S = load('output_200/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_11-Sep-2014 17:31:47');
+S = load('output_population_200/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=1_11-Sep-2014 18:14:30');
 
 input_periods = S.input_periods;
 input_period_indices = 1:length(input_periods);

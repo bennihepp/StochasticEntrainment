@@ -8,17 +8,17 @@ MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 MAX_HARMONIC_N = double(intmax());
 entrainment_ratios = 1;
 
-volume = inf;
+% volume = inf;
 % volume = 1e6;
 % volume = 1e4;
-% volume = 5e3; % good results for average entrainment
+volume = 5e3; % good results for average entrainment
 % volume = 1e3;
 % volume = 1e2;
 
 if volume == inf
     Ntrials = 1;
 else
-    Ntrials = 100;
+    Ntrials = 25;
 end
 
 dt = 1e-1;
@@ -42,6 +42,7 @@ input_offset = 0.0;
 
 input_period = 12;
 input_amplitude = 0.2;
+% input_amplitude = 0.4;
 
 min_frequency = 0.01;
 max_frequency = 1.0;
@@ -59,8 +60,12 @@ toc
 
 %% plot trajectories
 figure();
-plot(T, output(:, 1));
-title(['y(1) first trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+hold on;
+plot(T, output(:, 1), 'b');
+plot(T, output(:, 2), 'r');
+plot(T, output(:, 3), 'g');
+hold off;
+title(['y(1) single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 xlabel('time t');
 ylabel('state y(1)');
 

@@ -6,6 +6,9 @@ S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_01-Sep-2014 10:19:54');
 S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_04-Sep-2014 23:58:25');
 % S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_30-Aug-2014 12:26:58');
 % S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population_average=true_30-Aug-2014 12:26:10');
+S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_volume=Inf_population=0_11-Sep-2014 15:30:33');
+% S2 = load('output_200/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_11-Sep-2014 17:31:47');
+S2 = load('output_population_200/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=1_11-Sep-2014 18:14:30');
 
 assert(all(S1.input_periods == S2.input_periods));
 
