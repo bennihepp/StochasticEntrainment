@@ -66,7 +66,7 @@ public class VanDerPolSde implements Sde {
 
         scaledPropensities.set(0, Math.abs(x2));
         scaledPropensities.set(1, Math.abs(B * Math.pow(x1, 2.0) * x2));
-        scaledPropensities.set(2, Math.abs(d * x2));
+        scaledPropensities.set(2, Math.abs(input + d * x2));
         scaledPropensities.set(3, Math.abs(x1));
 //        for (int k=0; k < scaledPropensities.size(); k++)
 //        	if (scaledPropensities.get(k) < 0.0)

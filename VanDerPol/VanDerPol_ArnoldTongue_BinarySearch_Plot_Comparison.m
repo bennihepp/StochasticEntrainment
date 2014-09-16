@@ -2,13 +2,14 @@ HEATMAP_TYPE = 'surface';
 
 addpath('../');
 
-S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_01-Sep-2014 10:19:54');
-S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_04-Sep-2014 23:58:25');
+% S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_01-Sep-2014 10:19:54');
+% S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_04-Sep-2014 23:58:25');
 % S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_30-Aug-2014 12:26:58');
 % S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population_average=true_30-Aug-2014 12:26:10');
-S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_volume=Inf_population=0_11-Sep-2014 15:30:33');
-% S2 = load('output_200/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_11-Sep-2014 17:31:47');
-S2 = load('output_population_200/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=1_11-Sep-2014 18:14:30');
+S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_volume=Inf_population=0_12-Sep-2014 09:11:13');
+% S2 = load('output_200/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_11-Sep-2014 22:33:01');
+% S2 = load('output_500/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_12-Sep-2014 12:04:41');
+S2 = load('output_population_500/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=1_12-Sep-2014 08:59:17');
 
 assert(all(S1.input_periods == S2.input_periods));
 
@@ -30,7 +31,8 @@ for n=1:length(input_period_indices)
     Q1(j:end, n) = 1;
     % S2
     border = S2.arnold_tongue_borders(i);
-    if ~isinf(S2.score_std(i))
+    if ~isinf(S2.score_std(i)) && ~isnan(S2.score_std(i))
+        % FIXME
         j = find(input_amplitudes >= border, 1, 'first') + 1;
     else
         j = find(input_amplitudes >= border, 1, 'first');
@@ -56,3 +58,5 @@ colorbar(...
         'Entrainment for both', ...
     } ...
 );
+
+display(['area ratio: ', num2str(sum(Q2(:)) / sum(Q1(:)))]);

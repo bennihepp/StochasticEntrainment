@@ -1,16 +1,16 @@
 A_0 = 1.0;
 A_1 = 1.0;
 
-omega_0 = 0.5;
-omega_1 = 0.6;
+omega_0 = 3;
+omega_1 = 7;
 
 t0 = 0;
-% tf = 200;
-tf = 5000;
+% tf = 3;
+tf = 500;
 to = (tf - t0) / 5;
-numOfSteps = 1000;
+% numOfSteps = 1000;
 % dt = tf / numOfSteps;
-dt = 0.2;
+dt = 0.02;
 Ntrials = 1000;
 
 disp(['Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
@@ -31,20 +31,27 @@ tic;
 [T, output] = Heuristic_Run(Ntrials, t0, tf, dt, A_0, A_1, omega_0, omega_1, phi_0_rand, phi_1_rand);
 toc
 
-return;
 
 %% plot trajectories
 figure();
-plot(T, output(:, 1));
-title(['y first trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+hold on;
+cmap = colormap('Lines');
+for i=1:3
+    plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
+end
+hold off;
+title(['y single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('time t');
 ylabel('state y');
 
 figure();
-plot(T, mean(output, 2));
+plot(T, mean(output, 2), 'LineWidth', 2.0);
 title(['y average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('time t');
 ylabel('state y');
+
+return;
+
 
 %% cutoff transients
 % offset_time = (tf - t0) / 5;
@@ -59,7 +66,9 @@ output = output(offset:end, :);
 addpath('../');
 
 min_frequency = 0.0;
-max_frequency = 0.19;
+% max_frequency = 0.19;
+max_frequency = 1.99;
+% max_frequency = inf;
 
 omega = [];
 y = [];
@@ -74,13 +83,24 @@ mean_omega = mean(omega, 1);
 
 %% plot spectras
 figure();
+hold on;
+cmap = colormap('Lines');
+for i=1:3
+    plot(mean_omega ./ (2 * pi), mean(abs(y(i,:)), 1) .^ 2, 'Color', cmap(i, :), 'LineWidth', 2.0);
+end
+hold off;
+title(['y single traces fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+xlabel('time t');
+ylabel('state y');
+
+figure();
 plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
 title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('frequency f');
 ylabel('power |y|^2');
 
 figure();
-plot(mean_omega ./ (2 * pi), abs(mean_y) .^ 2);
+plot(mean_omega ./ (2 * pi), abs(mean_y) .^ 2, 'LineWidth', 2.0);
 title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('frequency f');
 ylabel('power |y|^2');

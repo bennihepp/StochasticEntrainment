@@ -4,7 +4,9 @@ addpath('../');
 
 S1 = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_09-Sep-2014 15:31:04');
 % S2 = load('output_population_200/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=5e-13_population=1_10-Sep-2014 09:26:08');
-S2 = load('output_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_10-Sep-2014 23:16:20');
+% S2 = load('output_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_10-Sep-2014 23:16:20');
+% S2 = load('output_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_12-Sep-2014 22:26:37');
+S2 = load('output_population_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_13-Sep-2014 10:42:51');
 % S2 = load('output_population_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_11-Sep-2014 08:23:55');
 
 assert(all(S1.input_periods == S2.input_periods));
@@ -57,3 +59,5 @@ colorbar(...
         'Entrainment for both', ...
     } ...
 );
+
+display(['area ratio: ', num2str(sum(Q2(:)) / sum(Q1(:)))]);

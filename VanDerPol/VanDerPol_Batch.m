@@ -8,17 +8,17 @@ MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 MAX_HARMONIC_N = double(intmax());
 entrainment_ratios = 1;
 
-% volume = inf;
+volume = inf;
 % volume = 1e6;
 % volume = 1e4;
-volume = 5e3; % good results for average entrainment
+% volume = 5e3; % good results for average entrainment
 % volume = 1e3;
 % volume = 1e2;
 
 if volume == inf
     Ntrials = 1;
 else
-    Ntrials = 25;
+    Ntrials = 1000;
 end
 
 dt = 1e-1;
@@ -30,6 +30,7 @@ disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str
 t0 = 0;
 tf = 10000;
 to = (tf - t0) / 5;
+% to = tf - 50;
 
 % % input_amplitude = 1.0;
 % % input_amplitude = 0.8;
@@ -43,6 +44,9 @@ input_offset = 0.0;
 input_period = 12;
 input_amplitude = 0.2;
 % input_amplitude = 0.4;
+
+input_period = 15;
+input_amplitude = 0.25;
 
 min_frequency = 0.01;
 max_frequency = 1.0;
@@ -58,31 +62,72 @@ tic;
 [T, output] = VanDerPol_Run2(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period);
 toc
 
-%% plot trajectories
-figure();
-hold on;
-plot(T, output(:, 1), 'b');
-plot(T, output(:, 2), 'r');
-plot(T, output(:, 3), 'g');
-hold off;
-title(['y(1) single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-xlabel('time t');
-ylabel('state y(1)');
+% filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ',_amplitude=', num2str(input_amplitude), ',_period=', num2str(input_period), '.mat'];
+% save(filename);
 
-figure();
-plot(T, mean(output, 2));
-title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-xlabel('time t');
-ylabel('state y(1)');
+
+%% plot trajectories
+% figure();
+% plot(T, output(:, 1));
+% title(['y(1) single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+% xlabel('time t');
+% ylabel('state y(1)');
+
+% figure();
+% plot(T, mean(output, 2), 'LineWidth', 2.0);
+% title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+% xlabel('time t');
+% ylabel('state y(1)');
+
+return;
 
 %% cutoff transients
 % offset_time = (tf - t0) / 5;
 % offset_time = max(offset_time, 1000);
 offset_time = to;
 offset = find(T >= offset_time, 1);
-T = T(offset:end);
-output = output(offset:end, :);
+T = T(offset:end-1);
+output = output(offset:end-1, :);
 
+
+%% plot traces after transients
+
+w = find(T > T(end) - 1100, 1);
+q = find(T > T(w) - 50, 1);
+TT = T(q:w);
+TT = TT - TT(1);
+trunc = output(q:w, :);
+
+%% plot traces after transients
+figure;
+%     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
+plot(TT, trunc(:, 1), 'LineWidth', 2.0);
+title(['y(1) single trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+xlabel('time t');
+ylabel('state y');
+
+figure;
+cmap = colormap('Lines');
+hold on;
+for i=1:3
+%     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
+    plot(TT, trunc(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
+end
+hold off;
+title(['y(1) single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+xlabel('time t');
+ylabel('state y');
+
+figure();
+% plot(T, mean(output, 2), 'LineWidth', 2.0);
+plot(TT, mean(trunc, 2), 'LineWidth', 2.0);
+title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+xlabel('time t');
+ylabel('state y(1)');
+
+
+%% substract mean
+output = output - repmat(mean(output, 1), [size(output, 1), 1]);
 
 %% compute spectras
 addpath('../');
@@ -118,24 +163,22 @@ ylabel('power |y|^2');
 
 
 %% plot phase distribution of natural mode and input mode
-NUM_OF_BINS = 50;
+NUM_OF_BINS = 100;
+bins = linspace(-pi, pi, NUM_OF_BINS);
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
 figure();
-hist(angle(y(:, ind)), NUM_OF_BINS);
+hist(angle(y(:, ind)), bins);
 title(['phase distribution of natural mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
 
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
 figure();
-hist(angle(y(:, ind)), NUM_OF_BINS);
+hist(angle(y(:, ind)), bins);
 title(['phase distribution of input mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
 
-
-% filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' offset=', num2str(TNF_offset), ' amplitude=', num2str(TNF_amplitude), ' period=', num2str(TNF_period), '.mat'];
-% save(filename);
 
 %% compute autocorrelation if only one trajectory is simulated
 if Ntrials == 1

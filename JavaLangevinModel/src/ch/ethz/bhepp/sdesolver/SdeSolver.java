@@ -25,7 +25,7 @@ public class SdeSolver {
 		int k = 0;
 		record(0, T, X);
 		k++;
-		while (stepper.getTime() < tf) {
+		while (stepper.getTime() <= tf || k < numOfStepsToRecord) {
 			stepper.step();
 			if (stepper.getTime() >= k * recordStep) {
 				record(k, T, X);

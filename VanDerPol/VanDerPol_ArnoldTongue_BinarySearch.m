@@ -1,4 +1,4 @@
-function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input_amplitude_tolerance, Ntrials, population_average)
+function VanDerPol_ArnoldTongue_BinarySearch(output_folder, volume, input_periods, input_amplitude_tolerance, Ntrials, population_average)
     Nthreads = 8;
     setenv('NUM_OF_THREADS', int2str(Nthreads));
     ENTRAINMENT_THRESHOLD = 0.9;
@@ -9,7 +9,7 @@ function VanDerPol_ArnoldTongue_BinarySearch(output_folder, input_periods, input
     natural_period = 1/0.1065;
     entrainment_ratios = 1;
 
-    volume = inf;
+%     volume = inf;
 %     volume = 5e3;
 
     if volume == inf

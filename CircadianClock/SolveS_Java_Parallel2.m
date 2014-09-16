@@ -2,9 +2,9 @@
 % time in minutes
 function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
                             input_offset, input_amplitude, input_frequency, Ntrials, ...
-                            recordStep, seed)
+                            recordStep, seed, printMessages)
 
-    DEFAULT_NUM_OF_THREADS = 4;
+    DEFAULT_NUM_OF_THREADS = 8;
 
     NthreadsStr = getenv('NUM_OF_THREADS');
     if ~isempty(NthreadsStr)
@@ -22,6 +22,10 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
 
     if nargin < 10
         seed = randi([0, 2.^31-2]);
+    end
+
+    if nargin < 11
+        printMessages = false;
     end
 
     if Ntrials > 1 && volume == inf && size(x0, 1) == 1
@@ -86,7 +90,7 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
             x0Matrix.set(i-1, n-1, x0(i, n));
         end
     end
-    sdeSolutions = parallelSolver.solve(Ntrials, 0, x0Matrix, tf, recordStep);
+    sdeSolutions = parallelSolver.solve(Ntrials, 0, x0Matrix, tf, recordStep, printMessages);
 
     for n=1:Ntrials
         sdeSolution = sdeSolutions.get(n - 1);

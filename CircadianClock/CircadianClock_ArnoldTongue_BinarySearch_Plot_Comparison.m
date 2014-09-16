@@ -14,13 +14,16 @@ assert(all(S1.input_periods == S2.input_periods));
 
 input_periods = S1.input_periods;
 input_period_indices = 1:length(input_periods);
+
 % i1 = find(S.input_periods >= 4.0, 1, 'first');
-% i2 = find(S.input_periods <= 20.0, 1, 'last');
-% input_period_indices = i1:i2;
-% input_periods = S.input_periods(input_period_indices);
+i1 = 1;
+i2 = find(S1.input_periods <= 35.0, 1, 'last');
+input_period_indices = i1:i2;
+input_periods = S1.input_periods(input_period_indices);
 
 % input_amplitudes = S.min_input_amplitude:S.input_amplitude_tolerance:S.max_input_amplitude;
 input_amplitudes = S1.min_input_amplitude:S1.input_amplitude_tolerance:S1.max_input_amplitude;
+input_amplitudes = S1.min_input_amplitude:S1.input_amplitude_tolerance:0.6;
 
 Q1 = zeros(length(input_amplitudes), length(input_period_indices));
 Q2 = zeros(length(input_amplitudes), length(input_period_indices));
@@ -60,3 +63,5 @@ colorbar(...
         'Entrainment for both', ...
     } ...
 );
+
+display(['area ratio: ', num2str(sum(Q2(:)) / sum(Q1(:)))]);

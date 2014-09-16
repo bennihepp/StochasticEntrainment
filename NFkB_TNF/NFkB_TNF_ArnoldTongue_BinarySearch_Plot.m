@@ -4,6 +4,8 @@ S = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_09-S
 % S = load('output_population_200/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=5e-13_population=1_10-Sep-2014 09:26:08');
 % S = load('output_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_10-Sep-2014 23:16:20');
 % S = load('output_population_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_11-Sep-2014 08:23:55');
+S = load('output_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_12-Sep-2014 22:26:37');
+% S = load('output_population_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_13-Sep-2014 10:42:51');
 
 input_periods = S.input_periods;
 input_period_indices = 1:length(input_periods);

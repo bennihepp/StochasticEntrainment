@@ -4,7 +4,7 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
                             input_offset, input_amplitude, input_frequency, Ntrials, ...
                             recordStep, seed, printProgress)
 
-    DEFAULT_NUM_OF_THREADS = 4;
+    DEFAULT_NUM_OF_THREADS = 8;
 
     NthreadsStr = getenv('NUM_OF_THREADS');
     if ~isempty(NthreadsStr)

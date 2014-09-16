@@ -1,4 +1,8 @@
-function [T, output] = CircadianClock_Run(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period)
+function [T, output] = CircadianClock_Run(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period, printMessages)
+
+    if nargin < 10
+        printMessages = false;
+    end
 
     um = 1.0;
     x0 = [0.1; 0.25; 0.25; 0.25; 0.25] * um;
@@ -13,7 +17,7 @@ function [T, output] = CircadianClock_Run(Ntrials, t0, tf, dt, recordStep, volum
     if do_parallel
         [T, X, ~] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
             input_offset, input_amplitude, input_frequency, Ntrials, ...
-            recordStep);
+            recordStep, printMessages);
     else
         [T, X, ~] = SolveS_Java(x0, tf, dt, volume, ...
             input_offset, input_amplitude, input_frequency, Ntrials, ...

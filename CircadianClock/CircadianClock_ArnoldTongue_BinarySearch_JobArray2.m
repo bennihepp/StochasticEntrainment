@@ -51,7 +51,7 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ..
         volume = 1e-20;
 
         dt = 0.002;
-        recordStep = 100 * dt;
+        recordStep = 400 * dt;
 
 %         if volume == inf
 %             Ntrials_levels = [1];
