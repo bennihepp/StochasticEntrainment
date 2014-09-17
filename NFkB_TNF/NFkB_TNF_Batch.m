@@ -2,7 +2,7 @@ natural_period = 2.1013;
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
 PERIOD_MULTIPLE_THRESHOLD = 0.01;
-FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
+FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.05;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 % MAX_HARMONIC_N = 15;
 MAX_HARMONIC_N = double(intmax());
@@ -30,7 +30,7 @@ entrainment_ratios = 1:2;
 
 %% parameters
 
-volume = inf;
+% volume = inf;
 % volume = 1e-10;
 
 % volume = 5e-12;
@@ -39,13 +39,13 @@ volume = 2e-11;
 
 if volume == inf
     Ntrials = 1;
-    dt = 0.0001;
-    recordStep = 1000 * dt;
 else
     Ntrials = 100;
-    dt = 0.0001;
-    recordStep = 100 * dt;
+    Ntrials = 50;
 end
+
+dt = 0.0001;
+recordStep = 100 * dt;
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
@@ -85,26 +85,38 @@ input_amplitude = 0.05;
 input_period = 2.4;
 input_amplitude = 0.025;
 
-input_period = 2.26;
+input_period = 2.24;
+% input_period = 2.26;
 input_amplitude = 0.05;
 
 % min_frequency = 0.001;
-% max_frequency = 20.0;
-
-% min_frequency = 0.001;
 min_frequency = 0.0;
-max_frequency = 50.0;
+% max_frequency = inf;
+% max_frequency = 50.0;
+max_frequency = 10.0;
+
+
+%% create options structure
+S = struct();
+S.min_frequency = min_frequency;
+S.max_frequency = max_frequency;
+S.natural_period = natural_period;
+S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
+S.MAX_HARMONIC_N = MAX_HARMONIC_N;
+S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
+S.entrainment_ratios = entrainment_ratios;
+
 
 %% simulate
 tic;
 printProgress = true;
-[T, output] = NFkB_TNF_Run(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period, printProgress);
+[T, original_output] = NFkB_TNF_Run(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period, printProgress);
 toc
+output = original_output;
 
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), '_offset=', num2str(input_offset), ',_amplitude=', num2str(input_amplitude), ',_period=', num2str(input_period), '.mat'];
 % save(filename);
 
-return;
 
 % %% plot trajectories
 % figure();
@@ -198,11 +210,11 @@ mean_y = mean(y, 1);
 mean_omega = mean(omega, 1);
 
 %% plot spectras
+figure();
+plot_spectrum_and_mark_harmonics(mean_omega, y(1, :), 2*pi/input_period, 'red', S, 1);
 % figure();
 % plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
-% title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-% xlabel('frequency f');
-% ylabel('power |y|^2');
+title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 
 figure();
 plot(mean_omega ./ (2 * pi), abs(mean_y) .^ 2);
@@ -337,13 +349,6 @@ end
 %     Q_mean = power_input / power_natural;
 %     W_mean = power_input / power_total;
 % end
-
-S = struct();
-S.natural_period = natural_period;
-S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
-S.MAX_HARMONIC_N = MAX_HARMONIC_N;
-S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
-S.entrainment_ratios = entrainment_ratios;
 
 Omega = mean_omega;
 W = zeros(Ntrials, 1);

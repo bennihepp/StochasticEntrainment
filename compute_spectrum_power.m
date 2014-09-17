@@ -11,8 +11,14 @@ function power = compute_spectrum_power(omega, y, om, dom)
         
         if i1 == i2 || i1 > i2
     %         warning('using only one entry for power computation');
-            [~, i1] = min(abs(omega - om));
-            i2 = i1;
+            [~, I] = min(abs(omega - om));
+            if isempty(I)
+                power = 0;
+                return;
+            else
+                i1 = I(1);
+                i2 = I(1);
+            end
         end
 
         power = sum(abs(y(i1:i2) .^ 2));
