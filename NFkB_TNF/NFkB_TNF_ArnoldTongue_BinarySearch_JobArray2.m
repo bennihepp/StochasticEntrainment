@@ -28,7 +28,7 @@ function NFkB_TNF_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
         ENTRAINMENT_THRESHOLD = 0.9;
         MAX_HARMONIC_N = double(intmax());
         MIN_HARMONICS_POWER_THRESHOLD = 0.0;
-        FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
+        FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.05;
     %     STD_ESTIMATION_SIZE = 3;
         natural_period = 2.1013;
         entrainment_ratios = 1:2;
