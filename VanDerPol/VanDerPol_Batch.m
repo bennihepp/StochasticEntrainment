@@ -100,30 +100,39 @@ trunc = output(q:w, :);
 
 %% plot traces after transients
 figure;
+set(gca(), 'FontSize', 30);
 %     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
 plot(TT, trunc(:, 1), 'LineWidth', 2.0);
-title(['y(1) single trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+xlim([0, 50]);
+ylim([-1.2, 1.2]);
+% title(['y(1) single trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('time t');
-ylabel('state y');
+ylabel('state x(1)');
 
 figure;
+set(gca(), 'FontSize', 20);
 cmap = colormap('Lines');
 hold on;
 for i=1:3
 %     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
     plot(TT, trunc(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
 end
+xlim([0, 50]);
+ylim([-1.2, 1.2]);
 hold off;
-title(['y(1) single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+% title(['y(1) single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('time t');
-ylabel('state y');
+ylabel('state x(1)');
 
 figure();
+set(gca(), 'FontSize', 20);
 % plot(T, mean(output, 2), 'LineWidth', 2.0);
 plot(TT, mean(trunc, 2), 'LineWidth', 2.0);
-title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+xlim([0, 50]);
+ylim([-1.2, 1.2]);
+% title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 xlabel('time t');
-ylabel('state y(1)');
+ylabel('state x(1)');
 
 
 %% substract mean
@@ -167,15 +176,17 @@ NUM_OF_BINS = 100;
 bins = linspace(-pi, pi, NUM_OF_BINS);
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
 figure();
+set(gca(), 'FontSize', 20);
 hist(angle(y(:, ind)), bins);
-title(['phase distribution of natural mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
+% title(['phase distribution of natural mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
 
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
 figure();
+set(gca(), 'FontSize', 20);
 hist(angle(y(:, ind)), bins);
-title(['phase distribution of input mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
+% title(['phase distribution of input mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
 

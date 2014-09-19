@@ -1,14 +1,17 @@
-HEATMAP_TYPE = 'surface';
-
+HEATMAP_TYPE = 'matrix';
 addpath('../');
+
+export_eps = true;
+% export_eps = false;
 
 % S1 = load('output/CircadianClock_ArnoldTongue_BinarySearch_29-Aug-2014 11:28:54');
 % S1 = load('output/CircadianClock_ArnoldTongue_BinarySearch_02-Sep-2014 16:30:40');
 S1 = load('output/CircadianClock_ArnoldTongue_BinarySearch_09-Sep-2014 12:45:00');
 % S2 = load('output/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=0_01-Sep-2014 16:33:13');
 % S2 = load('output/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=1_01-Sep-2014 06:58:41');
-S2 = load('output_200/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=0_09-Sep-2014 23:14:44');
-% S2 = load('output_population_200/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=1_09-Sep-2014 23:15:58');
+% S2 = load('output_200/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=0_09-Sep-2014 23:14:44');
+% S2 = load('output_1000/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=0_19-Sep-2014 14:37:29');
+S2 = load('output_population_200/CircadianClock_ArnoldTongue_BinarySearch_JobArray_volume=1e-20_population=1_09-Sep-2014 23:15:58');
 
 assert(all(S1.input_periods == S2.input_periods));
 
@@ -49,8 +52,13 @@ end
 Q = Q1 + 2 * Q2;
 
 figure();
+if export_eps
+    set(gca(), 'FontSize', 20);
+end
 plot_heatmap(input_periods, input_amplitudes, Q, HEATMAP_TYPE, levels);
-title(['arnold tongue comparison for volume1=', num2str(S1.volume), ' and volume2=', num2str(S2.volume)]);
+if ~export_eps
+    title(['arnold tongue comparison for volume1=', num2str(S1.volume), ' and volume2=', num2str(S2.volume)]);
+end
 xlabel('input period');
 ylabel('input amplitude');
 % colorbar(...
@@ -65,3 +73,12 @@ ylabel('input amplitude');
 % );
 
 display(['area ratio: ', num2str(sum(Q2(:)) / sum(Q1(:)))]);
+
+if export_eps
+    if S2.population_average
+        filename = ['../paper/figures/circadian_comparison_arnold_tongue_population_volume1=', num2str(S1.volume), '_volume2=', num2str(S2.volume), '.eps'];
+    else
+        filename = ['../paper/figures/circadian_comparison_arnold_tongue_volume1=', num2str(S1.volume), '_volume2=', num2str(S2.volume), '.eps'];
+    end
+    saveas(gcf(), filename, 'psc2');
+end

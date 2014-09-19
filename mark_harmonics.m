@@ -24,14 +24,14 @@ function mark_harmonics(omega, y, om, color, options, entrainment_ratios)
         for n=1:S.MAX_HARMONIC_N
             om_harmonic = om_input * n;
             [~, J] = min(abs(omega - om_harmonic));
-            scatter(om_harmonic / (2*pi), abs(y(J)).^2, 100, color, 'x');
+            scatter(om_harmonic / (2*pi), y(J), 100, color, 'x');
             j1 = find(omega >= om_harmonic - dom, 1, 'first');
             j2 = find(omega <= om_harmonic + dom, 1, 'last');
             if ~isempty(j1)
-                scatter(omega(j1) / (2*pi), abs(y(j1)).^2, 100, color, '<');
+                scatter(omega(j1) / (2*pi), y(j1), 100, color, '<');
             end
             if ~isempty(j2)
-                scatter(omega(j2) / (2*pi), abs(y(j2)).^2, 100, color, '>');
+                scatter(omega(j2) / (2*pi), y(j2), 100, color, '>');
             end
             if om_harmonic > 2 * pi * S.max_frequency;
                 break;

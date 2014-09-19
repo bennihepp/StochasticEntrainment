@@ -14,7 +14,7 @@
 %
 
 function CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ...
-    input_periods, input_amplitude_tolerance, Ntrials, population_average)
+    input_periods, input_amplitude_tolerance, Ntrials, population_average, entrainment_threshold)
 
 %     if n == -2
 %         %% compute variances for Ntrials_levels
@@ -40,7 +40,8 @@ function CircadianClock_ArnoldTongue_BinarySearch_JobArray2(n, output_folder, ..
 %     S = load(filename);
 
     if n == -1
-        ENTRAINMENT_THRESHOLD = 0.9;
+%         ENTRAINMENT_THRESHOLD = 0.9;
+        ENTRAINMENT_THRESHOLD = entrainment_threshold;
         MAX_HARMONIC_N = 4;
         MIN_HARMONICS_POWER_THRESHOLD = 0.0;
         FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;

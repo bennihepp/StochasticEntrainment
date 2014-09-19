@@ -1,12 +1,14 @@
-HEATMAP_TYPE = 'surface';
-
+HEATMAP_TYPE = 'matrix';
 addpath('../');
 
-S1 = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_09-Sep-2014 15:31:04');
+export_eps = true;
+% export_eps = false;
+
+S1 = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_19-Sep-2014 15:27:20');
 % S2 = load('output_population_200/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=5e-13_population=1_10-Sep-2014 09:26:08');
-% S2 = load('output_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_10-Sep-2014 23:16:20');
-% S2 = load('output_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_12-Sep-2014 22:26:37');
-S2 = load('output_population_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_13-Sep-2014 10:42:51');
+S2 = load('output_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_10-Sep-2014 23:16:20');
+% S2 = load('output_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_19-Sep-2014 14:41:01');
+% S2 = load('output_population_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_13-Sep-2014 10:42:51');
 % S2 = load('output_population_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_11-Sep-2014 08:23:55');
 
 assert(all(S1.input_periods == S2.input_periods));
@@ -45,19 +47,33 @@ end
 Q = Q1 + 2 * Q2;
 
 figure();
+if export_eps
+    set(gca(), 'FontSize', 20);
+end
 plot_heatmap(input_periods, input_amplitudes, Q, HEATMAP_TYPE, levels);
-title(['arnold tongue comparison for volume1=', num2str(S1.volume), ' and volume2=', num2str(S2.volume)]);
+if ~export_eps
+    title(['arnold tongue comparison for volume1=', num2str(S1.volume), ' and volume2=', num2str(S2.volume)]);
+end
 xlabel('input period');
 ylabel('input amplitude');
-colorbar(...
-    'Location', 'SouthOutside', ...
-    'XTick', [0, 1, 2, 3], ...
-    'XTickLabel', { ...
-        'No entrainment', ...
-        ['Entrainment for volume=', num2str(S1.volume)], ...
-        ['Entrainment for volume=', num2str(S2.volume)], ...
-        'Entrainment for both', ...
-    } ...
-);
+% colorbar(...
+%     'Location', 'SouthOutside', ...
+%     'XTick', [0, 1, 2, 3], ...
+%     'XTickLabel', { ...
+%         'No entrainment', ...
+%         ['Entrainment for volume=', num2str(S1.volume)], ...
+%         ['Entrainment for volume=', num2str(S2.volume)], ...
+%         'Entrainment for both', ...
+%     } ...
+% );
 
 display(['area ratio: ', num2str(sum(Q2(:)) / sum(Q1(:)))]);
+
+if export_eps
+    if S2.population_average
+        filename = ['../paper/figures/nfkb_comparison_arnold_tongue_population_volume1=', num2str(S1.volume), '_volume2=', num2str(S2.volume), '.eps'];
+    else
+        filename = ['../paper/figures/nfkb_comparison_arnold_tongue_volume1=', num2str(S1.volume), '_volume2=', num2str(S2.volume), '.eps'];
+    end
+    saveas(gcf(), filename, 'psc2');
+end

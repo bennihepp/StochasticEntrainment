@@ -30,18 +30,28 @@ entrainment_ratios = 1:2;
 
 %% parameters
 
-% volume = inf;
-% volume = 1e-10;
+%% input_period = 2.34, input_amplitude = 0.027
+% volume = Inf; % 0 out of 1 entrain
+% volume = 1e-10; % 4 out of 16 entrain
+% volume = 5e-11; % 12 out of 16 entrain
+% volume = 4e-11; % 12 out of 16 entrain
+% volume = 3e-11; % 11 out of 16 entrain
+% volume = 2e-11; % 11 out of 16 entrain
+% volume = 1e-11; % 1 out of 16 entrain
+% volume = 5e-12; % 0 out of 16 entrain
 
+volume = inf;
+% volume = 2e-11;
+
+% volume = 1e-10;
 % volume = 5e-12;
 % volume = 1e-11;
-volume = 2e-11;
 
 if volume == inf
     Ntrials = 1;
 else
-    Ntrials = 100;
-    Ntrials = 50;
+    Ntrials = 1000;
+    Ntrials = 16;
 end
 
 dt = 0.0001;
@@ -72,22 +82,12 @@ input_offset = 1.0;
 % input_period = 36.0;
 % input_amplitude = 0.5;
 
-input_period = 2.1013;
-input_amplitude = 0.2;
+% input_period = 2.1013;
+% input_amplitude = 0.2;
 
-input_period = 2.28;
-input_amplitude = 0.1;
-
-input_period = 2.28;
-input_amplitude = 0.016;
-input_amplitude = 0.05;
-
-input_period = 2.4;
-input_amplitude = 0.025;
-
-input_period = 2.24;
-% input_period = 2.26;
-input_amplitude = 0.05;
+input_period = 2.34;
+input_amplitude = 0.027;
+% input_amplitude = 0.029;
 
 % min_frequency = 0.001;
 min_frequency = 0.0;
@@ -118,24 +118,25 @@ output = original_output;
 % save(filename);
 
 
-% %% plot trajectories
-% figure();
-% plot(T, output(:, 1));
-% hold on;
-% plot([to, to], ylim(), '-r');
-% hold off;
-% title(['y(1) first trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-% xlabel('time t');
-% ylabel('state y(1)');
-% 
-% figure();
-% plot(T, mean(output, 2));
-% hold on;
-% plot([to, to], ylim(), '-r');
-% hold off;
-% title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-% xlabel('time t');
-% ylabel('state y(1)');
+%% plot trajectories
+j = 1;
+figure();
+plot(T, output(:, j));
+hold on;
+plot([to, to], ylim(), '-r');
+hold off;
+title(['y(1) first trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+xlabel('time t');
+ylabel('state y(1)');
+
+figure();
+plot(T, mean(output, 2));
+hold on;
+plot([to, to], ylim(), '-r');
+hold off;
+title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+xlabel('time t');
+ylabel('state y(1)');
 
 
 %% cutoff transients
@@ -149,37 +150,38 @@ output = output(offset:end, :);
 
 %% plot traces after transients
 
-w = find(T > T(end) - 50, 1);
-q = find(T > T(w) - 10, 1);
-TT = T(q:w);
-TT = TT - TT(1);
-trunc = output(q:w, :);
-
-figure;
-%     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
-plot(TT, trunc(:, 1), 'LineWidth', 2.0);
-title(['y(1) single trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
-xlabel('time t');
-ylabel('state y');
-
-figure;
-hold on;
-cmap = colormap('Lines');
-for i=1:3
-%     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
-    plot(TT, trunc(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
-end
-hold off;
-title(['y(1) single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
-xlabel('time t');
-ylabel('state y');
-
-figure();
-% plot(T, mean(output, 2), 'LineWidth', 2.0);
-plot(TT, mean(trunc, 2), 'LineWidth', 2.0);
-title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-xlabel('time t');
-ylabel('state y(1)');
+% w = find(T > T(end) - 50, 1);
+% q = find(T > T(w) - 10, 1);
+% TT = T(q:w);
+% TT = TT - TT(1);
+% trunc = output(q:w, :);
+% 
+% j = 2;
+% figure;
+% %     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
+% plot(TT, trunc(:, j), 'LineWidth', 2.0);
+% title(['y(1) single trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+% xlabel('time t');
+% ylabel('state y');
+% 
+% figure;
+% hold on;
+% cmap = colormap('Lines');
+% for i=1:min([Ntrials, 3])
+% %     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
+%     plot(TT, trunc(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
+% end
+% hold off;
+% title(['y(1) single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+% xlabel('time t');
+% ylabel('state y');
+% 
+% figure();
+% % plot(T, mean(output, 2), 'LineWidth', 2.0);
+% plot(TT, mean(trunc, 2), 'LineWidth', 2.0);
+% title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+% xlabel('time t');
+% ylabel('state y(1)');
 
 
 %% substract mean
@@ -210,17 +212,16 @@ mean_y = mean(y, 1);
 mean_omega = mean(omega, 1);
 
 %% plot spectras
+j = 1;
 figure();
-plot_spectrum_and_mark_harmonics(mean_omega, y(1, :), 2*pi/input_period, 'red', S, 1);
+plot_spectrum_and_mark_harmonics(mean_omega, abs(y(j, :)).^2, 2*pi/input_period, 'red', S, 1);
 % figure();
 % plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
 title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 
 figure();
-plot(mean_omega ./ (2 * pi), abs(mean_y) .^ 2);
+plot_spectrum_and_mark_harmonics(mean_omega, abs(mean_y) .^ 2, 2*pi/input_period, 'red', S, 1);
 title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
-xlabel('frequency f');
-ylabel('power |y|^2');
 
 figure();
 plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2);
@@ -363,5 +364,6 @@ disp(['average individual entrainment score: ', num2str(mean(W)), ' +- ', num2st
 avg_upper_50_score = sort(W);
 avg_upper_50_score = mean(avg_upper_50_score(round(length(avg_upper_50_score) / 2):end));
 disp(['average individual upper 50% percentile score: ', num2str(avg_upper_50_score)]);
+disp(['number of individuals above 0.9: ', int2str(sum(W >= 0.9))]);
 % Q_mean
 disp(['complex average entrainment score: ', num2str(W_mean)]);
