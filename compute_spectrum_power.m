@@ -8,7 +8,7 @@ function power = compute_spectrum_power(omega, y, om, dom)
         power = 0;
 
     else
-        
+
         if i1 == i2 || i1 > i2
     %         warning('using only one entry for power computation');
             [~, I] = min(abs(omega - om));

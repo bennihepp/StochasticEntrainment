@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix2D;
+import ch.ethz.bhepp.utils.FiniteTimeSolution;
 
 public class ParallelSdeSolver {
 
@@ -60,32 +61,32 @@ public class ParallelSdeSolver {
 			startPool();
 	}
 
-	public List<SdeSolution> solve(int samples, double t0, DoubleMatrix2D X0, double tf) throws Exception {
+	public List<FiniteTimeSolution> solve(int samples, double t0, DoubleMatrix2D X0, double tf) throws Exception {
 		return solve(samples, t0, X0, tf, 1.0, false);
 	}
 
-	public List<SdeSolution> solve(int samples, double t0, DoubleMatrix2D X0, double tf, boolean printProgress) throws Exception {
+	public List<FiniteTimeSolution> solve(int samples, double t0, DoubleMatrix2D X0, double tf, boolean printProgress) throws Exception {
 		return solve(samples, t0, X0, tf, 1.0, printProgress);
 	}
 
-	public List<SdeSolution> solve(int samples, final double t0, DoubleMatrix2D X0, final double tf, final double recordStep) throws Exception {
+	public List<FiniteTimeSolution> solve(int samples, final double t0, DoubleMatrix2D X0, final double tf, final double recordStep) throws Exception {
 		return solve(samples, t0, X0, tf, recordStep, false);
 	}
 
-	public List<SdeSolution> solve(int samples, final double t0, DoubleMatrix2D X0, final double tf, final double recordStep, boolean printProgress) throws Exception {
+	public List<FiniteTimeSolution> solve(int samples, final double t0, DoubleMatrix2D X0, final double tf, final double recordStep, boolean printProgress) throws Exception {
 		assert(samples > 0);
 		ensurePoolStarted();
-		ExecutorCompletionService<SdeSolution> ecs = new ExecutorCompletionService<>(executor);
-		List<SdeSolution> solutions = new ArrayList<>(samples);
+		ExecutorCompletionService<FiniteTimeSolution> ecs = new ExecutorCompletionService<>(executor);
+		List<FiniteTimeSolution> solutions = new ArrayList<>(samples);
 		for (int i=0; i < samples; i++) {
 			SdeStepper stepper = stepperFactory.createStepper();
 			final DoubleMatrix1D x0 = X0.viewColumn(i);
 			final SdeSolver solver = new SdeSolver(stepper);
-			Callable<SdeSolution> task = new Callable<SdeSolution>() {
+			Callable<FiniteTimeSolution> task = new Callable<FiniteTimeSolution>() {
 
 				@Override
-				public SdeSolution call() throws Exception {
-					SdeSolution solution = solver.solve(t0, x0, tf, recordStep);
+				public FiniteTimeSolution call() throws Exception {
+					FiniteTimeSolution solution = solver.solve(t0, x0, tf, recordStep);
 					return solution;
 				}
 
@@ -93,8 +94,8 @@ public class ParallelSdeSolver {
 			ecs.submit(task);
 		}
 		for (int i=0; i < samples; i++) {
-			Future<SdeSolution> future = ecs.take();
-			SdeSolution solution = future.get();
+			Future<FiniteTimeSolution> future = ecs.take();
+			FiniteTimeSolution solution = future.get();
 			solutions.add(solution);
 			if (printProgress) {
 				System.out.print("\r" + (i+1) + " out of " + samples + " samples finished");

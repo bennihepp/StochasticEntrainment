@@ -18,7 +18,7 @@ volume = inf;
 if volume == inf
     Ntrials = 1;
 else
-    Ntrials = 1000;
+    Ntrials = 500;
 end
 
 dt = 1e-1;
@@ -48,6 +48,11 @@ input_amplitude = 0.2;
 input_period = 15;
 input_amplitude = 0.25;
 
+input_period = natural_period;
+% input_amplitude = 0.0;
+input_amplitude = 0.1;
+% initial_phase = 0 * pi;
+
 min_frequency = 0.01;
 max_frequency = 1.0;
 min_frequency = 0.0;
@@ -59,7 +64,8 @@ multiplicative_forcing_func = @(t, x) 0;
 %% simulate
 tic;
 % [T, output] = VanDerPol_Run(Ntrials, t0, tf, dt, volume, additive_forcing_func, multiplicative_forcing_func);
-[T, output] = VanDerPol_Run2(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period);
+[T, output] = VanDerPol_Run2(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period, initial_phase);
+forcing = input_offset + input_amplitude * sin(2*pi*T./input_period + initial_phase);
 toc
 
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ',_amplitude=', num2str(input_amplitude), ',_period=', num2str(input_period), '.mat'];
@@ -86,19 +92,30 @@ return;
 % offset_time = max(offset_time, 1000);
 offset_time = to;
 offset = find(T >= offset_time, 1);
+% TODO
+offset = find(T >= 500*input_period, 1) - 1;
+offset = 1;
 T = T(offset:end-1);
 output = output(offset:end-1, :);
+forcing = forcing(offset:end-1);
 
 
 %% plot traces after transients
 
 w = find(T > T(end) - 1100, 1);
-q = find(T > T(w) - 50, 1);
+q = find(T > T(w) - 100, 1);
+% q = find(T >= 500*input_period, 1) - 1;
+% w = find(T > T(q) + 100, 1);
 TT = T(q:w);
 TT = TT - TT(1);
 trunc = output(q:w, :);
+FF = forcing(q:w);
 
 %% plot traces after transients
+figure();
+plot(TT, FF);
+xlim([0, 50]);
+
 figure;
 set(gca(), 'FontSize', 30);
 %     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
@@ -113,7 +130,7 @@ figure;
 set(gca(), 'FontSize', 20);
 cmap = colormap('Lines');
 hold on;
-for i=1:3
+for i=1:min(Ntrials, 3)
 %     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
     plot(TT, trunc(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
 end
@@ -134,9 +151,43 @@ ylim([-1.2, 1.2]);
 xlabel('time t');
 ylabel('state x(1)');
 
+width = 10;
+height = 3;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+hold on;
+%cmap = colormap('Lines');
+color1 = [0, 0, 1.0];
+color2 = [0, 1.0, 1.0];
+color3 = [0, 1.0, 0.0];
+% average_color = [1.0, 0.5, 0.0];
+average_color = [241, 140, 22] / 255;
+cmap = [color1; color2; color3];
+for i=1:3
+    plot(TT, trunc(:, i), 'Color', cmap(i, :), 'LineWidth', 1.0);
+end
+plot(TT, mean(trunc, 2), '-', 'Color', average_color, 'LineWidth', 2.0);
+xlabel('time t');
+ylabel('state y');
+hold off;
+save_plot([export_eps_prefix(), 'vanderpol_average_and_single_trace'], h, width, height);
+
+% width = 10;
+% height = 3;
+% fontSize = 0.5 * (width * height);
+% h = prepare_plot(width, height, fontSize);
+% hold on;
+% deterministic_color = [0.9, 0.0, 0.0];
+% plot(TT, mean(trunc, 2), '-', 'Color', deterministic_color, 'LineWidth', 1.0);
+% xlabel('time t');
+% ylabel('state y');
+% hold off;
+% save_plot([export_eps_prefix(), 'vanderpol_deterministic_trace'], h, width, height);
+
 
 %% substract mean
 output = output - repmat(mean(output, 1), [size(output, 1), 1]);
+forcing = forcing - mean(forcing);
 
 %% compute spectras
 addpath('../');
@@ -150,6 +201,7 @@ for i=Ntrials:-1:1
 end
 mean_y = mean(y, 1);
 mean_omega = mean(omega, 1);
+[~, ff_spectrum] = compute_normalized_fft_truncated(forcing, recordStep, 2*pi*min_frequency, 2*pi*max_frequency);
 
 %% plot spectras
 figure();
@@ -170,10 +222,67 @@ title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(
 xlabel('frequency f');
 ylabel('power |y|^2');
 
+figure();
+plot(mean_omega ./ (2 * pi), abs(ff_spectrum) .^ 2);
+title(['forcing fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
+xlabel('frequency f');
+ylabel('power |y|^2');
+
 
 %% plot phase distribution of natural mode and input mode
-NUM_OF_BINS = 100;
+NUM_OF_BINS = 200;
 bins = linspace(-pi, pi, NUM_OF_BINS);
+
+width = 10;
+height = 4;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+subplot(2, 1, 1);
+hold on;
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
+hist(angle(ff_spectrum(:, ind)), bins);
+xlim([-pi, pi]);
+p = findobj(gca, 'Type', 'patch');
+set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
+hold off;
+%xlabel('phase');
+set(gca(), 'xtick', []);
+ylabel('occurence');
+%save_plot('../paper/figures/vanderpol_phase_dist_natural', h, width, height);
+% subplot(2, 1, 1);
+% hold on;
+% [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
+% [nelements, centers] = hist(angle(y5(:, ind)), bins);
+% bar(centers, nelements / sum(nelements), 'hist');
+% xlim([-pi, pi]);
+% p = findobj(gca, 'Type', 'patch');
+% set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
+% hold off;
+% % xlabel('phase');
+% ylabel('occurence');
+% set(gca(), 'xtick', []);
+subplot(2, 1, 2);
+hold on;
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
+[nelements, centers] = hist(angle(y(:, ind)), bins);
+bar(centers, nelements / sum(nelements), 'hist');
+xlim([-pi, pi]);
+p = findobj(gca, 'Type', 'patch');
+set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
+hold off;
+xlabel('phase');
+ylabel('occurence');
+%save_plot('../paper/figures/vanderpol_phase_dist_input', h, width, height);
+% save_plot([export_eps_prefix(), 'vanderpol_forcing_phase_synchronization_dist'], h, width, height);
+
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
+figure();
+set(gca(), 'FontSize', 20);
+hist(angle(ff_spectrum(:, ind)), bins);
+ title(['phase distribution of forcing']);
+xlabel('phase');
+ylabel('occurence');
+
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
 figure();
 set(gca(), 'FontSize', 20);
@@ -189,6 +298,44 @@ hist(angle(y(:, ind)), bins);
 % title(['phase distribution of input mode for volume=', num2str(volume), ', input period=', num2str(input_period), ', input amplitude=', num2str(input_amplitude), ', Ntrials=', int2str(Ntrials)]);
 xlabel('phase');
 ylabel('occurence');
+
+NUM_OF_BINS = 100;
+bins = linspace(-pi, pi, NUM_OF_BINS);
+width = 10;
+height = 4;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+subplot(2, 1, 1);
+hold on;
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
+hist(angle(y(:, ind)), bins);
+p = findobj(gca, 'Type', 'patch');
+set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
+hold off;
+%xlabel('phase');
+set(gca(), 'xtick', []);
+ylabel('occurence');
+%save_plot('../paper/figures/vanderpol_phase_dist_natural', h, width, height);
+subplot(2, 1, 2);
+hold on;
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
+hist(angle(y(:, ind)), bins);
+p = findobj(gca, 'Type', 'patch');
+set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
+hold off;
+xlabel('phase');
+ylabel('occurence');
+%save_plot('../paper/figures/vanderpol_phase_dist_input', h, width, height);
+save_plot([export_eps_prefix(), 'vanderpol_phase_dist'], h, width, height);
+
+width = 10;
+height = 4;
+fontSize = 20;
+h = prepare_plot(width, height, fontSize);
+plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2, 'Color', 'red', 'LineWidth', 1.5);
+xlabel('frequency f');
+ylabel('power |y|^2');
+save_plot('../paper/figures/vanderpol_single_spectrum', h, width, height);
 
 
 %% compute autocorrelation if only one trajectory is simulated

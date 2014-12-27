@@ -5,13 +5,13 @@ import cern.colt.matrix.DoubleMatrix2D;
 import cern.jet.random.engine.MersenneTwister;
 import ch.ethz.bhepp.sdesolver.EnsurePositiveStateHook;
 import ch.ethz.bhepp.sdesolver.EulerMaruyamaStepper;
-import ch.ethz.bhepp.sdesolver.MatrixHelper;
-import ch.ethz.bhepp.sdesolver.ScalarTrajectoryFunction;
-import ch.ethz.bhepp.sdesolver.SdeSolution;
 import ch.ethz.bhepp.sdesolver.SdeSolver;
 import ch.ethz.bhepp.sdesolver.SdeStepper;
-import ch.ethz.bhepp.sdesolver.SinusoidalFunction;
 import ch.ethz.bhepp.sdesolver.models.NFkBLangevinSde;
+import ch.ethz.bhepp.utils.FiniteTimeSolution;
+import ch.ethz.bhepp.utils.MatrixHelper;
+import ch.ethz.bhepp.utils.ScalarTrajectoryFunction;
+import ch.ethz.bhepp.utils.SinusoidalFunction;
 
 public class NFkBLangevinSolverTest {
 
@@ -46,7 +46,7 @@ public class NFkBLangevinSolverTest {
 		double[] x0 = { 0.3300, 1.0000, 2.7500, 0.1400, 0.9400 };
 		DoubleMatrix1D X0 = MatrixHelper.createDoubleMatrix1D(x0);
 //		DoubleMatrix1D X0 = MatrixHelper.createZeroDoubleMatrix1D(model.getDriftDimension());
-		SdeSolution solution = solver.solve(t0, X0, tf);
+		FiniteTimeSolution solution = solver.solve(t0, X0, tf);
 
 		DoubleMatrix1D T = solution.getT();
 		DoubleMatrix2D X = solution.getX();

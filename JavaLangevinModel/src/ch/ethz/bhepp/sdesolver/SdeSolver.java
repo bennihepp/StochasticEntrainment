@@ -3,6 +3,7 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
+import ch.ethz.bhepp.utils.FiniteTimeSolution;
 
 public class SdeSolver {
 
@@ -12,11 +13,11 @@ public class SdeSolver {
 		this.stepper = stepper;
 	}
 
-	public SdeSolution solve(double t0, DoubleMatrix1D X0, double tf) throws Exception {
+	public FiniteTimeSolution solve(double t0, DoubleMatrix1D X0, double tf) throws Exception {
 		return solve(t0, X0, tf, 1.0);
 	}
 
-	public SdeSolution solve(double t0, DoubleMatrix1D X0, double tf, double recordStep) throws Exception {
+	public FiniteTimeSolution solve(double t0, DoubleMatrix1D X0, double tf, double recordStep) throws Exception {
 		int numOfStepsToRecord = (int)Math.round(Math.ceil((tf - t0) / recordStep) + 1);
 		stepper.setTime(t0);
 		stepper.setState(X0);
@@ -36,7 +37,7 @@ public class SdeSolver {
 				k++;
 			}
 		}
-		return new SdeSolution(T, X);
+		return new FiniteTimeSolution(T, X);
 	}
 
 	private void record(int k, DoubleMatrix1D T, DoubleMatrix2D X) {

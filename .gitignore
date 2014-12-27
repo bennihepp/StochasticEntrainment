@@ -1,5 +1,6 @@
 #JavaLangevinModel/bin
 #*.class
+.DS_Store
 *.m~
 *.sh~
 .classpath

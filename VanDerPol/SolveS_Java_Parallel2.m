@@ -1,7 +1,7 @@
 % volume in liters
 % time in minutes
 function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
-                            input_offset, input_amplitude, input_frequency, Ntrials, ...
+                            input_offset, input_amplitude, input_frequency, initial_phase, Ntrials, ...
                             recordStep, seed)
 
     DEFAULT_NUM_OF_THREADS = 4;
@@ -13,14 +13,14 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
         Nthreads = DEFAULT_NUM_OF_THREADS;
     end
 
-    if nargin < 9
+    if nargin < 10
         recordStep = dt;
     end
-    if nargin < 8
+    if nargin < 9
         Ntrials = 1;
     end
 
-    if nargin < 10
+    if nargin < 11
         seed = randi([0, 2.^31-2]);
     end
 
@@ -43,7 +43,7 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
         display(e);
     end
 
-    inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
+    inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency, initial_phase);
     sde = ch.ethz.bhepp.sdesolver.models.VanDerPolSde(volume, inputFunction);
 
 %     initial time t0

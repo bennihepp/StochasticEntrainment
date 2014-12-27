@@ -1,16 +1,22 @@
 HEATMAP_TYPE = 'matrix';
 addpath('../');
+addpath([getenv('HOME'), '/Documents/MATLAB/plotting']);
 
 export_eps = true;
 % export_eps = false;
 
-S1 = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_19-Sep-2014 15:27:20');
+% S1 = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_19-Sep-2014 15:27:20');
+S1 = load('output_0.75/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_24-Oct-2014 19:23:14');
 % S2 = load('output_population_200/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=5e-13_population=1_10-Sep-2014 09:26:08');
-S2 = load('output_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_10-Sep-2014 23:16:20');
+% S2 = load('output_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_10-Sep-2014 23:16:20');
 % S2 = load('output_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_19-Sep-2014 14:41:01');
 % S2 = load('output_population_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_13-Sep-2014 10:42:51');
 % S2 = load('output_population_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_11-Sep-2014 08:23:55');
-
+% S2 = load('output_population_1000/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=1_25-Sep-2014 15:33:07');
+% S2 = load('output_population_1000_1e-11/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=1e-11_population=1_25-Sep-2014 15:40:10');
+S2 = load('output_population_1000_1e-11_0.75/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=1e-11_population=1_20-Oct-2014 10:30:48');
+% S2 = load('output_1000_1e-11/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=1e-11_population=0_25-Sep-2014 15:37:03');
+% S2 = load('output_1000_1e-11_0.75/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=1e-11_population=0_20-Oct-2014 10:26:53');
 assert(all(S1.input_periods == S2.input_periods));
 
 input_periods = S1.input_periods;
@@ -46,10 +52,17 @@ end
 
 Q = Q1 + 2 * Q2;
 
-figure();
 if export_eps
-    set(gca(), 'FontSize', 20);
+    %set(gca(), 'FontSize', 20);
+    width = 10;
+    height = 6;
+    fontSize = 0.5*0.5 * (width * height);
+    h = prepare_plot(width, height, fontSize);
+else
+    figure();
 end
+
+arnold_tongue_colormap();
 plot_heatmap(input_periods, input_amplitudes, Q, HEATMAP_TYPE, levels);
 if ~export_eps
     title(['arnold tongue comparison for volume1=', num2str(S1.volume), ' and volume2=', num2str(S2.volume)]);
@@ -71,9 +84,10 @@ display(['area ratio: ', num2str(sum(Q2(:)) / sum(Q1(:)))]);
 
 if export_eps
     if S2.population_average
-        filename = ['../paper/figures/nfkb_comparison_arnold_tongue_population_volume1=', num2str(S1.volume), '_volume2=', num2str(S2.volume), '.eps'];
+        filename = [export_eps_prefix(), 'nfkb_comparison_arnold_tongue_population_volume1=', num2str(S1.volume), '_volume2=', num2str(S2.volume)];
     else
-        filename = ['../paper/figures/nfkb_comparison_arnold_tongue_volume1=', num2str(S1.volume), '_volume2=', num2str(S2.volume), '.eps'];
+        filename = [export_eps_prefix(), 'nfkb_comparison_arnold_tongue_volume1=', num2str(S1.volume), '_volume2=', num2str(S2.volume)];
     end
-    saveas(gcf(), filename, 'psc2');
+    save_plot(filename, h, width, height);
+    %saveas(gcf(), filename, 'psc2');
 end

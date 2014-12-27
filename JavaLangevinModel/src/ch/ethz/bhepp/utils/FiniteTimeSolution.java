@@ -1,15 +1,15 @@
-package ch.ethz.bhepp.sdesolver;
+package ch.ethz.bhepp.utils;
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 
-public class SdeSolution {
+public class FiniteTimeSolution {
 
 	private DoubleMatrix1D T;
 	private DoubleMatrix2D X;
 
-	public SdeSolution(DoubleMatrix1D T, DoubleMatrix2D X) {
+	public FiniteTimeSolution(DoubleMatrix1D T, DoubleMatrix2D X) {
 		this.T = T;
 		this.X = X;
 	}

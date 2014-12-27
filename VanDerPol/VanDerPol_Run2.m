@@ -1,4 +1,9 @@
-function [T, output] = VanDerPol_Run2(Ntrials, t0, tf, dt, recordStep, volume, input_offset, input_amplitude, input_period)
+function [T, output] = VanDerPol_Run2(Ntrials, t0, tf, dt, recordStep, ...
+    volume, input_offset, input_amplitude, input_period, initial_phase)
+
+    if nargin < 10
+        initial_phase = 0;
+    end
 
     x0 = [1.0; 1.0];
 
@@ -11,11 +16,11 @@ function [T, output] = VanDerPol_Run2(Ntrials, t0, tf, dt, recordStep, volume, i
 
     if do_parallel
         [T, X, ~] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
-            input_offset, input_amplitude, input_frequency, Ntrials, ...
+            input_offset, input_amplitude, input_frequency, initial_phase, Ntrials, ...
             recordStep);
     else
         [T, X, ~] = SolveS_Java(x0, tf, dt, volume, ...
-            input_offset, input_amplitude, input_frequency, Ntrials, ...
+            input_offset, input_amplitude, input_frequency, initial_phase, Ntrials, ...
             recordStep);
     end
 

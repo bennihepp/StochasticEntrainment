@@ -1,6 +1,7 @@
 function NFkB_TNF_ArnoldTongue_BinarySearch(output_folder, volume, input_periods, input_amplitude_tolerance, Ntrials, population_average)    
     natural_period = 2.1013;
-    ENTRAINMENT_THRESHOLD = 0.9;
+    ENTRAINMENT_THRESHOLD = 0.75;
+%     ENTRAINMENT_THRESHOLD = 0.9;
     MIN_HARMONICS_POWER_THRESHOLD = 0.0;
     FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.05;
     % MAX_HARMONIC_N = 15;

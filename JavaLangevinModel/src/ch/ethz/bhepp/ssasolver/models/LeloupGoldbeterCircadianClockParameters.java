@@ -1,0 +1,77 @@
+package ch.ethz.bhepp.ssasolver.models;
+
+public class LeloupGoldbeterCircadianClockParameters {
+
+	public final double k_1 = 0.4;
+	public final double k_2 = 0.2;
+	public final double k_3 = 0.4;
+	public final double k_4 = 0.2;
+	public final double k_5 = 0.4;
+	public final double k_6 = 0.2;
+	public final double k_7 = 0.5;
+	public final double k_8 = 0.1;
+	public final double K_AP = 0.7;
+	public final double K_AC = 0.6;
+	public final double K_IB = 2.2;
+	public final double k_dmb = 0.01;
+	public final double k_dmc = 0.01;
+	public final double k_dmp = 0.01;
+	public final double k_dn = 0.01;
+	public final double k_dnc = 0.12;
+	public final double K_d = 0.3;
+	public final double K_dp = 0.1;
+	public final double K_p = 0.1;
+	public final double K_mB = 0.4;
+	public final double K_mC = 0.4;
+	public final double K_mP = 0.31;
+	public final double k_sB = 0.12;
+	public final double k_sC = 1.6;
+	public final double k_sP = 0.6;
+	public final double m = 2;
+	public final double n = 4;
+	public final double V_1B = 0.5;
+	public final double V_1C = 0.6;
+	public final double V_1P = 0.4;
+	public final double V_1PC = 0.4;
+	public final double V_2B = 0.1;
+	public final double V_2C = 0.1;
+	public final double V_2P = 0.3;
+	public final double V_2PC = 0.1;
+	public final double V_3B = 0.5;
+	public final double V_3PC = 0.4;
+	public final double V_4B = 0.2;
+	public final double V_4PC = 0.1;
+	public final double V_phos = 0.4;
+	public final double V_dBC = 0.5;
+	public final double V_dBN = 0.6;
+	public final double v_dCC = 0.7;
+	public final double V_dIN = 0.8;
+	public final double v_dPC = 0.7;
+	public final double V_dPCC = 0.7;
+	public final double V_dPCN = 0.7;
+	public final double v_mB = 0.8;
+	public final double v_mC = 1.0;
+	public final double v_mP = 1.1;
+	public final double v_sB = 1.0;
+	public final double v_sC = 1.1;
+	public final double v_sP = 1.5;
+
+	public int M_P = 0;
+	public int M_C = 1;
+	public int M_B = 2;
+	public int P_C = 3;
+	public int C_C = 4;
+	public int P_CP = 5;
+	public int C_CP = 6;
+	public int PC_C = 7;
+	public int PC_N = 8;
+	public int PC_CP = 9;
+	public int PC_NP = 10;
+	public int B_C = 11;
+	public int B_CP = 12;
+	public int B_N = 13;
+	public int B_NP = 14;
+	public int I_N = 15;
+//	public int CB_star = 16;
+
+}

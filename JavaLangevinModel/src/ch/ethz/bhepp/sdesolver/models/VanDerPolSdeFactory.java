@@ -1,8 +1,8 @@
 package ch.ethz.bhepp.sdesolver.models;
 
-import ch.ethz.bhepp.sdesolver.ScalarTrajectoryFunction;
 import ch.ethz.bhepp.sdesolver.Sde;
 import ch.ethz.bhepp.sdesolver.SdeFactory;
+import ch.ethz.bhepp.utils.ScalarTrajectoryFunction;
 
 public class VanDerPolSdeFactory implements SdeFactory {
 

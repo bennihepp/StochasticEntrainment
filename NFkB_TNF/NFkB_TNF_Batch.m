@@ -114,6 +114,8 @@ printProgress = true;
 toc
 output = original_output;
 
+return;
+
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), '_offset=', num2str(input_offset), ',_amplitude=', num2str(input_amplitude), ',_period=', num2str(input_period), '.mat'];
 % save(filename);
 
@@ -150,12 +152,12 @@ output = output(offset:end, :);
 
 %% plot traces after transients
 
-% w = find(T > T(end) - 50, 1);
-% q = find(T > T(w) - 10, 1);
-% TT = T(q:w);
-% TT = TT - TT(1);
-% trunc = output(q:w, :);
-% 
+w = find(T > T(end) - 50, 1);
+q = find(T > T(w) - 10, 1);
+TT = T(q:w);
+TT = TT - TT(1);
+trunc = output(q:w, :);
+
 % j = 2;
 % figure;
 % %     plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
@@ -182,6 +184,39 @@ output = output(offset:end, :);
 % title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
 % xlabel('time t');
 % ylabel('state y(1)');
+
+width = 10;
+height = 3;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+hold on;
+%cmap = colormap('Lines');
+color1 = [0, 0, 1.0];
+color2 = [0, 1.0, 1.0];
+color3 = [0, 1.0, 0.0];
+% average_color = [1.0, 0.5, 0.0];
+average_color = [241, 140, 22] / 255;
+cmap = [color1; color2; color3];
+for i=1:3
+    plot(TT, trunc(:, i), 'Color', cmap(i, :), 'LineWidth', 0.5);
+end
+plot(TT, mean(trunc, 2), '-', 'Color', average_color, 'LineWidth', 2.0);
+xlabel('time t');
+ylabel('state y');
+hold off;
+save_plot([export_eps_prefix(), 'nfkb_average_and_single_trace'], h, width, height);
+
+% width = 10;
+% height = 3;
+% fontSize = 0.5 * (width * height);
+% h = prepare_plot(width, height, fontSize);
+% hold on;
+% deterministic_color = [0.9, 0.0, 0.0];
+% plot(TT, mean(trunc, 2), '-', 'Color', deterministic_color, 'LineWidth', 1.0);
+% xlabel('time t');
+% ylabel('state y');
+% hold off;
+% save_plot([export_eps_prefix(), 'nfkb_deterministic_trace'], h, width, height);
 
 
 %% substract mean
@@ -248,6 +283,35 @@ title(['phase distribution of input mode for volume=', num2str(volume), ' input 
 xlabel('phase');
 ylabel('occurence');
 % saveas(['phase_distribution_input_mode_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.fig']);
+
+NUM_OF_BINS = 100;
+bins = linspace(-pi, pi, NUM_OF_BINS);
+width = 10;
+height = 4;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+subplot(2, 1, 1);
+hold on;
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
+hist(angle(y(:, ind)), bins);
+p = findobj(gca, 'Type', 'patch');
+set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
+hold off;
+%xlabel('phase');
+set(gca(), 'xtick', []);
+ylabel('occurence');
+%save_plot('../paper/figures/vanderpol_phase_dist_natural', h, width, height);
+subplot(2, 1, 2);
+hold on;
+[~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
+hist(angle(y(:, ind)), bins);
+p = findobj(gca, 'Type', 'patch');
+set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
+hold off;
+xlabel('phase');
+ylabel('occurence');
+%save_plot('../paper/figures/vanderpol_phase_dist_input', h, width, height);
+save_plot([export_eps_prefix(), 'nfkb_phase_dist'], h, width, height);
 
 
 %% compute autocorrelation if only one trajectory is simulated

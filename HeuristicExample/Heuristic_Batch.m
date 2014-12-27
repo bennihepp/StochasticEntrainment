@@ -1,8 +1,12 @@
+addpath([getenv('HOME'), '/Documents/MATLAB/plotting/']);
+
+
 A_0 = 1.0;
 A_1 = 1.0;
 
 omega_0 = 3;
 omega_1 = 7;
+epsilon = 0.3;
 
 t0 = 0;
 % tf = 3;
@@ -10,7 +14,7 @@ tf = 500;
 to = (tf - t0) / 5;
 % numOfSteps = 1000;
 % dt = tf / numOfSteps;
-dt = 0.02;
+dt = 0.01;
 Ntrials = 1000;
 
 disp(['Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
@@ -19,38 +23,20 @@ disp(['Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 phi_0_mean = 1.0 * (2 * rand(1, Ntrials) - 1.0) * pi;
 phi_0_std = 0.0 * pi;
 phi_0_rand = @(n, s1, s2) phi_0_mean(n) + phi_0_std * randn(s1, s2);
+phi_0_det = @(n, s1, s2) 0;
 % phi_0_rand = @(n1, n2) (2 * rand(n1, n2) - 1) * pi;
 % phi_1_mean = 0.1 * randn(1, Ntrials) * pi;
-phi_1_mean = 0.2 * (2 * rand(1, Ntrials) - 1.0) * pi;
+phi_1_mean = 0.5 * (2 * rand(1, Ntrials) - 1.0) * pi;
 phi_1_std = 0.0 * pi;
 phi_1_rand = @(n, s1, s2) phi_1_mean(n) + phi_1_std * randn(s1, s2);
+phi_1_det = @(n, s1, s2) 0;
 
 
 %% simulate
 tic;
-[T, output] = Heuristic_Run(Ntrials, t0, tf, dt, A_0, A_1, omega_0, omega_1, phi_0_rand, phi_1_rand);
+[T_det, output_det] = Heuristic_Run(1, t0, tf, dt, A_0, A_1, epsilon, omega_0, omega_1, phi_0_det, phi_1_det);
+[T, output] = Heuristic_Run(Ntrials, t0, tf, dt, A_0, A_1, epsilon, omega_0, omega_1, phi_0_rand, phi_1_rand);
 toc
-
-
-%% plot trajectories
-figure();
-hold on;
-cmap = colormap('Lines');
-for i=1:3
-    plot(T, output(:, i), 'Color', cmap(i, :), 'LineWidth', 2.0);
-end
-hold off;
-title(['y single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
-xlabel('time t');
-ylabel('state y');
-
-figure();
-plot(T, mean(output, 2), 'LineWidth', 2.0);
-title(['y average trace: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
-xlabel('time t');
-ylabel('state y');
-
-return;
 
 
 %% cutoff transients
@@ -60,6 +46,98 @@ offset_time = to;
 offset = find(T >= offset_time, 1);
 T = T(offset:end);
 output = output(offset:end, :);
+T_det = T_det(offset:end);
+output_det = output_det(offset:end, :);
+
+
+%% only plot a short amount of time
+TT = T - T(1);
+TT = T(1:1000);
+output_tmp = output(1:1000, :);
+TT_det = T_det - T_det(1);
+TT_det = T_det(1:1000);
+output_det_tmp = output_det(1:1000, :);
+
+
+%% plot trajectories
+figure();
+hold on;
+cmap = colormap('Lines');
+for i=1:3
+    plot(TT, output_tmp(:, i), 'Color', cmap(i, :), 'LineWidth', 1.0);
+end
+%title(['y single traces: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+xlabel('time t');
+ylabel('state y');
+plot(TT, mean(output_tmp, 2), '-', 'Color', 0.3*ones(3,1), 'LineWidth', 4.0);
+hold off;
+
+% width = 10;
+% height = 3;
+% fontSize = 0.5 * (width * height);
+% h = prepare_plot(width, height, fontSize);
+% hold on;
+% % cmap = colormap('Lines');
+% color1 = [0, 0, 1.0];
+% color2 = [0, 1.0, 1.0];
+% color3 = [0, 1.0, 0.0];
+% % average_color = [1.0, 0.5, 0.0];
+% average_color = [241, 140, 22] / 255;
+% cmap = [color1; color2; color3];
+% for i=1:3
+%     plot(TT, output_tmp(:, i), 'Color', cmap(i, :), 'LineWidth', 1.0);
+% end
+% plot(TT, mean(output_tmp, 2), '-', 'Color', average_color, 'LineWidth', 2.0);
+% xlabel('time t');
+% ylabel('state y');
+% hold off;
+% save_plot([export_eps_prefix(), 'heuristic_average_and_single_trace'], h, width, height);
+
+width = 10;
+height = 3;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+hold on;
+% cmap = colormap('Lines');
+color4 = [1.0, 0, 1.0];
+plot(TT, output_det_tmp(:, 1), 'Color', color4, 'LineWidth', 1.0);
+xlabel('time t');
+ylabel('state y');
+hold off;
+save_plot([export_eps_prefix(), 'heuristic_deterministic_trace'], h, width, height);
+
+width = 10;
+height = 3;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+hold on;
+% cmap = colormap('Lines');
+color1 = [0, 0, 1.0];
+color2 = [0, 1.0, 1.0];
+color3 = [0, 1.0, 0.0];
+% average_color = [1.0, 0.5, 0.0];
+average_color = [241, 140, 22] / 255;
+cmap = [color1; color2; color3];
+for i=1:3
+    plot(TT, output_tmp(:, i), 'Color', cmap(i, :), 'LineWidth', 1.0);
+end
+xlabel('time t');
+ylabel('state y');
+hold off;
+save_plot([export_eps_prefix(), 'heuristic_single_trace'], h, width, height);
+
+width = 10;
+height = 3;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+hold on;
+average_color = [241, 140, 22] / 255;
+plot(TT, mean(output_tmp, 2), '-', 'Color', average_color, 'LineWidth', 1.0);
+xlabel('time t');
+ylabel('state y');
+hold off;
+ylim([-2, 2]);
+save_plot([export_eps_prefix(), 'heuristic_average_trace'], h, width, height);
 
 
 %% compute spectras
@@ -80,6 +158,7 @@ for i=Ntrials:-1:1
 end
 mean_y = mean(y, 1);
 mean_omega = mean(omega, 1);
+[omega_dt, y_det] = compute_normalized_fft_truncated(output_det(:,1)', dt, 2*pi*min_frequency, 2*pi*max_frequency);
 
 %% plot spectras
 figure();
@@ -101,15 +180,51 @@ ylabel('power |y|^2');
 
 figure();
 plot(mean_omega ./ (2 * pi), abs(mean_y) .^ 2, 'LineWidth', 2.0);
-title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+%title(['y(1) complex average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('frequency f');
 ylabel('power |y|^2');
 
 figure();
 plot(mean_omega ./ (2 * pi), mean(abs(y), 1) .^ 2);
-title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+%title(['y(1) absolute average fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 xlabel('frequency f');
 ylabel('power |y|^2');
+
+width = 10;
+height = 6;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+values = abs(y_det) .^ 2;
+values = values / sum(values);
+plot(mean_omega ./ (2 * pi), values, 'Color', color4, 'LineWidth', 1.5);
+xlabel('frequency f');
+ylabel('power |y|^2');
+% ylim([0, 0.5]);
+save_plot([export_eps_prefix(), 'heuristic_deterministic_spectrum'], h, width, height);
+
+width = 10;
+height = 6;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+values = mean(abs(y), 1) .^ 2;
+values = values / sum(values);
+plot(mean_omega ./ (2 * pi), values, 'Color', color2, 'LineWidth', 1.5);
+xlabel('frequency f');
+ylabel('power |y|^2');
+% ylim([0, 0.5]);
+save_plot([export_eps_prefix(), 'heuristic_single_spectrum'], h, width, height);
+
+width = 10;
+height = 6;
+fontSize = 0.5 * (width * height);
+h = prepare_plot(width, height, fontSize);
+values = abs(mean_y) .^ 2;
+values = values / sum(values);
+plot(mean_omega ./ (2 * pi), values, 'Color', average_color, 'LineWidth', 1.5);
+xlabel('frequency f');
+ylabel('power |y|^2');
+% ylim([0, 0.5]);
+save_plot([export_eps_prefix(), 'heuristic_average_spectrum'], h, width, height);
 
 return;
 

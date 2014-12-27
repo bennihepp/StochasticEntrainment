@@ -1,0 +1,13 @@
+function ArnoldTongue_BinarySearch_JobArrayWrapper(n, filename_prefix, ...
+    input_periods, input_amplitude_tolerance, Ntrials, ...
+    population_average, entrainment_threshold)
+
+    if nargin < 7
+        entrainment_threshold = 0.9;
+    end
+
+    ArnoldTongue_BinarySearch_JobArray(n, filename_prefix, ...
+        input_periods, input_amplitude_tolerance, Ntrials, ...
+        population_average, entrainment_threshold);
+
+end

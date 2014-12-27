@@ -4,9 +4,9 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
-import ch.ethz.bhepp.sdesolver.ScalarTrajectoryFunction;
 import ch.ethz.bhepp.sdesolver.Sde;
-import ch.ethz.bhepp.sdesolver.SinusoidalFunction;
+import ch.ethz.bhepp.utils.ScalarTrajectoryFunction;
+import ch.ethz.bhepp.utils.SinusoidalFunction;
 
 public class CircadianClockDrosophilaSde implements Sde {
 

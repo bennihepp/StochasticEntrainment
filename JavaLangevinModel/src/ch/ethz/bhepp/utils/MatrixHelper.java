@@ -1,4 +1,4 @@
-package ch.ethz.bhepp.sdesolver;
+package ch.ethz.bhepp.utils;
 
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix2D;

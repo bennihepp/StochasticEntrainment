@@ -3,11 +3,11 @@ package ch.ethz.bhepp.sdesolver.test;
 import cern.jet.random.engine.MersenneTwister;
 import ch.ethz.bhepp.sdesolver.EnsurePositiveStateHook;
 import ch.ethz.bhepp.sdesolver.EulerMaruyamaStepper;
-import ch.ethz.bhepp.sdesolver.ScalarTrajectoryFunction;
 import ch.ethz.bhepp.sdesolver.Sde;
 import ch.ethz.bhepp.sdesolver.SdeStepper;
-import ch.ethz.bhepp.sdesolver.SinusoidalFunction;
 import ch.ethz.bhepp.sdesolver.models.NFkBLangevinSde;
+import ch.ethz.bhepp.utils.ScalarTrajectoryFunction;
+import ch.ethz.bhepp.utils.SinusoidalFunction;
 
 public class NFkBLangevinStepperTest {
 

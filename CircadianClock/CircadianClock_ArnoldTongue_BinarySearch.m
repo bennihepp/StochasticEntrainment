@@ -1,4 +1,5 @@
-ENTRAINMENT_THRESHOLD = 0.9;
+ENTRAINMENT_THRESHOLD = 0.75;
+% ENTRAINMENT_THRESHOLD = 0.9;
 MAX_HARMONIC_N = 4;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
@@ -110,5 +111,6 @@ S.scores = scores;
 
 
 date_string = datestr(clock());
-filename = ['output/CircadianClock_ArnoldTongue_BinarySearch_', date_string, '.mat'];
+% filename = ['output/CircadianClock_ArnoldTongue_BinarySearch_', date_string, '.mat'];
+filename = ['output_0.75/CircadianClock_ArnoldTongue_BinarySearch_', date_string, '.mat'];
 save(filename, '-struct', 'S');
