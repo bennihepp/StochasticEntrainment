@@ -85,7 +85,7 @@ parfor i=1:length(input_periods)
     if isinf(arnold_tongue_borders(i))
         scores(i) = nan;
     else
-        scores(i) = simulate_and_compute_entrainment_scores(input_period, arnold_tongue_borders(i), S);
+        scores(i) = simulate_and_compute_all_entrainment_scores(input_period, arnold_tongue_borders(i), S);
     end
 
     display(['i=', int2str(i), ' arnold tongue border at ', num2str(arnold_tongue_borders(i))]);
