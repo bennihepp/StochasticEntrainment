@@ -53,7 +53,7 @@ function ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
 %         Ntrials_levels = [50, 100, 200, 500, 1000];
 %         Ntrials_std = zeros(size(Ntrials_levels));
 
-        disp(['Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
+        disp(['Ntrials=', int2str(Ntrials)]);
 
         t0 = 0;
         tf = 100 * 24;
