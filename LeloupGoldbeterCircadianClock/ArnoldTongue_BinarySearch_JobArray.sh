@@ -9,7 +9,8 @@ tolerance=$4
 Ntrials=$5
 population_average=$6
 entrainment_threshold=$7
+max_input_amplitude=$8
 
-echo "index=$index, output=$output, input_periods=$input_periods, tolerance=$tolerance, Ntrials=$Ntrials, population_average=$population_average, entrainment_threshold=$entrainment_threshold"
+echo "index=$index, output=$output, input_periods=$input_periods, tolerance=$tolerance, Ntrials=$Ntrials, population_average=$population_average, entrainment_threshold=$entrainment_threshold, max_input_amplitude=$max_input_amplitude"
 
-matlab -nodisplay -singleCompThread -r "ArnoldTongue_BinarySearch_JobArrayWrapper($index, '$output', $input_periods, $tolerance, $Ntrials, $population_average, $entrainment_threshold); exit;"
+matlab -nodisplay -singleCompThread -r "ArnoldTongue_BinarySearch_JobArray($index, '$output', $input_periods, $tolerance, $Ntrials, $population_average, $entrainment_threshold, $max_input_amplitude); exit;"
