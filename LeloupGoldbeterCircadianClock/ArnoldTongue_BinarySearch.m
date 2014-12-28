@@ -24,6 +24,7 @@ input_amplitude_tolerance = 1e-2;
 % input_periods = 20:0.1:28;
 % input_periods = 20:0.25:28;
 input_periods = 20:0.5:28;
+input_periods = 18:0.5:30;
 % input_periods = natural_period;
 
 min_frequency = 0.0;
