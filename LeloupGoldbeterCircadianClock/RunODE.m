@@ -18,4 +18,6 @@ function [T, X] = RunODE(t0, tf, recordStep, ...
 
     [T, X] = ode15s(@ModelODE, t0:recordStep:tf, x0, odeset(), p, inputFunction);
 
+    X = X(:, 1);
+
 end

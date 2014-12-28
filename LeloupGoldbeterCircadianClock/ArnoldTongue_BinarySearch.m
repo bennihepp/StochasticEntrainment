@@ -1,25 +1,28 @@
 ENTRAINMENT_THRESHOLD = 0.9;
 MAX_HARMONIC_N = 4;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
-FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
+FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.03;
 natural_period = 23.8607;
 entrainment_ratios = 1:2;
 
 Ntrials = 1;
 
 t0 = 0;
-% tf = 400 * 24;
-tf = 100 * 24;
+% tf = 400 * 24; % max_input 0.3 (18:0.25:30)
+tf = 200 * 24;
+% tf = 100 * 24;
 to = (tf - t0) / 10;
 
-recordStep = (tf - t0) / 10000;
+% recordStep = (tf - t0) / 10000;
+recordStep = (tf - t0) / 5000;
 
 input_offset = 1.0;
 
 min_input_amplitude = 0.0;
 max_input_amplitude = 0.3;
 input_amplitude_tolerance = 1e-2;
-input_periods = 20:0.1:28;
+% input_periods = 20:0.1:28;
+% input_periods = 20:0.25:28;
 input_periods = 20:0.5:28;
 % input_periods = natural_period;
 

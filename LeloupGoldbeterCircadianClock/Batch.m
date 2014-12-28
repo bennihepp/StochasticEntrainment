@@ -14,8 +14,10 @@ Ntrials = 8;
 % Ntrials = 8;
 
 t0 = 0;
-tf = 100 * 24;
-recordStep = (tf - t0)/1000;
+%tf = 100 * 24;
+tf = 400 * 24;
+recordStep = (tf - t0)/5000;
+% recordStep = (tf - t0)/10000;
 
 disp([' Ntrials=', int2str(Ntrials), ' recordStep=', num2str(recordStep)]);
 
@@ -33,6 +35,9 @@ input_period = 30.0;
 input_amplitude = 0.2;
 
 input_amplitude = 0.0;
+
+input_period = 23.5;
+input_amplitude = 0.3;
 
 
 %% simulate

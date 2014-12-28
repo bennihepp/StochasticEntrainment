@@ -15,7 +15,8 @@
 
 function ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
     input_periods, input_amplitude_tolerance, Ntrials, ...
-    population_average, entrainment_threshold, max_input_amplitude)
+    population_average, entrainment_threshold, max_input_amplitude, ...
+    final_time, transient_time_factor, num_of_timepoints)
 
 %     if n == -2
 %         %% compute variances for Ntrials_levels
@@ -56,10 +57,12 @@ function ArnoldTongue_BinarySearch_JobArray(n, output_folder, ...
         disp(['Ntrials=', int2str(Ntrials)]);
 
         t0 = 0;
-        tf = 100 * 24;
-        to = (tf - t0) / 10;
+%         tf = 200 * 24;
+%         to = (tf - t0) / 20;
+        tf = final_time;
+        to = transient_time_factor * (tf - t0);
 
-        recordStep = (tf - t0) / 10000;
+        recordStep = (tf - t0) / (num_of_timepoints - 1);
 
         input_offset = 1.0;
 
