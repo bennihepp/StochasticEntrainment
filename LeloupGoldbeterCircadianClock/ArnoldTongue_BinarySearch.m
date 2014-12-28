@@ -8,7 +8,8 @@ entrainment_ratios = 1:2;
 Ntrials = 1;
 
 t0 = 0;
-tf = 400 * 24;
+% tf = 400 * 24;
+tf = 100 * 24;
 to = (tf - t0) / 10;
 
 recordStep = (tf - t0) / 10000;
@@ -19,6 +20,7 @@ min_input_amplitude = 0.0;
 max_input_amplitude = 0.3;
 input_amplitude_tolerance = 1e-2;
 input_periods = 20:0.1:28;
+input_periods = 20:0.5:28;
 % input_periods = natural_period;
 
 min_frequency = 0.0;
