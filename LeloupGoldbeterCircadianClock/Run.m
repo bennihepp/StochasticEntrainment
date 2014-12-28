@@ -11,10 +11,11 @@ function [T, output, model] = Run(Ntrials, t0, tf, recordStep, omega, ...
 
     input_frequency = 1 ./ input_period;
 
-    do_parallel = false;
-    if Ntrials > 1
-        do_parallel = true;
-    end
+%     do_parallel = false;
+%     if Ntrials > 1
+%         do_parallel = true;
+%     end
+    do_parallel = 1;
 
     if do_parallel
         [T, X, model] = SolveS_Java_Parallel(x0, t0, tf, recordStep, ...
@@ -27,8 +28,10 @@ function [T, output, model] = Run(Ntrials, t0, tf, recordStep, omega, ...
             Ntrials);
     end
 
-    per_indices = [0] + 1;
-    output = sum(X(:, :, per_indices), 3)';
+    output = X';
+
+%     per_indices = [0] + 1;
+%     output = sum(X(:, :, per_indices), 3)';
 %     output = squeeze(sum(X(:, :, per_indices), 3));
 %     output = squeeze(X);
 

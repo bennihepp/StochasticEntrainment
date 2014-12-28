@@ -8,15 +8,15 @@ entrainment_ratios = 1:2;
 Ntrials = 1;
 
 t0 = 0;
-tf = 200 * 24;
+tf = 400 * 24;
 to = (tf - t0) / 10;
 
-recordStep = (tf - t0) / 5000;
+recordStep = (tf - t0) / 10000;
 
 input_offset = 1.0;
 
 min_input_amplitude = 0.0;
-max_input_amplitude = 0.2;
+max_input_amplitude = 0.3;
 input_amplitude_tolerance = 1e-2;
 input_periods = 20:0.1:28;
 % input_periods = natural_period;
@@ -54,8 +54,8 @@ parfor i=1:length(input_periods)
     lower_amplitude = min_input_amplitude;
     upper_amplitude = max_input_amplitude;
 
-    upper_amp_within_at = is_within_arnold_tongue(input_period, upper_amplitude, S);
-    lower_amp_within_at = is_within_arnold_tongue(input_period, lower_amplitude, S);
+    upper_amp_within_at = is_within_arnold_tongue_ODE(input_period, upper_amplitude, S);
+    lower_amp_within_at = is_within_arnold_tongue_ODE(input_period, lower_amplitude, S);
 
     if lower_amp_within_at
         arnold_tongue_borders(i) = lower_amplitude;
@@ -66,7 +66,7 @@ parfor i=1:length(input_periods)
         while (upper_amplitude - lower_amplitude) >= input_amplitude_tolerance
             middle_amplitude = (lower_amplitude + upper_amplitude) / 2.0;
             display(['i=', int2str(i), ' of ', int2str(length(input_periods)), ', trying input=', num2str(middle_amplitude)]);
-            middle_amp_within_at = is_within_arnold_tongue(input_period, middle_amplitude, S);
+            middle_amp_within_at = is_within_arnold_tongue_ODE(input_period, middle_amplitude, S);
             if middle_amp_within_at
                 upper_amplitude = middle_amplitude;
             else
@@ -85,7 +85,7 @@ parfor i=1:length(input_periods)
     if isinf(arnold_tongue_borders(i))
         scores(i) = nan;
     else
-        scores(i) = simulate_and_compute_all_entrainment_scores(input_period, arnold_tongue_borders(i), S);
+        scores(i) = simulate_and_compute_entrainment_scores_ODE(input_period, arnold_tongue_borders(i), S);
     end
 
     display(['i=', int2str(i), ' arnold tongue border at ', num2str(arnold_tongue_borders(i))]);

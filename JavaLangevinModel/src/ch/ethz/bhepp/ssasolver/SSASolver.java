@@ -9,9 +9,15 @@ import ch.ethz.bhepp.utils.FiniteTimeSolution;
 public class SSASolver {
 
 	private SSAStepper stepper;
+	private int recordIndex;
 
 	public SSASolver(SSAStepper stepper) {
+		this(stepper, -1);
+	}
+
+	public SSASolver(SSAStepper stepper, int recordIndex) {
 		this.stepper = stepper;
+		this.recordIndex = recordIndex;
 	}
 
 	public FiniteTimeSolution solve(double t0, DoubleMatrix1D X0, double tf) throws Exception {
@@ -23,7 +29,8 @@ public class SSASolver {
 		stepper.setTime(t0);
 		stepper.setState(X0);
 		DoubleMatrix1D T = new DenseDoubleMatrix1D(numOfStepsToRecord);
-		DoubleMatrix2D X = new DenseDoubleMatrix2D(numOfStepsToRecord, X0.size());
+		int sizeX = recordIndex >=0 ? 1 : X0.size();
+		DoubleMatrix2D X = new DenseDoubleMatrix2D(numOfStepsToRecord, sizeX);
 		int k = 0;
 		record(k, t0, X0, T, X);
 		k++;
@@ -46,8 +53,12 @@ public class SSASolver {
 
 	private void record(int k, double t, DoubleMatrix1D x, DoubleMatrix1D T, DoubleMatrix2D X) {
 		T.set(k, t);
-		for (int l=0; l < x.size(); l++) {
-			X.set(k, l, x.get(l));
+		if (recordIndex >=0) {
+			X.set(k, 0, x.get(recordIndex));
+		} else {
+			for (int l=0; l < x.size(); l++) {
+				X.set(k, l, x.get(l));
+			}
 		}
 	}
 

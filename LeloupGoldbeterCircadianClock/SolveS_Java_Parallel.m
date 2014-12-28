@@ -72,9 +72,9 @@ function [T, P, model] = SolveS_Java_Parallel(x0, t0, tf, recordStep, omega, ...
 %     omega = sde.getOmega();
     modelFactory = ch.ethz.bhepp.ssasolver.models.LeloupGoldbeterCircadianClockFactory(omega, inputFunction);
     stepperFactory = ch.ethz.bhepp.ssasolver.SimpleSSAStepperFactory(modelFactory, seed);
-
-    stepperFactory = ch.ethz.bhepp.ssasolver.SimpleSSAStepperFactory(modelFactory, seed);
-    parallelSolver = ch.ethz.bhepp.ssasolver.ParallelSSASolver(stepperFactory, Nthreads);
+    recordIndex = 0;
+    solverFactory = ch.ethz.bhepp.ssasolver.SimpleSSASolverFactory(stepperFactory, recordIndex);
+    parallelSolver = ch.ethz.bhepp.ssasolver.ParallelSSASolver(solverFactory, Nthreads);
 
     x0Matrix = ch.ethz.bhepp.utils.MatrixHelper.createZeroDoubleMatrix2D(size(x0, 1), Ntrials);
     for i=1:size(x0, 1)
@@ -91,10 +91,12 @@ function [T, P, model] = SolveS_Java_Parallel(x0, t0, tf, recordStep, omega, ...
         if n == 1
             numOfTimeSteps = length(TArray);
             T = zeros(Ntrials, numOfTimeSteps);
-            P = zeros(Ntrials, numOfTimeSteps, model.getNumberOfSpecies());
+%             P = zeros(Ntrials, numOfTimeSteps, model.getNumberOfSpecies());
+            P = zeros(Ntrials, numOfTimeSteps);
         end
         T(n, :) = TArray;
-        P(n, :, :) = XArray;
+%         P(n, :, :) = XArray;
+        P(n, :) = XArray;
     end
     T = T(1, :);
 

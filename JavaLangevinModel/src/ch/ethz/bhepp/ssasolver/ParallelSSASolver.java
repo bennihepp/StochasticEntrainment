@@ -17,14 +17,14 @@ public class ParallelSSASolver {
 	private static final int DEFAULT_NUM_OF_THREADS = 4;
 	private int numOfThreads;
 	private ExecutorService executor;
-	private SSAStepperFactory stepperFactory;
+	private SSASolverFactory solverFactory;
 
-	public ParallelSSASolver(SSAStepperFactory stepperFactory) {
-		this(stepperFactory, 0);
+	public ParallelSSASolver(SSASolverFactory solverFactory) {
+		this(solverFactory, 0);
 	}
 
-	public ParallelSSASolver(SSAStepperFactory stepperFactory, int numOfThreads) {
-		this.stepperFactory = stepperFactory;
+	public ParallelSSASolver(SSASolverFactory solverFactory, int numOfThreads) {
+		this.solverFactory = solverFactory;
 		if (numOfThreads == 0) {
 			String numOfThreadsStr = System.getenv("NUM_OF_THREADS");
 			boolean foundNumOfThreads = false;
@@ -79,9 +79,8 @@ public class ParallelSSASolver {
 		ExecutorCompletionService<FiniteTimeSolution> ecs = new ExecutorCompletionService<>(executor);
 		List<FiniteTimeSolution> solutions = new ArrayList<>(samples);
 		for (int i=0; i < samples; i++) {
-			SSAStepper stepper = stepperFactory.createStepper();
 			final DoubleMatrix1D x0 = X0.viewColumn(i);
-			final SSASolver solver = new SSASolver(stepper);
+			final SSASolver solver = solverFactory.createSolver();
 			Callable<FiniteTimeSolution> task = new Callable<FiniteTimeSolution>() {
 
 				@Override
