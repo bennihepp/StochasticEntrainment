@@ -1,4 +1,5 @@
-function [T, output] = VanDerPol_Run(Ntrials, t0, tf, dt, omega, additive_forcing_func, multiplicative_forcing_func)
+function [T, output] = VanDerPol_Run(Ntrials, t0, tf, dt, omega, ...
+    additive_forcing_func, multiplicative_forcing_func)
 
     y0 = [1; 1];
 

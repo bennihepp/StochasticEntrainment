@@ -1,3 +1,10 @@
+% S = load('output_0.9/ArnoldTongue_BinarySearch_28-Dec-2014 15:30:31');
+% S = load('output_0.75/ArnoldTongue_BinarySearch_02-Jan-2015 11:43:02');
+% S = load('output_0.75/ArnoldTongue_BinarySearch_02-Jan-2015 16:02:56');
+% S = load('output_population_100/ArnoldTongue_BinarySearch_JobArray_population=1_01-Jan-2015 18:04:21');
+% S = load('output_100_0.75/ArnoldTongue_BinarySearch_JobArray_population=0_04-Jan-2015 21:31:47');
+S = load('output_population_100_0.75/ArnoldTongue_BinarySearch_JobArray_population=1_05-Jan-2015 10:06:47');
+
 input_periods = S.input_periods;
 input_period_indices = 1:length(input_periods);
 % i1 = find(S.input_periods >= 4.0, 1, 'first');

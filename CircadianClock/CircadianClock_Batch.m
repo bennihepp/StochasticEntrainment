@@ -1,3 +1,8 @@
+%% some functions in the parent folder are used
+addpath('../');
+addpath('../plotting/');
+
+%% parameters for scoring entrainment
 natural_period = 23.7473;
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
@@ -6,12 +11,16 @@ FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 MAX_HARMONIC_N = 4;
 entrainment_ratios = 1:2;
-addpath([getenv('HOME'), '/Documents/MATLAB/plotting']);
 
-volume = inf;
-% volume = 1e-20;
+
+%% parameters for the simulation
+
+% volume of the system
+% volume = inf;
+volume = 1e-20;
 % volume = 2e-18;
 
+% number of trajectories to simulate (for infinite volume only one trajectory is necessary)
 if volume == inf
     Ntrials = 1;
 else
@@ -19,28 +28,25 @@ else
     Ntrials = 3;
 end
 
+% time step for Euler-Maruyama
 dt = 0.002;
+% time-interval for saving of the output state
 recordStep = 400 * dt;
 
 disp(['volume=', num2str(volume), ' Ntrials=', int2str(Ntrials), ' dt=', num2str(dt)]);
 
+% initial time
 t0 = 0;
+% final time
 tf = 200*72;
+% offset time to cutoff to reduce transient effects
 to = (tf - t0) / 5;
 
+% parameters for the forcing function
 input_offset = 1.0;
-
-% input_period = 36.0;
-% input_amplitude = 0.5;
-
 input_period = 30.0;
 input_amplitude = 0.18;
-
-% input_period = 24.0;
-% input_amplitude = 0.01;
-
-% input_period = 35.5;
-% input_amplitude = 0.0;
+input_amplitude = 0.0;
 
 
 %% simulate
@@ -52,7 +58,6 @@ toc
 % filename = ['output/simulation_Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), '_offset=', num2str(input_offset), ',_amplitude=', num2str(input_amplitude), ',_period=', num2str(input_period), '.mat'];
 % save(filename);
 
-return;
 
 %% plot trajectories
 figure();
@@ -68,8 +73,7 @@ xlabel('time t');
 ylabel('state y(1)');
 
 %% cutoff transients
-% offset_time = (tf - t0) / 5;
-% offset_time = max(offset_time, 1000);
+
 offset_time = to;
 offset = find(T >= offset_time, 1);
 T = T(offset:end);
@@ -129,7 +133,7 @@ plot(TT, mean(trunc, 2), '-', 'Color', average_color, 'LineWidth', 2.0);
 xlabel('time t');
 ylabel('state y');
 hold off;
-save_plot([export_eps_prefix(), 'circadian_average_and_single_trace'], h, width, height);
+% save_plot([export_eps_prefix(), 'circadian_average_and_single_trace'], h, width, height);
 
 % width = 10;
 % height = 3;
@@ -144,17 +148,13 @@ save_plot([export_eps_prefix(), 'circadian_average_and_single_trace'], h, width,
 % save_plot([export_eps_prefix(), 'vanderpol_deterministic_trace'], h, width, height);
 
 
-%% substract mean
+%% substract mean from each trajectories
 output = output - repmat(mean(output, 1), [size(output, 1), 1]);
 
+
 %% compute spectras
-addpath('../');
 
-% min_frequency = 0.005;
-% max_frequency = 0.5;
-min_frequency = 0.0;
-max_frequency = inf;
-
+% compute the spectrum for each trajectory
 omega = [];
 y = [];
 for i=Ntrials:-1:1
@@ -163,10 +163,14 @@ for i=Ntrials:-1:1
     omega = [omega; omega1];
     y = [y; y1];
 end
+
+% compute the average spectrum (i.e. the spectrum of the average)
 mean_y = mean(y, 1);
 mean_omega = mean(omega, 1);
 
+
 %% plot spectras
+
 figure();
 plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
 title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' dt=', num2str(dt), ' volume=', num2str(volume), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
@@ -187,6 +191,7 @@ ylabel('power |y|^2');
 
 
 %% plot phase distribution of natural mode and input mode
+
 NUM_OF_BINS = 100;
 bins = linspace(-pi, pi, NUM_OF_BINS);
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
@@ -206,61 +211,72 @@ ylabel('occurence');
 % saveas(['phase_distribution_input_mode_volume=', num2str(volume), '_input_period=', num2str(input_period), '_input_amplitude=', num2str(input_amplitude), '_Ntrials=', int2str(Ntrials), '.fig']);
 
 NUM_OF_BINS = 100;
-bins = linspace(-pi, pi, NUM_OF_BINS);
+bins = linspace(0, 2, NUM_OF_BINS);
 width = 10;
-height = 4;
+height = 3.5;
 fontSize = 0.5 * (width * height);
 h = prepare_plot(width, height, fontSize);
 subplot(2, 1, 1);
 hold on;
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
-hist(angle(y(:, ind)), bins);
+phases = angle(y(:, ind));
+phases(phases < 0) = phases(phases < 0) + 2*pi;
+hist(phases / pi, bins);
 p = findobj(gca, 'Type', 'patch');
 set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
 hold off;
 %xlabel('phase');
 set(gca(), 'xtick', []);
 ylabel('occurence');
+xlim([0, 2]);
 %save_plot('../paper/figures/vanderpol_phase_dist_natural', h, width, height);
 subplot(2, 1, 2);
 hold on;
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ input_period));
-hist(angle(y(:, ind)), bins);
+phases = angle(y(:, ind));
+phases(phases < 0) = phases(phases < 0) + 2*pi;
+hist(phases / pi, bins);
 p = findobj(gca, 'Type', 'patch');
 set(p, 'FaceColor', 'blue', 'EdgeColor', 'black');
 hold off;
 xlabel('phase');
 ylabel('occurence');
-%save_plot('../paper/figures/vanderpol_phase_dist_input', h, width, height);
-save_plot([export_eps_prefix(), 'circadian_phase_dist'], h, width, height);
+xlim([0, 2]);
+format_ticks(gca, ...
+    {'0', '\pi/2', '\pi', '3\pi/2', '2\pi'}, ...
+    {}, ...
+    [0, 0.5, 1, 1.5, 2], ...
+    [] ...
+);
+% save_plot([export_eps_prefix(), 'circadian_phase_dist'], h, width, height);
 
 
-%% compute autocorrelation if only one trajectory is simulated
-if Ntrials == 1
-    corr = xcorr(output - mean(output, 2), 'unbiased');
-    figure();
-    plot(corr);
-    title('autocorrelation');
-    [pks, locs] = findpeaks(corr);
-    peak_distances = locs(2:end) - locs(1:end-1);
-    mean_peak_distance = mean(peak_distances);
-    std_peak_distance = std(peak_distances);
+% %% compute autocorrelation if only one trajectory is simulated
+% if Ntrials == 1
+%     corr = xcorr(output - mean(output, 2), 'unbiased');
+%     figure();
+%     plot(corr);
+%     title('autocorrelation');
+%     [pks, locs] = findpeaks(corr);
+%     peak_distances = locs(2:end) - locs(1:end-1);
+%     mean_peak_distance = mean(peak_distances);
+%     std_peak_distance = std(peak_distances);
+% 
+%     mean_period = mean_peak_distance * dt;
+%     factor = mean_period / input_period;
+%     if mean_period < input_period
+%         factor = input_period / mean_period;
+%     end
+%     output_periodic = false;
+%     if abs(factor - round(factor)) < PERIOD_MULTIPLE_THRESHOLD
+%     % if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
+%         output_periodic = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
+%     end
+%     output_periodic
+% end
 
-    mean_period = mean_peak_distance * dt;
-    factor = mean_period / input_period;
-    if mean_period < input_period
-        factor = input_period / mean_period;
-    end
-    output_periodic = false;
-    if abs(factor - round(factor)) < PERIOD_MULTIPLE_THRESHOLD
-    % if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
-        output_periodic = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
-    end
-    output_periodic
-end
 
-
-%% compute entrainment
+%% compute entrainment (old)
 % om_natural = 2 * pi / natural_period;
 % om_input = 2 * pi / input_period;
 % dom = FREQUENCY_NEIGHBOURHOOD_FACTOR * om_natural;
@@ -277,7 +293,8 @@ end
 % power_input / power_total
 
 
-%% compute entrainment scores
+%% compute entrainment scores (old)
+
 % Omega = mean_omega;
 % Q = zeros(Ntrials, 1);
 % W = zeros(Ntrials, 1);
@@ -332,23 +349,30 @@ end
 %     W_mean = power_input / power_total;
 % end
 
+
+%% compute entrainment scores
+
+% initialize options structure
 S = struct();
 S.natural_period = natural_period;
 S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
 S.MAX_HARMONIC_N = MAX_HARMONIC_N;
 S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
-S.MIN_HARMONICS_POWER_THRESHOLD = 0;
 S.entrainment_ratios = entrainment_ratios;
 
-Omega = mean_omega;
+% compute score for each trajectory
 W = zeros(Ntrials, 1);
 for n=1:Ntrials
-    W(n) = compute_entrainment_score(Omega, y(n, :), input_period, S);
+    W(n) = compute_entrainment_score(mean_omega, y(n, :), input_period, S);
 end
-W_mean = compute_entrainment_score(Omega, mean_y, input_period, S);
+% compute score of average trajectory
+W_mean = compute_entrainment_score(mean_omega, mean_y, input_period, S);
 
-% mean(Q)
 disp(['maximum individual entrainment score: ', num2str(max(W))]);
 disp(['average individual entrainment score: ', num2str(mean(W)), ' +- ', num2str(std(W))]);
-% Q_mean
+
+% compute the average score of the upper 50 percentile
+W_sort = sort(W);
+disp(['individual entrainment score: ', num2str(mean(W_sort(round(length(W_sort) / 2):end)))]);
+
 disp(['complex average entrainment score: ', num2str(W_mean)]);

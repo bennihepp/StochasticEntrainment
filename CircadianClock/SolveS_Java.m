@@ -31,13 +31,13 @@ function [T, P, omega] = SolveS_Java(x0, tf, dt, volume, ...
 %         disp(JavaLangevinModel_path);
     javaaddpath(JavaLangevinModel_path);
     try
-        ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);
+        ch.ethz.bhepp.utils.SinusoidalFunction(0.1, 0.05, 1/120);
     catch e
         display('Java error');
         display(e);
     end
 
-    inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
+    inputFunction = ch.ethz.bhepp.utils.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
     sde = ch.ethz.bhepp.sdesolver.models.CircadianClockDrosophilaSde(volume, inputFunction);
 
     omega = sde.getOmega();
@@ -52,7 +52,7 @@ function [T, P, omega] = SolveS_Java(x0, tf, dt, volume, ...
     t0 = 0;
     numOfTimeSteps = length(t0:recordStep:tf);
 
-    x0Matrix = ch.ethz.bhepp.sdesolver.MatrixHelper.createZeroDoubleMatrix1D(size(x0, 1));
+    x0Matrix = ch.ethz.bhepp.utils.MatrixHelper.createZeroDoubleMatrix1D(size(x0, 1));
     if size(x0, 2) == 1
         x0 = repmat(x0, 1, Ntrials);
     end

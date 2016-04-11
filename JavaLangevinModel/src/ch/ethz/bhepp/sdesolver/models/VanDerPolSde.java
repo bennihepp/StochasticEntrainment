@@ -42,6 +42,22 @@ public class VanDerPolSde implements Sde {
 		scaledPropensities = new DenseDoubleMatrix1D(NUM_OF_REACTIONS);
 	}
 
+	public double getParameterB() {
+		return B;
+	}
+
+	public void setParameterB(double B) {
+		this.B = B;
+	}
+
+	public double getParameterD() {
+		return d;
+	}
+
+	public void setParameterD(double d) {
+		this.d = d;
+	}
+
 	public int getDriftDimension() {
 		return NUM_OF_SPECIES;
 	}

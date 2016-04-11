@@ -1,0 +1,19 @@
+B=10, d=2
+population=false: ratio=0.99435
+population=true: ratio=1.4193
+
+B=9, d=2
+population=false: ratio=0.99417
+population=true: ratio=1.4462
+
+B=11, d=2
+population=false: ratio=0.99307
+population=true: ratio=1.4048
+
+B=10, d=1.8
+population=false: ratio=0.98398
+population=true: ratio=1.3806
+
+B=10, d=2.2
+population=false: ratio=0.99468
+population=true: ratio=1.4345

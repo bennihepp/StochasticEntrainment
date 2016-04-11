@@ -7,7 +7,7 @@ function scores = simulate_and_compute_all_entrainment_scores(input_period, inpu
 %     additive_forcing_func = @(t, x) AdditiveForcing(t, x, input_period, input_amplitude);
 %     multiplicative_forcing_func = @(t, x) 0;
 
-    [TT, output] = VanDerPol_Run2(S.Ntrials, S.t0, S.tf, S.dt, S.recordStep, S.volume, S.input_offset, input_amplitude, input_period);
+    [TT, output] = VanDerPol_Run_Java(S.Ntrials, S.t0, S.tf, S.dt, S.recordStep, S.volume, S.input_offset, input_amplitude, input_period);
 %     [TT, output] = VanDerPol_Run(S.Ntrials, S.t0, S.tf, S.dt, S.volume, ...
 %         additive_forcing_func, multiplicative_forcing_func);
 

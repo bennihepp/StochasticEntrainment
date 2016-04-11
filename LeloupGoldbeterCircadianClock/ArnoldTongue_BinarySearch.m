@@ -1,15 +1,16 @@
-ENTRAINMENT_THRESHOLD = 0.9;
+% ENTRAINMENT_THRESHOLD = 0.9;
+ENTRAINMENT_THRESHOLD = 0.75;
 MAX_HARMONIC_N = 4;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
-FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.03;
+FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 natural_period = 23.8607;
 entrainment_ratios = 1:2;
 
 Ntrials = 1;
 
 t0 = 0;
-% tf = 400 * 24; % max_input 0.3 (18:0.25:30)
-tf = 200 * 24;
+tf = 100 * 24; % max_input 0.3 (18:0.25:30)
+% tf = 200 * 24;
 % tf = 100 * 24;
 to = (tf - t0) / 10;
 
@@ -23,8 +24,9 @@ max_input_amplitude = 0.3;
 input_amplitude_tolerance = 1e-2;
 % input_periods = 20:0.1:28;
 % input_periods = 20:0.25:28;
-input_periods = 20:0.5:28;
-input_periods = 18:0.5:30;
+% input_periods = 20:0.5:28;
+% input_periods = 18:0.5:30;
+input_periods = 18:0.15:30;
 % input_periods = natural_period;
 
 min_frequency = 0.0;
@@ -109,5 +111,5 @@ S.scores = scores;
 
 date_string = datestr(clock());
 % filename = ['output/CircadianClock_ArnoldTongue_BinarySearch_', date_string, '.mat'];
-filename = ['output_0.9/ArnoldTongue_BinarySearch_', date_string, '.mat'];
+filename = ['output_0.75/ArnoldTongue_BinarySearch_', date_string, '.mat'];
 save(filename, '-struct', 'S');

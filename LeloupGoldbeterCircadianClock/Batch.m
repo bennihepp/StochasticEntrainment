@@ -1,3 +1,9 @@
+%% some functions in the parent folder are used
+addpath('../');
+addpath('../plotting/');
+
+
+%% parameters for scoring entrainment
 natural_period = 23.8607;
 PERIOD_DEVIATION_THRESHOLD = 0.01 * natural_period;
 PERIODICITY_THRESHOLD = 0.05;
@@ -6,38 +12,70 @@ FREQUENCY_NEIGHBOURHOOD_FACTOR = 0.01;
 MIN_HARMONICS_POWER_THRESHOLD = 0.0;
 MAX_HARMONIC_N = 4;
 entrainment_ratios = 1:2;
-addpath([getenv('HOME'), '/Documents/MATLAB/plotting']);
 
+
+%% parameters for the simulation
+
+% scaling constant for the system
 omega = 600;
 
-Ntrials = 8;
+% number of trajectories to simulate (for infinite volume only one trajectory is necessary)
+Ntrials = 4;
 % Ntrials = 8;
+Ntrials = 500;
+% Ntrials = 3;
 
-t0 = 0;
-%tf = 100 * 24;
-tf = 400 * 24;
-recordStep = (tf - t0)/5000;
-% recordStep = (tf - t0)/10000;
+% time-interval for saving of the output state
+% recordStep = (tf - t0)/5000;
+recordStep = (tf - t0)/10000;
 
 disp([' Ntrials=', int2str(Ntrials), ' recordStep=', num2str(recordStep)]);
 
+
+% initial time
+t0 = 0;
+% final time
+%tf = 100 * 24;
+tf = 50 * 24;
+% tf = 400 * 24;
+% offset time to cutoff to reduce transient effects
 to = (tf - t0) / 10;
+
+
+%% parameters for the forcing function
 
 input_offset = 1.0;
 initial_phase = 0.0;
 
-% entrained
-input_period = 30.0;
-input_amplitude = 0.3;
+% % entrained
+% input_period = 30.0;
+% input_amplitude = 0.3;
 
-% not entrained
-input_period = 30.0;
+% % not entrained
+% input_period = 30.0;
+% input_amplitude = 0.2;
+
+input_period = 28;
 input_amplitude = 0.2;
 
-input_amplitude = 0.0;
 
-input_period = 23.5;
-input_amplitude = 0.3;
+%% parameters for computation of spectra
+
+% minimum and maximum frequency to consider in the fourier spectrum
+min_frequency = 0.0;
+max_frequency = 1 / 3;
+% min_frequency = 0.0;
+% max_frequency = inf;
+
+
+%% initialize options structure
+S = struct();
+S.natural_period = natural_period;
+S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
+S.MAX_HARMONIC_N = MAX_HARMONIC_N;
+S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
+S.MIN_HARMONICS_POWER_THRESHOLD = 0;
+S.entrainment_ratios = entrainment_ratios;
 
 
 %% simulate
@@ -77,7 +115,7 @@ output = output(offset:end, :);
 %% plot traces after transients
 
 w = find(T > T(end) - 400, 1);
-q = find(T > T(w) - 200, 1);
+q = find(T > T(w) - 150, 1);
 TT = T(q:w);
 TT = TT - TT(1);
 trunc = output(q:w, :);
@@ -108,11 +146,11 @@ title(['y(1) average trace: Ntrials=', int2str(Ntrials), ' amplitude=', num2str(
 xlabel('time t');
 ylabel('state y(1)');
 
+
 width = 10;
-height = 3;
+height = 5;
 fontSize = 0.5 * (width * height);
 h = prepare_plot(width, height, fontSize);
-hold on;
 %cmap = colormap('Lines');
 color1 = [0, 0, 1.0];
 color2 = [0, 1.0, 1.0];
@@ -120,14 +158,23 @@ color3 = [0, 1.0, 0.0];
 % average_color = [1.0, 0.5, 0.0];
 average_color = [241, 140, 22] / 255;
 cmap = [color1; color2; color3];
+subplot(2, 1, 1);
+hold on;
 for i=1:3
-    plot(TT, trunc(:, i), 'Color', cmap(i, :), 'LineWidth', 0.5);
+    plot(TT, trunc(:, i) / omega, 'Color', cmap(i, :), 'LineWidth', 0.5);
 end
-plot(TT, mean(trunc, 2), '-', 'Color', average_color, 'LineWidth', 2.0);
+plot(TT, mean(trunc, 2) / omega, '-', 'Color', average_color, 'LineWidth', 2.0);
+hold off;
+ylabel('state y');
+set(gca(), 'xtick', []);
+box off;
+subplot(2, 1, 2);
+deterministic_color = [0.9, 0.0, 0.0];
+plot(TT_det, mean(trunc_det, 2), '-', 'Color', deterministic_color, 'LineWidth', 1.0);
 xlabel('time t');
 ylabel('state y');
-hold off;
-save_plot([export_eps_prefix(), 'leloup_goldbeter_circadian_average_and_single_trace'], h, width, height);
+box off;
+% save_plot([export_eps_prefix(), 'leloup_goldbeter_circadian_average_and_single_trace'], h, width, height);
 
 % width = 10;
 % height = 3;
@@ -145,26 +192,26 @@ save_plot([export_eps_prefix(), 'leloup_goldbeter_circadian_average_and_single_t
 %% substract mean
 output = output - repmat(mean(output, 1), [size(output, 1), 1]);
 
+
 %% compute spectras
-addpath('../');
 
-% min_frequency = 0.005;
-% max_frequency = 0.5;
-min_frequency = 0.0;
-max_frequency = inf;
-
+% compute the spectrum for each trajectory
 omega = [];
 y = [];
-for i=Ntrials:-1:1
+for i=1:Ntrials
     display([int2str(i), ' out of ', int2str(Ntrials)]);
     [omega1, y1] = compute_normalized_fft_truncated(output(:,i)', recordStep, 2*pi*min_frequency, 2*pi*max_frequency);
     omega = [omega; omega1];
     y = [y; y1];
 end
+
+% compute the average spectrum (i.e. the spectrum of the average)
 mean_y = mean(y, 1);
 mean_omega = mean(omega, 1);
 
+
 %% plot spectras
+
 figure();
 plot(mean_omega ./ (2 * pi), mean(abs(y(1,:)), 1) .^ 2);
 title(['y(1) first trace fft: Ntrials=', int2str(Ntrials), ' amplitude=', num2str(input_amplitude), ' period=', num2str(input_period)]);
@@ -185,6 +232,7 @@ ylabel('power |y|^2');
 
 
 %% plot phase distribution of natural mode and input mode
+
 NUM_OF_BINS = 100;
 bins = linspace(-pi, pi, NUM_OF_BINS);
 [~, ind] = min(abs(mean_omega ./ (2 * pi) - 1 ./ natural_period));
@@ -233,120 +281,23 @@ ylabel('occurence');
 % save_plot([export_eps_prefix(), 'leloup_goldbeter_circadian_phase_dist'], h, width, height);
 
 
-%% compute autocorrelation if only one trajectory is simulated
-if Ntrials == 1
-    corr = xcorr(output - mean(output, 2), 'unbiased');
-    figure();
-    plot(corr);
-    title('autocorrelation');
-    [pks, locs] = findpeaks(corr);
-    peak_distances = locs(2:end) - locs(1:end-1);
-    mean_peak_distance = mean(peak_distances);
-    std_peak_distance = std(peak_distances);
-
-    mean_period = mean_peak_distance * dt;
-    factor = mean_period / input_period;
-    if mean_period < input_period
-        factor = input_period / mean_period;
-    end
-    output_periodic = false;
-    if abs(factor - round(factor)) < PERIOD_MULTIPLE_THRESHOLD
-    % if abs(mean_period - input_period) < PERIOD_DEVIATION_THRESHOLD
-        output_periodic = std_peak_distance / mean_peak_distance < PERIODICITY_THRESHOLD;
-    end
-    output_periodic
-end
-
-
-%% compute entrainment
-% om_natural = 2 * pi / natural_period;
-% om_input = 2 * pi / input_period;
-% dom = FREQUENCY_NEIGHBOURHOOD_FACTOR * om_natural;
-% 
-% power_total = sum(abs(mean_y).^2);
-% power_input = compute_spectrum_power(mean_omega, mean_y, om_input, dom);
-% power_input_harmonics = 0;
-% for n=2:MAX_HARMONIC_N
-%     power_input_harmonics = power_input_harmonics + compute_spectrum_power(mean_omega, mean_y, om_input * n, dom);
-% end
-% if power_input >= 0.1 * power_input_harmonics
-%     power_input = power_input + power_input_harmonics;
-% end
-% power_input / power_total
-
-
 %% compute entrainment scores
-% Omega = mean_omega;
-% Q = zeros(Ntrials, 1);
-% W = zeros(Ntrials, 1);
-% om_natural = 2 * pi / natural_period;
-% om_input = 2 * pi / input_period;
-% dom = FREQUENCY_NEIGHBOURHOOD_FACTOR * om_natural;
-% if abs(om_natural - om_input) < 2 * dom
-%     Q(:) = inf;
-%     W(:) = inf;
-% else
-%     for n=1:Ntrials
-%         power_total = sum(abs(y(n,:)).^2);
-%         power_natural = compute_spectrum_power(Omega, y(n,:), om_natural, dom);
-% %         for n=2:MAX_HARMONIC_N
-% %             power_natural = power_natural + compute_spectrum_power(Omega, y(n,:), om_natural * n, dom);
-% %         end
-%         power_input = compute_spectrum_power(Omega, y(n,:), om_input, dom);
-%         power_input_harmonics = 0;
-%         for m=2:MAX_HARMONIC_N
-%             power_input_harmonics = power_input_harmonics + compute_spectrum_power(Omega, y(n,:), om_input * m, dom);
-%         end
-%         if power_input >= MIN_HARMONICS_POWER_THRESHOLD * power_input_harmonics
-%             power_input = power_input + power_input_harmonics;
-%         end
-% 
-%         Q(n) = power_input / power_natural;
-%         W(n) = power_input / power_total;
-% 
-%     end
-% 
-% end
 
-% if abs(om_natural - om_input) < 2 * dom
-%     Q_mean = inf;
-%     W_mean = inf;
-% else
-%     power_total = sum(abs(mean_y).^2);
-%     power_natural = compute_spectrum_power(Omega, mean_y, om_natural, dom);
-% %     for n=2:MAX_HARMONIC_N
-% %         power_natural = power_natural + compute_spectrum_power(Omega, mean_y, om_natural * n, dom);
-% %     end
-%     power_input = compute_spectrum_power(Omega, mean_y, om_input, dom);
-%     power_input_harmonics = 0;
-%     for m=2:MAX_HARMONIC_N
-%         power_input_harmonics = power_input_harmonics + compute_spectrum_power(Omega, mean_y, om_input * m, dom);
-%     end
-%     if power_input >= MIN_HARMONICS_POWER_THRESHOLD * power_input_harmonics
-%         power_input = power_input + power_input_harmonics;
-%     end
-% 
-%     Q_mean = power_input / power_natural;
-%     W_mean = power_input / power_total;
-% end
-
-S = struct();
-S.natural_period = natural_period;
-S.FREQUENCY_NEIGHBOURHOOD_FACTOR = FREQUENCY_NEIGHBOURHOOD_FACTOR;
-S.MAX_HARMONIC_N = MAX_HARMONIC_N;
-S.MIN_HARMONICS_POWER_THRESHOLD = MIN_HARMONICS_POWER_THRESHOLD;
-S.MIN_HARMONICS_POWER_THRESHOLD = 0;
-S.entrainment_ratios = entrainment_ratios;
-
-Omega = mean_omega;
+% compute score for each trajectory
 W = zeros(Ntrials, 1);
 for n=1:Ntrials
-    W(n) = compute_entrainment_score(Omega, y(n, :), input_period, S);
+    W(n) = compute_entrainment_score(mean_omega, y(n, :), input_period, S);
 end
-W_mean = compute_entrainment_score(Omega, mean_y, input_period, S);
+% compute score of average trajectory
+W_mean = compute_entrainment_score(mean_omega, mean_y, input_period, S);
 
-% mean(Q)
 disp(['maximum individual entrainment score: ', num2str(max(W))]);
 disp(['average individual entrainment score: ', num2str(mean(W)), ' +- ', num2str(std(W))]);
-% Q_mean
+
+% compute the average score of the upper 50 percentile
+W_sort = sort(W);
+W_upper_50 = W_sort(round(length(W_sort) / 2):end);
+W_avg_upper_50 = mean(W_upper_50);
+disp(['individual entrainment score: ', num2str(W_avg_upper_50)]);
+
 disp(['complex average entrainment score: ', num2str(W_mean)]);

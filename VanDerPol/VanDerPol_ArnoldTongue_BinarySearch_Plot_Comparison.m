@@ -1,19 +1,15 @@
 HEATMAP_TYPE = 'matrix';
 addpath('../');
-addpath([getenv('HOME'), '/Documents/MATLAB/plotting']);
+addpath('../plotting');
 
-export_eps = true;
-%export_eps = false;
+% export_eps = true;
+export_eps = false;
 
-% S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_01-Sep-2014 10:19:54');
-% S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_04-Sep-2014 23:58:25');
-% S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_30-Aug-2014 12:26:58');
-% S2 = load('output/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population_average=true_30-Aug-2014 12:26:10');
-% S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_volume=Inf_population=0_12-Sep-2014 09:11:13');
-S1 = load('output_0.75/VanDerPol_ArnoldTongue_BinarySearch_volume=Inf_population=0_23-Oct-2014 12:54:48');
-% S2 = load('output_200/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_11-Sep-2014 22:33:01');
-% S2 = load('output_500/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_12-Sep-2014 12:04:41');
-S2 = load('output_500_0.75/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_20-Sep-2014 12:17:56');
+S1 = load('output/VanDerPol_ArnoldTongue_BinarySearch_volume=Inf_population=0_12-Sep-2014 09:11:13');
+% S1 = load('output_0.75/VanDerPol_ArnoldTongue_BinarySearch_volume=Inf_population=0_23-Oct-2014 12:54:48');
+
+S2 = load('output_500/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_12-Sep-2014 12:04:41');
+% S2 = load('output_500_0.75/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=0_20-Sep-2014 12:17:56');
 % S2 = load('output_population_500/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=1_12-Sep-2014 08:59:17');
 % S2 = load('output_population_500_0.75/VanDerPol_ArnoldTongue_BinarySearch_JobArray_volume=5000_population=1_21-Sep-2014 10:55:20');
 
@@ -30,20 +26,24 @@ Q2 = zeros(length(input_amplitudes), length(input_period_indices));
 levels = 3;
 
 for n=1:length(input_period_indices)
+
     i = input_period_indices(n);
+
     % S1
     border = S1.arnold_tongue_borders(i);
     j = find(input_amplitudes >= border, 1, 'first');
     Q1(j:end, n) = 1;
+
     % S2
     border = S2.arnold_tongue_borders(i);
-    if ~isinf(S2.score_std(i)) && ~isnan(S2.score_std(i))
-        % FIXME
-        j = find(input_amplitudes >= border, 1, 'first') + 1;
-    else
-        j = find(input_amplitudes >= border, 1, 'first');
-    end
-%     j = find(input_amplitudes >= border, 1, 'first');
+
+%     if isfinite(S2.score_std(i))
+%         j = find(input_amplitudes >= border, 1, 'first') + 1;
+%     else
+%         j = find(input_amplitudes >= border, 1, 'first');
+%     end
+    j = find(input_amplitudes >= border, 1, 'first');
+
     Q2(j:end, n) = 1;
 end
 

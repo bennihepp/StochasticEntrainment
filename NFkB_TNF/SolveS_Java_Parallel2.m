@@ -42,12 +42,12 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
 %         disp(JavaLangevinModel_path);
     javaaddpath(JavaLangevinModel_path);
     try
-        ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);
+        ch.ethz.bhepp.utils.SinusoidalFunction(0.1, 0.05, 1/120);
     catch e
         display(e);
     end
 
-    inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
+    inputFunction = ch.ethz.bhepp.utils.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
     sde = ch.ethz.bhepp.sdesolver.models.NFkBSpikySde(volume, inputFunction);
 
 %     initial time t0
@@ -60,7 +60,7 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
     javaaddpath([getenv('HOME'), '/local/lib/java/colt.jar']);
     javaaddpath(JavaLangevinModel_path);
     try
-        ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);
+        ch.ethz.bhepp.utils.SinusoidalFunction(0.1, 0.05, 1/120);
     catch e
         display(e);
     end
@@ -69,7 +69,7 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
     javaaddpath([getenv('HOME'), '/local/lib/java/colt.jar']);
     javaaddpath(JavaLangevinModel_path);
     try
-        ch.ethz.bhepp.sdesolver.SinusoidalFunction(0.1, 0.05, 1/120);
+        ch.ethz.bhepp.utils.SinusoidalFunction(0.1, 0.05, 1/120);
     catch e
         display(e);
     end
@@ -105,7 +105,7 @@ function [T, P, omega] = SolveS_Java_Parallel2(x0, tf, dt, volume, ...
     end
     T = T(1, :);
 
-    inputFunction = ch.ethz.bhepp.sdesolver.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
+    inputFunction = ch.ethz.bhepp.utils.SinusoidalFunction(input_offset, input_amplitude, input_frequency);
     sde = ch.ethz.bhepp.sdesolver.models.NFkBSpikySde(volume, inputFunction);
     omega = sde.getOmega();
 end

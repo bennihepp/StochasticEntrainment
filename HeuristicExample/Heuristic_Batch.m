@@ -104,7 +104,7 @@ plot(TT, output_det_tmp(:, 1), 'Color', color4, 'LineWidth', 1.0);
 xlabel('time t');
 ylabel('state y');
 hold off;
-save_plot([export_eps_prefix(), 'heuristic_deterministic_trace'], h, width, height);
+% save_plot([export_eps_prefix(), 'heuristic_deterministic_trace'], h, width, height);
 
 width = 10;
 height = 3;
@@ -124,7 +124,7 @@ end
 xlabel('time t');
 ylabel('state y');
 hold off;
-save_plot([export_eps_prefix(), 'heuristic_single_trace'], h, width, height);
+% save_plot([export_eps_prefix(), 'heuristic_single_trace'], h, width, height);
 
 width = 10;
 height = 3;
@@ -137,7 +137,7 @@ xlabel('time t');
 ylabel('state y');
 hold off;
 ylim([-2, 2]);
-save_plot([export_eps_prefix(), 'heuristic_average_trace'], h, width, height);
+% save_plot([export_eps_prefix(), 'heuristic_average_trace'], h, width, height);
 
 
 %% compute spectras
@@ -200,7 +200,7 @@ plot(mean_omega ./ (2 * pi), values, 'Color', color4, 'LineWidth', 1.5);
 xlabel('frequency f');
 ylabel('power |y|^2');
 % ylim([0, 0.5]);
-save_plot([export_eps_prefix(), 'heuristic_deterministic_spectrum'], h, width, height);
+% save_plot([export_eps_prefix(), 'heuristic_deterministic_spectrum'], h, width, height);
 
 width = 10;
 height = 6;
@@ -212,7 +212,7 @@ plot(mean_omega ./ (2 * pi), values, 'Color', color2, 'LineWidth', 1.5);
 xlabel('frequency f');
 ylabel('power |y|^2');
 % ylim([0, 0.5]);
-save_plot([export_eps_prefix(), 'heuristic_single_spectrum'], h, width, height);
+% save_plot([export_eps_prefix(), 'heuristic_single_spectrum'], h, width, height);
 
 width = 10;
 height = 6;
@@ -224,7 +224,7 @@ plot(mean_omega ./ (2 * pi), values, 'Color', average_color, 'LineWidth', 1.5);
 xlabel('frequency f');
 ylabel('power |y|^2');
 % ylim([0, 0.5]);
-save_plot([export_eps_prefix(), 'heuristic_average_spectrum'], h, width, height);
+% save_plot([export_eps_prefix(), 'heuristic_average_spectrum'], h, width, height);
 
 return;
 

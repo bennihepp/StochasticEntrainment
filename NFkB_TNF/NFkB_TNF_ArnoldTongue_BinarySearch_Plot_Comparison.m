@@ -2,10 +2,10 @@ HEATMAP_TYPE = 'matrix';
 addpath('../');
 addpath([getenv('HOME'), '/Documents/MATLAB/plotting']);
 
-export_eps = true;
-% export_eps = false;
+% export_eps = true;
+export_eps = false;
 
-% S1 = load('output/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_19-Sep-2014 15:27:20');
+% S1 = load('output_0.9/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_19-Sep-2014 15:27:20');
 S1 = load('output_0.75/NFkB_TNF_ArnoldTongue_BinarySearch_volume=Inf_population=0_24-Oct-2014 19:23:14');
 % S2 = load('output_population_200/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=5e-13_population=1_10-Sep-2014 09:26:08');
 % S2 = load('output_500/NFkB_TNF_ArnoldTongue_BinarySearch_JobArray_volume=2e-11_population=0_10-Sep-2014 23:16:20');
